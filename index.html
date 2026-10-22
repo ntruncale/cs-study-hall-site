@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>CS in Study Hall</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<style>
+/* Layout: one column listing units in order; live modules are links, upcoming ones are muted. Tokens match the lesson pages. */
+:root {
+  --paper: #F4F6FA; --surface: #FFFFFF; --ink: #172033; --muted: #586379; --line: #DCE1EA;
+  --accent: #2346B8; --ok: #13744A; --ok-soft: #E2F4EA;
+  --font-body: "Recursive", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0E131C; --surface: #161D29; --ink: #E5EAF3; --muted: #9AA5BA; --line: #2A3445;
+    --accent: #8EA8FF; --ok: #5FD394; --ok-soft: #12301F; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0E131C; --surface: #161D29; --ink: #E5EAF3; --muted: #9AA5BA; --line: #2A3445;
+  --accent: #8EA8FF; --ok: #5FD394; --ok-soft: #12301F; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 1rem; line-height: 1.6; }
+.wrap {
+  max-width: 780px; margin: 0 auto; padding-block: 40px 64px; display: grid; gap: 32px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2 { margin: 0; line-height: 1.2; text-wrap: balance; font-variation-settings: "CASL" 1; }
+h1 { font-size: 2.25rem; font-weight: 850; }
+h2 { font-size: 1.1875rem; font-weight: 750; }
+p { margin: 0; }
+.lede { color: var(--muted); font-size: 1.1875rem; max-width: 60ch; }
+.unit { display: grid; gap: 10px; }
+.unit ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.unit li { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); }
+.unit li.soon { background: transparent; color: var(--muted); border-style: dashed; }
+.unit li a { color: var(--ink); font-weight: 700; text-decoration: none; flex: 1; min-width: 0; }
+.unit li a:hover { color: var(--accent); }
+.unit li span.t { flex: 1; min-width: 0; }
+.num { font-size: 0.8rem; font-weight: 700; color: var(--muted); min-width: 4.5rem; font-variant-numeric: tabular-nums; }
+.chip { font-size: 0.8rem; font-weight: 650; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+.chip.live { color: var(--ok); background: var(--ok-soft); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+footer { color: var(--muted); font-size: 0.875rem; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+</head>
+<body>
+
+
+<main class="wrap">
+  <header style="display:grid;gap:10px">
+    <h1>CS in Study Hall</h1>
+    <p class="lede">One module per study hall. Open the module your teacher assigned in Blackbaud, work through every step, then complete the Blackbaud check.</p>
+  </header>
+
+  <section class="unit">
+    <h2>Unit 1: How computers work</h2>
+    <ol>
+      <li class="soon"><span class="num">U1 · M1</span><span class="t">Bits and binary</span></li>
+      <li class="soon"><span class="num">U1 · M2</span><span class="t">Layers of a computer</span></li>
+      <li class="soon"><span class="num">U1 · M3</span><span class="t">How the internet moves data</span></li>
+    </ol>
+  </section>
+  <section class="unit">
+    <h2>Unit 2: Algorithms</h2>
+    <ol>
+      <li class="soon"><span class="num">U2 · M1</span><span class="t">What is an algorithm?</span></li>
+      <li class="soon"><span class="num">U2 · M2</span><span class="t">Searching and sorting</span></li>
+      <li class="soon"><span class="num">U2 · M3</span><span class="t">Efficiency</span></li>
+    </ol>
+  </section>
+  <section class="unit">
+    <h2>Unit 3: Programming in Python</h2>
+    <ol>
+      <li><span class="num">U3 · M1</span><a href="u3m1-hello-python.html">Hello, Python</a><span class="chip live">Open</span></li>
+      <li class="soon"><span class="num">U3 · M2</span><span class="t">Making decisions</span></li>
+      <li class="soon"><span class="num">U3 · M3</span><span class="t">Loops</span></li>
+      <li class="soon"><span class="num">U3 · M4</span><span class="t">Functions</span></li>
+      <li class="soon"><span class="num">U3 · M5</span><span class="t">Mini-project</span></li>
+    </ol>
+  </section>
+  <section class="unit">
+    <h2>Unit 4: Data and security</h2>
+    <ol>
+      <li class="soon"><span class="num">U4 · M1</span><span class="t">Data and bias</span></li>
+      <li class="soon"><span class="num">U4 · M2</span><span class="t">Passwords and encryption</span></li>
+      <li class="soon"><span class="num">U4 · M3</span><span class="t">Privacy and your digital footprint</span></li>
+    </ol>
+  </section>
+  <section class="unit">
+    <h2>Unit 5: Artificial intelligence</h2>
+    <ol>
+      <li class="soon"><span class="num">U5 · M1</span><span class="t">How machines learn</span></li>
+      <li class="soon"><span class="num">U5 · M2</span><span class="t">Train a classifier</span></li>
+      <li class="soon"><span class="num">U5 · M3</span><span class="t">AI and human dignity</span></li>
+    </ol>
+  </section>
+  <section class="unit">
+    <h2>Unit 6: Capstone, Tech for Others</h2>
+    <ol>
+      <li class="soon"><span class="num">U6 · M1</span><span class="t">Plan</span></li>
+      <li class="soon"><span class="num">U6 · M2</span><span class="t">Build</span></li>
+      <li class="soon"><span class="num">U6 · M3</span><span class="t">Share and reflect</span></li>
+    </ol>
+  </section>
+
+  <footer>Ad majorem Dei gloriam.</footer>
+</main>
+
+</body>
+</html>
