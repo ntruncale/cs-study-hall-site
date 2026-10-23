@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Capstone: Build</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.plan-card { background: var(--accent-soft); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; font-size: var(--step-0); }
+.plan-card h3 { margin: 0; }
+.plan-card pre { margin: 0; white-space: pre-wrap; font-family: var(--font-code); font-variation-settings: "MONO" 1; font-size: 0.85rem; }
+.plan-card .k { font-weight: 750; }
+.field { display: grid; gap: 4px; }
+.field label { font-weight: 650; font-size: var(--step-0); }
+.field input, .field select { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); min-height: 44px; }
+.starter-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U6 · M2</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 3</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 6: Capstone, Tech for Others · Module 2 of 3</span>
+    <h1>Capstone: Build</h1>
+    <p class="lede">Today you turn your plan into a working program. Build a little, test a little, and don't panic when something breaks. Every programmer spends a lot of time debugging.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 40 minutes (most of it on your project)</span>
+      <span><b>To pass:</b> finish the 2 warm-ups and your project, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad, and your code carries into the next module</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (U6 · M1)</strong>
+      <span>You used design thinking to plan a program for a real person: who it's for, the problem, input, process, output and pseudocode.</span>
+    </div>
+    <p class="loadnote" id="loadnote">Loading Python…</p>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>The first actual bug</h2><span class="ipp">Context</span></div>
+    <div class="prose">
+      <p>On September 9, 1947, the team running the Harvard Mark II computer, a room-sized machine full of electrical switches, couldn't figure out why it was giving wrong answers. They finally opened it up and found the problem: a <b>moth</b> stuck in one of the switches.</p>
+      <p>They carefully removed it and taped it into the logbook with a note: "First actual case of bug being found." Grace Hopper, whom you met in the Functions module, worked with that team and loved telling the story. Engineers had called problems "bugs" for decades, but the moth made the word famous. You can still see the logbook page at the Smithsonian.</p>
+      <p>Today, you'll find and fix bugs too. They won't have wings, but the process is the same: notice something is wrong, look closely, figure out the cause, fix it, and test again.</p>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>How to build and debug</h2><span class="ipp">Experience</span></div>
+    <div class="prose">
+      <h3>Idea 1: Build in small steps</h3>
+      <p>Follow your pseudocode one line at a time. After every few lines, tap <b>Run</b>. If you write 30 lines before running anything, you'll have 30 places to look for a bug.</p>
+      <h3>Idea 2: When there's an error</h3>
+      <p>Read the message, especially the line number. Look at that line <b>and the line above it</b>. Python fixes one error at a time, so after a fix, run again to find the next one.</p>
+      <h3>Idea 3: When it runs but gives the wrong answer</h3>
+      <ul>
+        <li><b>Add a print</b> to see what's inside a variable: <code class="inline">print("score is", score)</code>. Delete it when you're done.</li>
+        <li><b>Rubber duck it:</b> explain your code out loud, line by line, to a helper, a friend, or even a rubber duck. You'll often hear yourself find the bug.</li>
+        <li><b>Test edge cases:</b> zero, the exact boundary, all right answers, all wrong answers.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Warm up</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Warm-up 1: Debugging strategies</h3><span class="chip" data-chip="t1">To do</span></div>
+      <div id="t1-quiz"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Warm-up 2: Squash three bugs</h3><span class="chip" data-chip="t2">To do</span></div>
+      <p>This math quiz has <b>three</b> bugs: two that cause errors, and one sneaky one that gives the wrong score. The page tests it with all-right and all-wrong answers.</p>
+      <div data-editor="t2"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: your Tech for Others program</h2><span class="ipp">Action</span></div>
+    <div class="plan-card" id="plan-card"></div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>Your program must:</h3><span class="chip" data-chip="project">To do</span></div>
+      <ul class="status-list" id="b-reqs"></ul>
+      <div class="starter-row">
+        <div class="field"><label for="b-starter">Starter code</label>
+          <select id="b-starter">
+            <option value="quiz">Practice quiz</option>
+            <option value="tracker">Tracker or calculator</option>
+            <option value="helper">Decision helper</option>
+            <option value="story">Story or adventure</option>
+            <option value="other">Blank outline</option>
+          </select>
+        </div>
+        <button class="ghost" id="b-load">Load this starter</button>
+      </div>
+      <p class="goal">Loading a starter replaces your code. You'll be asked to tap twice so you don't lose work by accident.</p>
+      <div data-editor="project"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">What was the hardest bug or problem you ran into today? How did you solve it, and did anyone help you? What does that teach you about asking for help, in programming and in life?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="The hardest bug today was…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish the warm-ups and your project to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U6·M2 Check: Capstone Build.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your program. Tap the button below, then paste it in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my program</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: polish it</h3><span class="chip opt">Optional</span></div>
+      <div class="prose">
+        <p>Finished early? Make your program kinder and sturdier:</p>
+        <ul>
+          <li>Make answers work whether the user types capitals or not: <code class="inline">reply.lower() == answer.lower()</code></li>
+          <li>Add a friendly welcome message that uses the person's name.</li>
+          <li>Add comments (lines starting with <code class="inline">#</code>) that explain each part, so someone else could understand your code.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js" onerror="window.__skFail=true"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js" onerror="window.__skFail=true"></script>
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var py = Course.python, el = Course.el, $ = function (id) { return document.getElementById(id); };
+  var state = Course.state;
+  var plan = (Course.loadModule("u6m1") || {}).extra;
+  plan = plan && plan.plan ? plan.plan : null;
+
+  var STARTERS = {
+    quiz: '# Practice quiz for: (who is it for?)\n\nquestions = ["Question 1? ", "Question 2? ", "Question 3? "]\nanswers = ["answer1", "answer2", "answer3"]\nscore = 0\n\ndef final_message(score):\n    # return a different message depending on the score\n    return "Thanks for playing!"\n\nname = input("What is your name? ")\n\n# Loop through the questions:\n# ask each one, check the answer with an if, and keep score\n\n# Print the score and final_message(score)\n',
+    tracker: '# Tracker for: (who is it for?)\n\ndef average(total, count):\n    # return the average\n    return 0\n\nname = input("What is your name? ")\nhow_many = int(input("How many entries? "))\ntotal = 0\n\n# Loop how_many times:\n# ask for each entry, add it to total\n\n# Work out the average with your function and print the results\n# Use an if to print a message about a goal\n',
+    helper: '# Decision helper for: (who is it for?)\n\ndef recommend(answers):\n    # look at the answers with if / elif / else\n    # and return a recommendation\n    return "I recommend..."\n\nquestions = ["Question 1? ", "Question 2? ", "Question 3? "]\nanswers = []\n\n# Loop through the questions, ask each one,\n# and add the reply to answers with answers.append(reply)\n\n# Print the recommendation: recommend(answers)\n',
+    story: '# Adventure story for: (who is it for?)\n\ndef scene(text):\n    print(text)\n    print("-" * 30)\n\nhero = input("What is the hero\'s name? ")\nscene(f"{hero} wakes up on the morning of the big day...")\n\n# Ask the reader to make choices with input(),\n# use if / elif / else so their choices change the story,\n# and use a for loop somewhere, like repeating a challenge three times\n',
+    other: '# My Tech for Others program\n# For: (who is it for?)\n# It helps by: (what does it do?)\n\n# 1. Define at least one function with def\n\n# 2. Ask the user for information with input()\n\n# 3. Use a loop (for) and decisions (if)\n\n# 4. Print helpful results\n'
+  };
+  var startType = plan && STARTERS[plan.type] ? plan.type : "other";
+
+  function codeLines(code) { return code.split("\n").filter(function (l) { return l.trim() && !/^\s*#/.test(l); }).length; }
+  function reqs(code, r) {
+    var runs = state.extra.runs || [];
+    return [
+      { ok: /input\s*\(/.test(code), text: "Ask the user for information with input()" },
+      { ok: /^\s*if\b/m.test(code), text: "Make a decision with if" },
+      { ok: /^\s*(for|while)\b/m.test(code), text: "Repeat steps with a loop (for or while)" },
+      { ok: /^\s*def\s+(\w+)\s*\(/m.test(code) && (function () { var n = /^\s*def\s+(\w+)\s*\(/m.exec(code)[1]; return code.split("\n").some(function (l) { return !/^\s*def\b/.test(l) && new RegExp("\\b" + n + "\\s*\\(").test(l); }); })(), text: "Define a function with def, and call it" },
+      { ok: codeLines(code) >= 15, text: "Have at least 15 lines of code, not counting comments (you have " + codeLines(code) + ")" },
+      { ok: !!r && !r.error, text: "Run without errors" },
+      { ok: runs.length >= 2, text: "Test it at least twice with different answers (" + Math.min(runs.length, 2) + " of 2 so far)" }
+    ];
+  }
+  function renderReqs(code, r) {
+    var list = $("b-reqs"); list.innerHTML = "";
+    reqs(code, r).forEach(function (q) { list.appendChild(el("li", { "class": q.ok ? "done" : "" }, (q.ok ? "✓ " : "○ ") + q.text)); });
+  }
+
+  Course.init({
+    id: "u6m2",
+    usesPython: true,
+    required: ["t1", "t2", "project"],
+    tryTasks: ["t1", "t2"],
+    buildTask: "project",
+    taskNames: { t1: "Warm-up 1: Debugging strategies", t2: "Warm-up 2: Squash three bugs", project: "Build: your Tech for Others program" },
+    code: [77, 79, 84, 72, 45, 49, 57, 52, 55],
+    buildText: function () {
+      var head = plan ? "# For: " + (plan.who || "") + "\n# Problem: " + (plan.need || "").replace(/\n/g, " ") + "\n\n" : "";
+      return head + document.getElementById("code-project").value;
+    },
+    buildFallbackEl: function () { return document.getElementById("code-project"); }
+  });
+
+  /* ---------- Plan card ---------- */
+  (function () {
+    var card = $("plan-card");
+    if (plan && (plan.who || plan.need)) {
+      card.appendChild(el("h3", null, "Your plan from last time"));
+      var who = el("div"); who.appendChild(el("span", { "class": "k" }, "For: ")); who.appendChild(document.createTextNode(plan.who || "")); card.appendChild(who);
+      var need = el("div"); need.appendChild(el("span", { "class": "k" }, "Problem: ")); need.appendChild(document.createTextNode(plan.need || "")); card.appendChild(need);
+      if (plan.pseudo) { card.appendChild(el("span", { "class": "k" }, "Your pseudocode:")); card.appendChild(el("pre", null, plan.pseudo)); }
+    } else {
+      card.appendChild(el("h3", null, "No plan found on this iPad"));
+      card.appendChild(el("p", null, "Your plan from U6·M1 isn't saved on this device (maybe you used a different iPad). That's okay: look at your plan in Blackbaud, or ask a helper, and start from a starter below."));
+    }
+  })();
+
+  /* ---------- Warm-up 1 ---------- */
+  Course.quiz({
+    task: "t1", container: "t1-quiz",
+    okMsg: "All right. Read the error, look closely, check your assumptions, and explain your code out loud.",
+    questions: [
+      { q: "Your program shows an error on line 7. What should you do first?", choices: [
+        { text: "Delete the whole program and start over", why: "Not quite. Most bugs are one small fix away." },
+        { text: "Read the message, and look at line 7 and the line just above it", right: true, why: "Right. Python sometimes notices a mistake one line after it happens, like a missing colon or parenthesis." },
+        { text: "Ignore it and keep writing more code", why: "Not quite. More code means more places for bugs to hide." }
+      ] },
+      { q: "Your program runs, but the score is always 0. What's a good way to find out why?", choices: [
+        { text: "Add print statements to see what's in your variables while it runs", right: true, why: "Right. Seeing the actual values usually shows exactly where things go wrong." },
+        { text: "Run it the same way over and over", why: "Not quite. Same input, same result. You need more information." },
+        { text: "Make the program longer", why: "Not quite. Find the cause first." }
+      ] },
+      { q: "What is \"rubber duck debugging\"?", choices: [
+        { text: "A program that finds bugs automatically", why: "Not quite. It's a human technique." },
+        { text: "Explaining your code out loud, line by line, to someone or something", right: true, why: "Right. Saying what each line should do often reveals the line that doesn't." },
+        { text: "Taking a break by the pond", why: "Breaks help too, but that's not what it means." }
+      ] }
+    ]
+  });
+
+  /* ---------- Editors ---------- */
+  function has(o, t) { return o.indexOf(t) !== -1; }
+  py.editors({
+    t2: {
+      starter: 'def check(answer, correct)\n    if answer == correct:\n        return True\n    else:\n        return False\n\nquestions = ["2 + 2? ", "5 x 3? ", "10 - 7? "]\nanswers = ["4", "15", "3"]\nscore = 0\nfor i in range(len(question)):\n    reply = input(questions[i])\n    if check(reply, answers[i]):\n        print("Correct!")\n    score = score + 1\nprint(f"Score: {score} out of {len(questions)}")\n',
+      hints: [
+        "Bug 1: Look at the end of the def line.",
+        "Bug 2: Python doesn't know a variable called question. What is the list really called?",
+        "Bug 3 (sneaky): Is score = score + 1 inside the if, or does it run every time? Check its indentation."
+      ],
+      tests: [
+        { inputs: ["4", "15", "3"], expect: function (o) { return has(o, "Score: 3 out of 3") ? null : "With all right answers (4, 15, 3), the score should be 3 out of 3."; } },
+        { inputs: ["1", "1", "1"], expect: function (o) { return has(o, "Score: 0 out of 3") ? null : "With all wrong answers, the score should be 0 out of 3, but yours isn't. Is the score added only when the answer is correct?"; } }
+      ],
+      okMsg: "All three bugs squashed, including the sneaky logic bug that the all-wrong test caught. That's why testing edge cases matters."
+    },
+    project: {
+      starter: STARTERS[startType],
+      hints: [
+        "Follow your pseudocode from the top of this section, one step at a time. Run after every few lines.",
+        "Look back at Unit 3 for examples: input() and if in Making Decisions, for in Loops, def in Functions.",
+        "To pass the testing requirement, run your program twice and type different answers each time."
+      ],
+      onRun: function (code, r) {
+        if (r && !r.error) {
+          var runs = state.extra.runs || (state.extra.runs = []);
+          if (runs.indexOf(r.output) === -1) { runs.push(r.output); if (runs.length > 10) runs.shift(); Course.save(); }
+        }
+        renderReqs(code, r);
+      },
+      check: function (r, code) {
+        var missing = reqs(code, r).filter(function (q) { return !q.ok; });
+        if (missing.length) return { ok: false, msg: "Good progress! Still to do:", list: missing.map(function (q) { return q.text; }) };
+        return { ok: true, msg: "Your program meets every requirement. Next study hall, you'll test it with a real person and improve it." };
+      }
+    }
+  });
+
+  /* ---------- Starter loader ---------- */
+  (function () {
+    var sel = $("b-starter"), btn = $("b-load"), armed = false, timer = null;
+    sel.value = startType;
+    btn.addEventListener("click", function () {
+      if (!armed) { armed = true; btn.textContent = "Tap again to replace your code"; timer = setTimeout(function () { armed = false; btn.textContent = "Load this starter"; }, 4000); return; }
+      clearTimeout(timer); armed = false; btn.textContent = "Load this starter";
+      var ta = $("code-project");
+      ta.value = STARTERS[sel.value]; state.code.project = ta.value; state.extra.runs = []; Course.save();
+      renderReqs(ta.value, null);
+    });
+  })();
+  renderReqs($("code-project").value, null);
+})();
+</script>
+
+</body>
+</html>

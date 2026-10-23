@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Capstone: Share and Reflect</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.form { display: grid; gap: 12px; }
+.field { display: grid; gap: 4px; }
+.field label { font-weight: 650; font-size: var(--step-0); }
+.field .help { font-size: 0.8rem; color: var(--muted); }
+.field input, .field textarea { font: inherit; width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); min-height: 44px; }
+.field textarea { min-height: 4.5rem; resize: vertical; }
+.field .count { font-size: 0.75rem; color: var(--muted); justify-self: end; }
+.field .count.ok { color: var(--ok); }
+.ilw { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 8px; }
+.ilw div { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--surface); font-size: var(--step-0); }
+.ilw b { display: block; color: var(--accent); }
+.pitch { border: 2px solid var(--accent); border-radius: 14px; padding: 18px 20px; display: grid; gap: 10px; background: var(--surface); }
+.pitch .name { font-size: var(--step-3); font-weight: 850; font-variation-settings: "CASL" 1; line-height: 1.15; }
+.pitch .for { color: var(--muted); font-size: var(--step-0); }
+.pitch .part b { display: block; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.pitch .part span { font-size: var(--step-1); }
+.done-banner { background: var(--ok-soft); color: var(--ok); border-radius: 12px; padding: 16px 18px; font-weight: 700; display: grid; gap: 4px; }
+.done-banner span { font-weight: 500; color: var(--ink); }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U6 · M3</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 3</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 6: Capstone, Tech for Others · Module 3 of 3</span>
+    <h1>Capstone: Share and Reflect</h1>
+    <p class="lede">The last step of design thinking is the most important: put your program in front of a real person, listen, and make it better. Then look back on your whole year of computer science.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 40 minutes</span>
+      <span><b>To pass:</b> test, improve and pitch your project, then complete the final Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (U6 · M2)</strong>
+      <span>You built your Tech for Others program a step at a time, debugged it, and tested it with different answers.</span>
+    </div>
+    <p class="loadnote" id="loadnote">Loading Python…</p>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>Men and women for others</h2><span class="ipp">Context</span></div>
+    <div class="prose">
+      <p>On August 6, 1945, a young Spanish Jesuit named <b>Pedro Arrupe</b> was living just outside Hiroshima, Japan, when the atomic bomb fell. He had studied medicine before becoming a priest, so he turned the Jesuit house into a makeshift hospital and cared for dozens of injured survivors.</p>
+      <p>Years later, as the leader of all the Jesuits worldwide, Fr. Arrupe gave a famous speech to graduates of Jesuit schools in Valencia, Spain, in 1973. He said the goal of Jesuit education is to form <b>"men for others"</b>: people who use what they've learned not for themselves alone, but in service of others, especially the poor. Today Jesuit schools say <b>"men and women for others."</b></p>
+      <p>That's what your capstone has been about. You learned how computers, algorithms, code, data and AI work. Now the question is what you'll do with them, and for whom.</p>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Testing, improving and sharing</h2><span class="ipp">Experience</span></div>
+    <div class="prose">
+      <h3>Idea 1: Watch someone use it</h3>
+      <p>Hand your iPad to a classmate, a senior helper or (best of all) the person you built it for. <b>Don't explain anything.</b> Just watch where they hesitate or get confused. Then ask for feedback with three prompts:</p>
+    </div>
+    <div class="ilw">
+      <div><b>I like…</b>what works well</div>
+      <div><b>I wish…</b>what was confusing or missing</div>
+      <div><b>What if…</b>an idea to make it better</div>
+    </div>
+    <div class="prose">
+      <h3>Idea 2: Real software is never finished</h3>
+      <p>Apps you use get updated constantly because their makers keep listening to users. Making a change, testing it, and repeating is called <b>iteration</b>. One small improvement based on real feedback is worth more than ten features nobody asked for.</p>
+      <h3>Idea 3: A short pitch</h3>
+      <p>When you share a project, keep it short: <b>the problem</b> (who needs help and why), <b>your solution</b> (what your program does), and <b>what's next</b> (how you'd improve it with more time).</p>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Test and improve</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Step A: Test with a real person</h3><span class="chip" data-chip="t1">To do</span></div>
+      <p>Have someone try your program (it's in Step B below). Watch without explaining, then ask them the three questions and write down what they say.</p>
+      <div class="form">
+        <div class="field"><label for="f-who">Who tested it? (first name only)</label><input id="f-who" autocomplete="off"><span class="count" id="f-who-c"></span></div>
+        <div class="field"><label for="f-like">I like… (what they said worked well)</label><textarea id="f-like"></textarea><span class="count" id="f-like-c"></span></div>
+        <div class="field"><label for="f-wish">I wish… or What if… (what confused them, or their idea)</label><textarea id="f-wish"></textarea><span class="count" id="f-wish-c"></span></div>
+      </div>
+      <div class="row"><button class="primary" id="f-check">Save feedback</button></div>
+      <div id="f-fb"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Step B: Make one improvement</h3><span class="chip" data-chip="improve">To do</span></div>
+      <p>Your program from last study hall is loaded below. Based on the feedback, make at least one improvement, then run it to make sure it still works.</p>
+      <div class="field"><label for="f-change">What did you change, and why?</label><textarea id="f-change" placeholder="My tester didn't know when the quiz was over, so I added a goodbye message with their score."></textarea><span class="count" id="f-change-c"></span></div>
+      <p class="goal" id="f-source"></p>
+      <div data-editor="improve"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: your project pitch</h2><span class="ipp">Action</span></div>
+    <div class="prose"><p>Create a pitch card for your project. Your teacher may share some of these with the school, so make it clear and proud.</p></div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>My pitch card</h3><span class="chip" data-chip="build">To do</span></div>
+      <div class="form">
+        <div class="field"><label for="k-name">Project name</label><input id="k-name" autocomplete="off" placeholder="Spelling Buddy"><span class="count" id="k-name-c"></span></div>
+        <div class="field"><label for="k-for">Who it's for</label><input id="k-for" autocomplete="off" placeholder="My little brother Leo, a 3rd grader"><span class="count" id="k-for-c"></span></div>
+        <div class="field"><label for="k-problem">The problem</label><textarea id="k-problem"></textarea><span class="count" id="k-problem-c"></span></div>
+        <div class="field"><label for="k-solution">How my program helps</label><textarea id="k-solution"></textarea><span class="count" id="k-solution-c"></span></div>
+        <div class="field"><label for="k-next">What I'd add next</label><textarea id="k-next"></textarea><span class="count" id="k-next-c"></span></div>
+      </div>
+      <div class="pitch" id="k-card"></div>
+      <div class="row"><button class="primary" id="k-check">Finish my pitch</button></div>
+      <div id="k-fb"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect: a year-end Examen</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">Look back over your whole year of computer science, the way St. Ignatius taught in the Examen. What are you grateful for? Where did you struggle, and where did you grow? And as a man or woman for others, how might you use technology to serve people in the years ahead?</p>
+    <p class="goal">Write 3 to 5 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="This year I'm grateful for…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Final check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all three parts to unlock your final completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <div class="done-banner">You've completed CS in Study Hall!<span>Thank you for your work this year. Ad majorem Dei gloriam.</span></div>
+        <p><b>Your final completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U6·M3 Check: Share and Reflect.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 review questions from the whole year</li>
+          <li>Your pitch card and improved program. Tap the button below, then paste them in.</li>
+          <li>Your year-end reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my pitch and program</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Where to go from here</h3><span class="chip opt">Optional</span></div>
+      <div class="prose">
+        <p>If you enjoyed this course, keep going:</p>
+        <ul>
+          <li>Ask your counselor about computer science courses in 11th and 12th grade, like AP Computer Science Principles or AP Computer Science A.</li>
+          <li>Keep improving your capstone, and give it to the person you built it for.</li>
+          <li>Look for clubs, summer programs or service projects that use technology to help people.</li>
+          <li>Try free Python practice sites and keep building small programs for people in your life.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js" onerror="window.__skFail=true"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js" onerror="window.__skFail=true"></script>
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var py = Course.python, el = Course.el, $ = function (id) { return document.getElementById(id); };
+  var state = Course.state;
+  var prev = Course.loadModule("u6m2");
+  var prevCode = prev && prev.code && prev.code.project ? prev.code.project : null;
+  var plan = (Course.loadModule("u6m1") || {}).extra;
+  plan = plan && plan.plan ? plan.plan : {};
+
+  var FEEDBACK = [{ id: "f-who", key: "who", min: 2 }, { id: "f-like", key: "like", min: 20 }, { id: "f-wish", key: "wish", min: 20 }];
+  var PITCH = [{ id: "k-name", key: "name", min: 3, label: "Project name" }, { id: "k-for", key: "for", min: 5, label: "Who it's for" }, { id: "k-problem", key: "problem", min: 30, label: "The problem" }, { id: "k-solution", key: "solution", min: 30, label: "How my program helps" }, { id: "k-next", key: "next", min: 20, label: "What I'd add next" }];
+  var f, k; // set after Course.init
+
+  function pitchText() {
+    return "PITCH: " + (k.name || "") + "\nFor: " + (k.for || "") + "\nProblem: " + (k.problem || "") + "\nHow it helps: " + (k.solution || "") + "\nNext: " + (k.next || "") +
+      "\n\nTested by: " + (f.who || "") + "\nI like: " + (f.like || "") + "\nI wish / What if: " + (f.wish || "") + "\nWhat I changed: " + (f.change || "") +
+      "\n\n" + (document.getElementById("code-improve") ? document.getElementById("code-improve").value : "");
+  }
+
+  Course.init({
+    id: "u6m3",
+    usesPython: true,
+    required: ["t1", "improve", "build"],
+    tryTasks: ["t1", "improve"],
+    buildTask: "build",
+    taskNames: { t1: "Step A: Test with a real person", improve: "Step B: Make one improvement", build: "Build: your project pitch" },
+    code: [65, 82, 82, 85, 80, 69, 45, 55, 51],
+    buildText: pitchText,
+    buildFallbackEl: function () { return document.getElementById("code-improve"); }
+  });
+  f = state.extra.feedback || (state.extra.feedback = {});
+  k = state.extra.pitch || (state.extra.pitch = { name: "", for: plan.who || "", problem: plan.need || "" });
+
+  function bindFields(list, store, onChange) {
+    list.forEach(function (d) {
+      var inp = $(d.id), c = $(d.id + "-c");
+      function count() { var n = (store[d.key] || "").trim().length; c.textContent = n >= d.min ? "✓" : n + " / " + d.min + " characters"; c.classList.toggle("ok", n >= d.min); }
+      inp.value = store[d.key] || "";
+      inp.addEventListener("input", function () { store[d.key] = inp.value; Course.save(); count(); if (onChange) onChange(); });
+      count();
+    });
+  }
+  function filled(list, store) { return list.filter(function (d) { return (store[d.key] || "").trim().length < d.min; }); }
+
+  /* ---------- Step A: feedback ---------- */
+  bindFields(FEEDBACK, f);
+  $("f-check").addEventListener("click", function () {
+    var miss = filled(FEEDBACK, f);
+    if (miss.length) Course.feedback($("f-fb"), false, "Write a little more: each answer needs enough detail to be useful when you improve your program.");
+    else { Course.feedback($("f-fb"), true, "Feedback saved. Now use it in Step B."); Course.markDone("t1"); }
+  });
+
+  /* ---------- Step B: improve ---------- */
+  bindFields([{ id: "f-change", key: "change", min: 20 }], f);
+  $("f-source").textContent = prevCode ? "Loaded your program from U6·M2." : "Your program from U6·M2 isn't saved on this iPad. Paste or retype it below, then improve it.";
+  function norm(c) { return (c || "").replace(/\s+/g, " ").trim(); }
+  py.editors({
+    improve: {
+      starter: prevCode || "# Paste your program from last time here, then improve it\n",
+      hints: [
+        "Use your tester's \"I wish\" or \"What if\" idea. Small changes count: clearer instructions, a welcome message, accepting capital letters, a better final message.",
+        "After changing your code, tap Run and try it again to make sure it still works.",
+        "Describe your change in the box above the code."
+      ],
+      check: function (r, code) {
+        var missing = [];
+        if ((f.change || "").trim().length < 20) missing.push("Describe what you changed and why, in the box above (at least 20 characters).");
+        if (prevCode && norm(code) === norm(prevCode)) missing.push("Change your program. It's still the same as last time.");
+        if (!prevCode && code.split("\n").filter(function (l) { return l.trim() && !/^\s*#/.test(l); }).length < 10) missing.push("Paste in your whole program from last time (at least 10 lines of code).");
+        if (missing.length) return { ok: false, msg: "It runs! Just a little more:", list: missing };
+        return { ok: true, msg: "Improved and still working. That's iteration, the way real software gets better." };
+      }
+    }
+  });
+
+  /* ---------- Build: pitch card ---------- */
+  function renderCard() {
+    var card = $("k-card"); card.innerHTML = "";
+    card.appendChild(el("div", { "class": "name" }, (k.name || "").trim() || "Your project name"));
+    card.appendChild(el("div", { "class": "for" }, "For " + ((k.for || "").trim() || "…")));
+    [["The problem", "problem"], ["How it helps", "solution"], ["What's next", "next"]].forEach(function (p) {
+      var part = el("div", { "class": "part" });
+      part.appendChild(el("b", null, p[0]));
+      part.appendChild(el("span", null, (k[p[1]] || "").trim() || "…"));
+      card.appendChild(part);
+    });
+  }
+  bindFields(PITCH, k, renderCard);
+  renderCard();
+  $("k-check").addEventListener("click", function () {
+    var miss = filled(PITCH, k);
+    if (miss.length) Course.feedback($("k-fb"), false, "Almost there. These parts need more detail:", null, miss.map(function (d) { return d.label + " (at least " + d.min + " characters)"; }));
+    else { Course.feedback($("k-fb"), true, "Your pitch is ready. Copy it into Blackbaud in Step 6, along with your improved program."); Course.markDone("build"); }
+  });
+
+  if (state.done.t1) Course.feedback($("f-fb"), true, "Feedback saved.");
+  if (state.done.build) Course.feedback($("k-fb"), true, "Done.");
+})();
+</script>
+
+</body>
+</html>
