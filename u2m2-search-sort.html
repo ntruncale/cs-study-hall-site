@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Searching and Sorting</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.cards { display: flex; flex-wrap: wrap; gap: 6px; }
+.ncard {
+  min-width: 3.2rem; min-height: 3.6rem; padding: 6px; font-size: 1.1rem; font-weight: 800; font-variant-numeric: tabular-nums;
+  display: grid; place-items: center; border: 2px solid var(--line); border-radius: 8px; background: var(--surface);
+}
+.ncard.out { opacity: 0.3; }
+.ncard.hit { border-color: var(--ok); background: var(--ok-soft); color: var(--ok); }
+.ncard.checked { border-color: var(--accent); background: var(--accent-soft); }
+.ncard.sel { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.ncard small { display: block; font-size: 0.65rem; font-weight: 600; color: var(--muted); }
+.guess-log { display: flex; flex-wrap: wrap; gap: 6px; font-size: var(--step-0); }
+.guess-log span { padding: 2px 10px; border-radius: 999px; border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.roster { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+@media (max-width: 560px) { .roster { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.roster button { min-height: 52px; padding: 4px 2px; font-size: 0.72rem; font-weight: 600; display: grid; gap: 0; line-height: 1.2; overflow-wrap: anywhere; }
+.roster button .n { font-size: 0.65rem; color: var(--muted); font-weight: 500; }
+.roster button.open { background: var(--accent-soft); border-color: var(--accent); }
+.roster button.found { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+.counter { font-weight: 750; font-variant-numeric: tabular-nums; }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U2 · M2</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 2: Algorithms · Module 2 of 3</span>
+    <h1>Searching and Sorting</h1>
+    <p class="lede">Finding things and putting things in order are two of the most common jobs computers do. Today you'll learn a trick that finds one name among a million in just 20 checks.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 35 minutes</span>
+      <span><b>To pass:</b> finish the 6 tasks, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (U2 · M1)</strong>
+      <span>An <b>algorithm</b> is a precise set of steps that finishes. Algorithms are built from <b>sequence</b>, <b>selection</b> and <b>repetition</b>, and big problems get <b>decomposed</b> into small ones.</span>
+    </div>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>Counting a whole country</h2><span class="ipp">Context</span></div>
+    <div class="prose">
+      <p>Every ten years, the United States counts every person living in the country. In 1880, clerks tallied the census by hand, and it took about <b>eight years</b>. The country was growing so fast that the next count might not finish before the one after it began.</p>
+      <p>A young engineer named <b>Herman Hollerith</b> had an idea: punch each person's answers as holes in a card, then let a machine read, count and <b>sort</b> the cards. With his machines, the basic count for the 1890 census took about <b>one year</b>.</p>
+      <p>Hollerith's company later became part of IBM, the same company that helped Fr. Busa with his index of Aquinas. Searching and sorting have been at the center of computing from the very beginning.</p>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Three ideas</h2><span class="ipp">Experience</span></div>
+
+    <div class="prose">
+      <h3>Idea 1: Linear search checks one at a time</h3>
+      <p><b>Linear search</b> starts at the beginning and checks each item until it finds what it wants. It works on any list, sorted or not. But for a list of 1,000 names, it might take 1,000 checks.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 2: Binary search cuts the list in half</h3>
+      <p>If a list is <b>sorted</b>, you can do much better. <b>Binary search</b> checks the middle item. If that's too big, the answer must be in the first half; if it's too small, the second half. Either way, half the list is gone after one check. Then it repeats with the half that's left.</p>
+      <p>Every check cuts the list in half, so binary search is incredibly fast:</p>
+      <ul>
+        <li>1,000 items: at most <b>10</b> checks</li>
+        <li>1,000,000 items: at most <b>20</b> checks</li>
+      </ul>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 3: Sorting makes searching fast</h3>
+      <p>Binary search only works on sorted lists, so putting things in order matters. One simple sorting algorithm is <b>selection sort</b>: find the smallest item and swap it into the first spot. Then find the smallest of the rest and swap it into the second spot. Repeat until you reach the end.</p>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Try it</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Task 1: Guess my number</h3><span class="chip" data-chip="t1">To do</span></div>
+      <p>I'm thinking of a number from 1 to 100. After each guess, I'll say "higher" or "lower." Find it in <b>7 guesses or fewer</b>.</p>
+      <div class="num-q"><label class="goal" for="t1-in">Your guess:</label><input id="t1-in" inputmode="numeric" autocomplete="off"><button class="primary" id="t1-go">Guess</button><button class="ghost" id="t1-new">New number</button></div>
+      <div class="guess-log" id="t1-log"></div>
+      <div id="t1-fb"></div>
+      <div class="row"><button class="ghost" id="t1-hint">Show a hint</button></div>
+      <div class="hints" id="t1-hints"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Task 2: Which search?</h3><span class="chip" data-chip="t2">To do</span></div>
+      <div id="t2-quiz"></div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Task 3: Be the binary search</h3><span class="chip" data-chip="t3">To do</span></div>
+      <p>These cards are sorted. Find <b>12</b> the way binary search would: tap the <b>middle</b> card of the cards still in play. The page will tell you whether to go left or right.</p>
+      <div class="cards" id="t3-cards"></div>
+      <div id="t3-fb"></div>
+      <div class="row"><button class="ghost" id="t3-reset">Start over</button><button class="ghost" id="t3-hint">Show a hint</button></div>
+      <div class="hints" id="t3-hints"></div>
+    </div>
+
+    <div class="task" id="t4">
+      <div class="task-head"><h3>Task 4: Sort with swaps</h3><span class="chip" data-chip="t4">To do</span></div>
+      <p>Put the cards in order from smallest to largest. Tap two cards to swap them. Use <b>6 swaps or fewer</b>; selection sort can always do it.</p>
+      <div class="cards" id="t4-cards"></div>
+      <p class="goal">Swaps used: <span class="counter" id="t4-count">0</span> of 6</p>
+      <div id="t4-fb"></div>
+      <div class="row"><button class="ghost" id="t4-reset">Start over</button><button class="ghost" id="t4-hint">Show a hint</button></div>
+      <div class="hints" id="t4-hints"></div>
+    </div>
+
+    <div class="task" id="t5">
+      <div class="task-head"><h3>Task 5: Count the checks</h3><span class="chip" data-chip="t5">To do</span></div>
+      <p>The school directory has 2,000 names, sorted alphabetically.</p>
+      <div class="num-q"><label class="goal" for="t5-a">Worst case, how many checks does linear search need?</label><input id="t5-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t5-b">Worst case, how many checks does binary search need?</label><input id="t5-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-b-m"></span></div>
+      <div class="row"><button class="primary" id="t5-check">Check my answers</button><button class="ghost" id="t5-hint">Show a hint</button></div>
+      <div id="t5-fb"></div>
+      <div class="hints" id="t5-hints"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: find the family</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>You're volunteering at the food pantry's check-in desk. The roster has 64 families in <b>alphabetical order</b>, but every card is face down. Tap a card to open it. Find each family by opening <b>7 cards or fewer</b>, so nobody waits in line.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3 id="b-goal">Find the family</h3><span class="chip" data-chip="build">To do</span></div>
+      <p class="goal">Cards opened: <span class="counter" id="b-count">0</span> of 7</p>
+      <div class="roster" id="b-roster"></div>
+      <div class="row"><button class="ghost" id="b-reset">Try this family again</button></div>
+      <div id="b-fb"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">A census tries to count every single person, because every person matters. Search engines sort billions of web pages to decide what you see first. Who decides what comes first, and what gets buried at the bottom? What would a fair ranking look like?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="When I search for something…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all 6 tasks to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All tasks done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U2·M2 Check: Searching and Sorting.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your search record from the Build. Tap the button below, then paste it in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my search record</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: a million names</h3><span class="chip opt">Optional</span></div>
+      <p>Each binary search check cuts the list in half. Starting with 1,000,000 names, how many checks until only 1 name is left? (Hint: 2 × 2 × 2 … how many 2s make more than a million?)</p>
+      <div class="num-q"><label class="goal" for="x1-a">Checks:</label><input id="x1-a" inputmode="numeric" autocomplete="off"><button id="x1-check">Check</button></div>
+      <div id="x1-fb"></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var el = Course.el, $ = function (id) { return document.getElementById(id); };
+  var state = Course.state;
+
+  var ROSTER = ["Abara", "Adams", "Ahmed", "Alvarez", "Baker", "Banerjee", "Bell", "Brennan", "Castillo", "Chen", "Clarke", "Cruz",
+    "Diallo", "Dominguez", "Doyle", "Edwards", "Esposito", "Fischer", "Flores", "Gallagher", "Garcia", "Gomez", "Grant", "Haddad",
+    "Hernandez", "Hughes", "Ibrahim", "Jackson", "Jimenez", "Kaur", "Kelly", "Kim", "Kowalski", "Lee", "Lopez", "Martin",
+    "Mendoza", "Murphy", "Nguyen", "Novak", "Obi", "Okafor", "Olsen", "Ortiz", "Patel", "Perez", "Quinn", "Ramirez",
+    "Reyes", "Rossi", "Russo", "Santos", "Schmidt", "Singh", "Sullivan", "Tanaka", "Thomas", "Torres", "Tran", "Vargas",
+    "Walsh", "Williams", "Yilmaz", "Zhang"];
+  var TARGETS = ["Nguyen", "Diallo"];
+  var MAX_OPEN = 7;
+
+  Course.init({
+    id: "u2m2",
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Guess my number", t2: "Task 2: Which search?", t3: "Task 3: Be the binary search", t4: "Task 4: Sort with swaps", t5: "Task 5: Count the checks", build: "Build: find the family" },
+    code: [72, 79, 76, 76, 45, 49, 56, 57, 48],
+    buildText: function () {
+      var rec = state.extra.roster || {};
+      var lines = ["My pantry search record"];
+      TARGETS.forEach(function (t) {
+        var log = (rec.logs || {})[t];
+        lines.push(t + ": " + (log ? log.map(function (i) { return "#" + (i + 1) + " " + ROSTER[i]; }).join(" → ") + " (" + log.length + " cards)" : "not found yet"));
+      });
+      return lines.join("\n");
+    }
+  });
+
+  /* ---------- Task 1: guessing game ---------- */
+  (function () {
+    var g = state.extra.t1 || (state.extra.t1 = {});
+    function fresh() { g.secret = 1 + Math.floor(Math.random() * 100); g.guesses = []; g.over = false; Course.save(); render(); $("t1-fb").innerHTML = ""; }
+    function render() {
+      var log = $("t1-log"); log.innerHTML = "";
+      (g.guesses || []).forEach(function (n, i) { log.appendChild(el("span", null, (i + 1) + ": " + n + (n === g.secret ? " ✓" : n < g.secret ? " ↑" : " ↓"))); });
+    }
+    if (!g.secret) fresh(); else render();
+    function guess() {
+      if (g.over) { Course.feedback($("t1-fb"), false, "This round is over. Tap New number to play again."); return; }
+      var v = parseInt($("t1-in").value, 10);
+      if (!(v >= 1 && v <= 100)) { Course.feedback($("t1-fb"), false, "Guess a whole number from 1 to 100."); return; }
+      g.guesses.push(v); $("t1-in").value = ""; Course.save(); render();
+      var n = g.guesses.length;
+      if (v === g.secret) {
+        g.over = true; Course.save();
+        if (n <= 7) { Course.feedback($("t1-fb"), true, "Got it in " + n + " guess" + (n === 1 ? "" : "es") + "! If you started at 50 and kept guessing the middle, you used binary search."); Course.markDone("t1"); }
+        else Course.feedback($("t1-fb"), false, "Found it, but it took " + n + " guesses. Tap New number and try always guessing the middle of what's left.");
+      } else if (n >= 12) {
+        g.over = true; Course.save();
+        Course.feedback($("t1-fb"), false, "The number was " + g.secret + ". Tap New number and try guessing the middle of what's left each time.");
+      } else {
+        Course.feedback($("t1-fb"), false, (v < g.secret ? "Higher" : "Lower") + " than " + v + ".");
+      }
+    }
+    $("t1-go").addEventListener("click", guess);
+    $("t1-in").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); guess(); } });
+    $("t1-new").addEventListener("click", fresh);
+    if (state.done.t1) Course.feedback($("t1-fb"), true, "Done. You can keep playing.");
+    Course.hints("t1", [
+      "Start with 50, the middle of 1 to 100.",
+      "If I say \"higher\" after 50, the number is between 51 and 100. Guess the middle of that: 75.",
+      "Keep guessing the middle of whatever range is left. Each guess cuts the range in half."
+    ], $("t1-hint"), $("t1-hints"));
+  })();
+
+  /* ---------- Task 2 ---------- */
+  Course.quiz({
+    task: "t2", container: "t2-quiz",
+    okMsg: "All right. Linear search works anywhere; binary search is much faster but needs sorted data.",
+    questions: [
+      { q: "You're looking for your friend's name on a sign-up sheet where people wrote their names in any order. Which search can you use?", choices: [
+        { text: "Linear search", right: true, why: "Right. The list isn't sorted, so you have to check names one at a time." },
+        { text: "Binary search", why: "Not quite. Binary search only works when the list is sorted." }
+      ] },
+      { q: "Binary search is looking through 1,000 sorted names. About how many checks does it need at most?", choices: [
+        { text: "About 10", right: true, why: "Right. 1,000 → 500 → 250 → 125 → 63 → 32 → 16 → 8 → 4 → 2 → 1. About 10 halvings." },
+        { text: "About 100", why: "Not quite. Each check cuts the list in half, which shrinks it very quickly." },
+        { text: "About 500", why: "Not quite. That's roughly the average for linear search, not binary search." }
+      ] },
+      { q: "Why does binary search need the list to be sorted?", choices: [
+        { text: "Sorted lists are shorter", why: "Not quite. Sorting doesn't change the length." },
+        { text: "So that after checking the middle, you know which half the answer must be in", right: true, why: "Right. In an unsorted list, the middle tells you nothing about either half." },
+        { text: "Computers can only read sorted lists", why: "Not quite. Computers read unsorted lists all the time." }
+      ] }
+    ]
+  });
+
+  /* ---------- Task 3: trace binary search ---------- */
+  (function () {
+    var NUMS = [3, 8, 12, 17, 21, 26, 30, 34, 39, 45, 51, 58, 63, 70, 77], TARGET = 12;
+    var lo, hi, checked, wrap = $("t3-cards"), fb = $("t3-fb");
+    var cards = NUMS.map(function (n, i) {
+      var b = el("button", { type: "button", "class": "ncard", "aria-label": "Card " + n });
+      b.textContent = n;
+      b.addEventListener("click", function () { tap(i); });
+      wrap.appendChild(b); return b;
+    });
+    function start() { lo = 0; hi = NUMS.length - 1; checked = []; render(); fb.innerHTML = ""; }
+    function render() {
+      cards.forEach(function (c, i) {
+        c.classList.toggle("out", i < lo || i > hi);
+        c.classList.toggle("checked", checked.indexOf(i) !== -1 && NUMS[i] !== TARGET);
+        c.classList.toggle("hit", checked.indexOf(i) !== -1 && NUMS[i] === TARGET);
+      });
+    }
+    function tap(i) {
+      if (state.done.t3 && checked.indexOf(NUMS.indexOf(TARGET)) !== -1) return;
+      if (i < lo || i > hi) { Course.feedback(fb, false, "That card is already ruled out."); return; }
+      var a = Math.floor((lo + hi) / 2), b = Math.ceil((lo + hi) / 2);
+      if (i !== a && i !== b) { Course.feedback(fb, false, "Binary search checks the middle card of the ones still in play. There are " + (hi - lo + 1) + " cards in play; which one is in the middle?"); return; }
+      checked.push(i);
+      if (NUMS[i] === TARGET) {
+        render();
+        Course.feedback(fb, true, "Found 12 in " + checked.length + " checks. Linear search would have needed 3 here, but for 15 cards binary search never needs more than 4, and for a million it never needs more than 20.");
+        Course.markDone("t3");
+        return;
+      }
+      if (NUMS[i] > TARGET) { hi = i - 1; Course.feedback(fb, false, NUMS[i] + " is bigger than 12, so 12 must be to the left. Everything from " + NUMS[i] + " up is ruled out. Check the middle of what's left."); }
+      else { lo = i + 1; Course.feedback(fb, false, NUMS[i] + " is smaller than 12, so 12 must be to the right. Check the middle of what's left."); }
+      fb.querySelector(".feedback").className = "feedback ok";
+      render();
+    }
+    $("t3-reset").addEventListener("click", start);
+    start();
+    if (state.done.t3) Course.feedback(fb, true, "Done. Tap Start over to practice again.");
+    Course.hints("t3", [
+      "With 15 cards in play, the middle one is the 8th card.",
+      "34 is bigger than 12, so only the 7 cards to its left are still in play. The middle of those is the 4th card.",
+      "Keep going: middle card, compare with 12, rule out half."
+    ], $("t3-hint"), $("t3-hints"));
+  })();
+
+  /* ---------- Task 4: sort with swaps ---------- */
+  (function () {
+    var START = [42, 88, 19, 7, 56, 3, 25], LIMIT = 6;
+    var s = state.extra.t4 || (state.extra.t4 = { cards: START.slice(), swaps: 0 });
+    var sel = null, wrap = $("t4-cards"), fb = $("t4-fb");
+    function sorted() { return s.cards.every(function (v, i) { return i === 0 || s.cards[i - 1] <= v; }); }
+    function render() {
+      wrap.innerHTML = "";
+      s.cards.forEach(function (v, i) {
+        var b = el("button", { type: "button", "class": "ncard" + (sel === i ? " sel" : ""), "aria-label": "Card " + v + " in position " + (i + 1), "aria-pressed": sel === i ? "true" : "false" }, String(v));
+        b.addEventListener("click", function () { tap(i); });
+        wrap.appendChild(b);
+      });
+      $("t4-count").textContent = s.swaps;
+    }
+    function tap(i) {
+      if (sel === null) { sel = i; render(); return; }
+      if (sel === i) { sel = null; render(); return; }
+      var t = s.cards[sel]; s.cards[sel] = s.cards[i]; s.cards[i] = t;
+      s.swaps++; sel = null; Course.save(); render();
+      if (sorted()) {
+        if (s.swaps <= LIMIT) { Course.feedback(fb, true, "Sorted in " + s.swaps + " swaps. Each swap put one card in its final spot, just like selection sort."); Course.markDone("t4"); }
+        else Course.feedback(fb, false, "Sorted, but you used " + s.swaps + " swaps. Tap Start over and try selection sort: find the smallest card and swap it into the first spot, then the next smallest into the second spot.");
+      } else if (s.swaps > LIMIT) {
+        Course.feedback(fb, false, "That's more than " + LIMIT + " swaps. Tap Start over and try selection sort.");
+      } else fb.innerHTML = "";
+    }
+    $("t4-reset").addEventListener("click", function () { s.cards = START.slice(); s.swaps = 0; sel = null; Course.save(); fb.innerHTML = ""; render(); });
+    render();
+    if (state.done.t4) Course.feedback(fb, true, "Done.");
+    Course.hints("t4", [
+      "Tap one card, then another, to swap them.",
+      "Which card is the smallest? Swap it with whatever is in the first spot.",
+      "Now ignore the first spot. Find the smallest of the rest and swap it into the second spot. Keep going."
+    ], $("t4-hint"), $("t4-hints"));
+  })();
+
+  /* ---------- Task 5 ---------- */
+  Course.answers({
+    task: "t5", button: "t5-check", feedback: "t5-fb",
+    items: [{ id: "t5-a", answer: 2000 }, { id: "t5-b", answer: 11 }],
+    okMsg: "Both right. 2,000 checks versus 11. That's why sorted data is so valuable.",
+    hints: { button: "t5-hint", box: "t5-hints", list: [
+      "Linear search's worst case: the name is last (or missing), so it checks every name.",
+      "For binary search, keep halving 2,000 until you reach 1, counting the halvings: 2,000 → 1,000 → 500 → …",
+      "Another way: 2 × 2 × … 10 times is 1,024. That's not enough for 2,000. One more check doubles it to 2,048."
+    ] }
+  });
+
+  /* ---------- Build: find the family ---------- */
+  (function () {
+    var rec = state.extra.roster || (state.extra.roster = { target: 0, opened: [], logs: {} });
+    var grid = $("b-roster"), fb = $("b-fb");
+    var buttons = ROSTER.map(function (name, i) {
+      var b = el("button", { type: "button", "aria-label": "Card " + (i + 1) });
+      b.addEventListener("click", function () { open(i); });
+      grid.appendChild(b); return b;
+    });
+    function current() { return TARGETS[Math.min(rec.target, TARGETS.length - 1)]; }
+    function render() {
+      var finished = rec.target >= TARGETS.length;
+      $("b-goal").textContent = finished ? "Both families found" : "Find the " + current() + " family (" + (rec.target + 1) + " of " + TARGETS.length + ")";
+      $("b-count").textContent = rec.opened.length;
+      buttons.forEach(function (b, i) {
+        var isOpen = rec.opened.indexOf(i) !== -1;
+        b.innerHTML = "";
+        b.appendChild(el("span", { "class": "n" }, "#" + (i + 1)));
+        if (isOpen) b.appendChild(el("span", null, ROSTER[i]));
+        b.className = isOpen ? (ROSTER[i] === current() && !finished ? "found" : "open") : "";
+        b.setAttribute("aria-label", "Card " + (i + 1) + (isOpen ? ": " + ROSTER[i] : ", face down"));
+      });
+    }
+    function open(i) {
+      if (rec.target >= TARGETS.length) return;
+      if (rec.opened.indexOf(i) !== -1) return;
+      if (rec.opened.length >= MAX_OPEN) { Course.feedback(fb, false, "You've opened " + MAX_OPEN + " cards. Tap \"Try this family again\" and use binary search: open the middle card first."); return; }
+      rec.opened.push(i); Course.save();
+      var name = ROSTER[i], want = current();
+      if (name === want) {
+        rec.logs[want] = rec.opened.slice();
+        var n = rec.opened.length;
+        rec.target++; Course.save();
+        render();
+        if (rec.target >= TARGETS.length) {
+          Course.feedback(fb, true, "Found the " + want + " family in " + n + " cards. Both families checked in quickly. Copy your search record into Blackbaud in Step 6.");
+          Course.markDone("build");
+        } else {
+          Course.feedback(fb, true, "Found the " + want + " family in " + n + " cards! Next family coming up.");
+          setTimeout(function () { rec.opened = []; Course.save(); render(); }, 1200);
+        }
+        return;
+      }
+      var dir = name.localeCompare(want) < 0 ? "after" : "before";
+      Course.feedback(fb, false, name + " comes " + (dir === "after" ? "before" : "after") + " " + want + " in the alphabet, so " + want + " must be " + (dir === "after" ? "after card #" : "before card #") + (i + 1) + ".");
+      fb.querySelector(".feedback").className = "feedback ok";
+      render();
+    }
+    $("b-reset").addEventListener("click", function () { if (rec.target < TARGETS.length) { rec.opened = []; Course.save(); fb.innerHTML = ""; render(); } });
+    render();
+    if (state.done.build) Course.feedback(fb, true, "Done. Both families were found.");
+  })();
+
+  /* ---------- Go further ---------- */
+  $("x1-check").addEventListener("click", function () {
+    var ok = Course.matches($("x1-a").value, 20);
+    Course.feedback($("x1-fb"), ok, ok ? "Right. 2 multiplied by itself 20 times is 1,048,576, just over a million. So 20 checks is enough." : "Not yet. 2 × 2 … ten times is 1,024. How many more doublings to pass 1,000,000?");
+  });
+})();
+</script>
+
+</body>
+</html>

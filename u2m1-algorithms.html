@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>What Is an Algorithm?</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.robot-wrap { display: grid; grid-template-columns: minmax(0, 22rem) 1fr; gap: 14px; align-items: start; }
+@media (max-width: 640px) { .robot-wrap { grid-template-columns: 1fr; } }
+.grid-svg rect.cell { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+.grid-svg rect.wall { fill: var(--ink); fill-opacity: 0.78; }
+.grid-svg rect.trail { fill: var(--accent-soft); }
+.grid-svg .goal { fill: var(--ok); }
+.grid-svg .can { fill: var(--hint-bg); stroke: var(--hint-ink); stroke-width: 2; }
+.grid-svg .can.got { opacity: 0.2; }
+.grid-svg .bot { fill: var(--accent); }
+.grid-svg .crash { fill: var(--bad); }
+.pad { display: flex; flex-wrap: wrap; gap: 6px; }
+.pad button { min-width: 6.5rem; }
+.rule { font-family: var(--font-code); font-variation-settings: "MONO" 1; font-size: 0.92rem; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 0; white-space: pre-wrap; overflow-x: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: var(--step-0); color: var(--muted); }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U2 · M1</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 2: Algorithms · Module 1 of 3</span>
+    <h1>What Is an Algorithm?</h1>
+    <p class="lede">An algorithm is a precise set of steps for solving a problem. Today you'll follow one that has run for more than 400 years, sort a big job into smaller ones, and program a robot.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 35 minutes</span>
+      <span><b>To pass:</b> finish the 6 tasks, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (U1 · M3)</strong>
+      <span>Data travels across the internet in <b>packets</b>. Routers pass them along hop by hop, and many paths make the network <b>reliable</b>.</span>
+    </div>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>The calendar that skipped ten days</h2><span class="ipp">Context</span></div>
+    <div class="prose">
+      <p>By the 1500s, the calendar Europe had used since Julius Caesar had drifted about ten days off from the seasons. Easter was slowly sliding away from spring. In 1582, Pope Gregory XIII introduced a new calendar, and the next day after Thursday, October 4, was Friday, <b>October 15</b>.</p>
+      <p>A Jesuit mathematician named <b>Fr. Christopher Clavius, S.J.</b> was one of the leading experts behind the reform. He spent years explaining and defending its rules. At its heart is a short set of steps for deciding whether a year gets a February 29. That set of steps is an <b>algorithm</b>, and it's still running in your iPad's calendar today.</p>
+      <p>The word "algorithm" itself comes from the name of <b>al-Khwarizmi</b>, a Persian scholar who wrote about step-by-step methods for arithmetic in Baghdad around the year 820.</p>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Three ideas</h2><span class="ipp">Experience</span></div>
+
+    <div class="prose">
+      <h3>Idea 1: An algorithm is precise, ordered and finishes</h3>
+      <p>An <b>algorithm</b> is a step-by-step set of instructions for solving a problem. A good one is <b>precise</b> (nobody has to guess what a step means), <b>ordered</b> (the steps happen in a clear sequence), and it <b>finishes</b> with an answer. "Add some sugar" isn't precise. "Add 2 teaspoons of sugar" is.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 2: Three building blocks</h3>
+      <p>Almost every algorithm is built from three things:</p>
+      <ul>
+        <li><b>Sequence:</b> do steps in order.</li>
+        <li><b>Selection:</b> make a decision. "<i>If</i> this is true, do that."</li>
+        <li><b>Repetition:</b> repeat steps. "<i>Repeat</i> until you're done."</li>
+      </ul>
+      <p>Here is Clavius's leap year algorithm. It uses sequence and selection:</p>
+    </div>
+    <pre class="rule">1. If the year divides evenly by 400, it IS a leap year. Stop.
+2. Otherwise, if it divides evenly by 100, it is NOT a leap year. Stop.
+3. Otherwise, if it divides evenly by 4, it IS a leap year. Stop.
+4. Otherwise, it is NOT a leap year.</pre>
+
+    <div class="prose">
+      <h3>Idea 3: Break big problems into small ones</h3>
+      <p>Big problems are easier to solve in pieces. Breaking a problem into smaller parts is called <b>decomposition</b>. "Run a food drive" is overwhelming. "Plan it, collect the food, deliver it" is three smaller problems you can solve one at a time.</p>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Try it</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Task 1: Spot a good algorithm</h3><span class="chip" data-chip="t1">To do</span></div>
+      <div id="t1-quiz"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Task 2: Run the leap year algorithm</h3><span class="chip" data-chip="t2">To do</span></div>
+      <p>Follow the four steps above, in order, for each year. Stop at the first step that gives an answer.</p>
+      <div class="sort-list" id="t2-list"></div>
+      <div class="row"><button class="primary" id="t2-check">Check</button><button class="ghost" id="t2-hint">Show a hint</button></div>
+      <div id="t2-fb"></div>
+      <div class="hints" id="t2-hints"></div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Task 3: Program the robot</h3><span class="chip" data-chip="t3">To do</span></div>
+      <p>Build a list of commands that moves the robot to the green star without hitting a wall. Then tap <b>Run</b>.</p>
+      <div class="robot-wrap">
+        <div class="sim"><svg class="grid-svg" id="r1-svg" role="img" aria-label="Robot maze"></svg></div>
+        <div style="display:grid;gap:10px;min-width:0">
+          <div class="legend"><span>▲ robot (points the way it faces)</span><span>★ goal</span><span>■ wall</span></div>
+          <div class="pad">
+            <button type="button" data-cmd="F">↑ Forward</button>
+            <button type="button" data-cmd="L">↺ Turn left</button>
+            <button type="button" data-cmd="R">↻ Turn right</button>
+          </div>
+          <div class="cmds" id="r1-cmds" aria-label="Your program"></div>
+          <div class="row"><button class="primary" id="r1-run">Run</button><button class="ghost" id="r1-undo">Undo</button><button class="ghost" id="r1-clear">Clear</button></div>
+          <p class="goal">Tap a command in your program to remove it.</p>
+        </div>
+      </div>
+      <div id="r1-fb"></div>
+      <div class="row"><button class="ghost" id="t3-hint">Show a hint</button></div>
+      <div class="hints" id="t3-hints"></div>
+    </div>
+
+    <div class="task" id="t4">
+      <div class="task-head"><h3>Task 4: Break it down</h3><span class="chip" data-chip="t4">To do</span></div>
+      <p>The big problem is <b>"Run a canned food drive."</b> Sort each smaller job into its stage.</p>
+      <div class="sort-list" id="t4-list"></div>
+      <div class="row"><button class="primary" id="t4-check">Check</button><button class="ghost" id="t4-hint">Show a hint</button></div>
+      <div id="t4-fb"></div>
+      <div class="hints" id="t4-hints"></div>
+    </div>
+
+    <div class="task" id="t5">
+      <div class="task-head"><h3>Task 5: Find the biggest number</h3><span class="chip" data-chip="t5">To do</span></div>
+      <p>You have a stack of cards with numbers on them. Put these steps in order to make an algorithm that always finds the biggest number. One step isn't precise enough and doesn't belong.</p>
+      <div class="order-zones">
+        <div><h4>Steps</h4><div class="pzone" id="t5-bank"></div></div>
+        <div><h4>Your algorithm</h4><div class="pzone" id="t5-seq"></div></div>
+      </div>
+      <div class="row"><button class="primary" id="t5-check">Check my algorithm</button><button class="ghost" id="t5-hint">Show a hint</button></div>
+      <div id="t5-fb"></div>
+      <div class="hints" id="t5-hints"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: deliver the food</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>The robot volunteers at the food pantry. Program it to pick up <b>both cans</b> (just drive over them) and finish on the <b>pantry</b> (★). You have room for at most 22 commands, so plan your route before you start tapping.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>Your program must:</h3><span class="chip" data-chip="build">To do</span></div>
+      <ul class="status-list">
+        <li>Pick up both cans</li>
+        <li>End on the pantry without hitting any walls</li>
+        <li>Use 22 commands or fewer</li>
+      </ul>
+      <div class="robot-wrap">
+        <div class="sim"><svg class="grid-svg" id="r2-svg" role="img" aria-label="Food pantry maze"></svg></div>
+        <div style="display:grid;gap:10px;min-width:0">
+          <div class="legend"><span>▲ robot</span><span>● can</span><span>★ pantry</span><span>■ wall</span></div>
+          <div class="pad">
+            <button type="button" data-cmd="F">↑ Forward</button>
+            <button type="button" data-cmd="L">↺ Turn left</button>
+            <button type="button" data-cmd="R">↻ Turn right</button>
+          </div>
+          <div class="cmds" id="r2-cmds" aria-label="Your program"></div>
+          <div class="row"><button class="primary" id="r2-run">Run</button><button class="ghost" id="r2-undo">Undo</button><button class="ghost" id="r2-clear">Clear</button></div>
+          <p class="goal" id="r2-count"></p>
+        </div>
+      </div>
+      <div id="r2-fb"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">Clavius's calendar algorithm has set the date of every birthday and every Easter for over 400 years. Today, algorithms also decide which videos you see and which job applications get read. Think of an algorithm that affects your life. Whose good do you think it serves? Whose good should it serve?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="One algorithm that affects my life is…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all 6 tasks to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All tasks done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U2·M1 Check: What Is an Algorithm?”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your robot program. Tap the button below, then paste it in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my robot program</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: count the leap years</h3><span class="chip opt">Optional</span></div>
+      <p>Using the leap year algorithm, how many leap years are there from 2001 through 2100?</p>
+      <div class="num-q"><label class="goal" for="x1-a">Leap years:</label><input id="x1-a" inputmode="numeric" autocomplete="off"><button id="x1-check">Check</button></div>
+      <div id="x1-fb"></div>
+      <p class="goal">Then try to deliver the food in fewer than 20 commands.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var el = Course.el, $ = function (id) { return document.getElementById(id); };
+  var state = Course.state;
+  var SVGNS = "http://www.w3.org/2000/svg";
+  function svg(tag, attrs) {
+    var e = document.createElementNS(SVGNS, tag);
+    Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    return e;
+  }
+  var CMD_LABEL = { F: "Forward", L: "Left", R: "Right" };
+
+  Course.init({
+    id: "u2m1",
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Spot a good algorithm", t2: "Task 2: Run the leap year algorithm", t3: "Task 3: Program the robot", t4: "Task 4: Break it down", t5: "Task 5: Find the biggest number", build: "Build: deliver the food" },
+    code: [67, 76, 65, 86, 45, 49, 53, 56, 50],
+    buildText: function () {
+      var p = state.extra.r2 || [];
+      return "My robot program (" + p.length + " commands)\n" + p.map(function (c, i) { return (i + 1) + ". " + CMD_LABEL[c]; }).join("\n");
+    }
+  });
+
+  /* ---------- Task 1 ---------- */
+  Course.quiz({
+    task: "t1", container: "t1-quiz",
+    okMsg: "All right. Precise, ordered and finishing: that's what makes an algorithm.",
+    questions: [
+      { q: "Which instruction is precise enough for a robot to follow?", choices: [
+        { text: "Make the sandwich look nice.", why: "Not quite. \"Nice\" means different things to different people. A robot can't guess." },
+        { text: "Spread 1 tablespoon of peanut butter on one slice of bread.", right: true, why: "Right. Exact amount, exact action, exact object." },
+        { text: "Add some peanut butter.", why: "Not quite. How much is \"some\"? On what?" },
+        { text: "Do the usual.", why: "Not quite. A computer has no idea what your \"usual\" is." }
+      ] },
+      { q: "Which of these must every algorithm do?", choices: [
+        { text: "Use a computer", why: "Not quite. People follow algorithms too, like the leap year rule or a recipe." },
+        { text: "Finish after some number of steps and give an answer", right: true, why: "Right. Steps that go on forever never solve the problem." },
+        { text: "Have exactly ten steps", why: "Not quite. Algorithms can be any length." }
+      ] },
+      { q: "\"Repeat until every card has been checked\" is an example of which building block?", choices: [
+        { text: "Sequence", why: "Not quite. Sequence is just doing steps in order." },
+        { text: "Selection", why: "Not quite. Selection is a decision: \"if this, then that.\"" },
+        { text: "Repetition", right: true, why: "Right. \"Repeat until…\" means doing steps again and again." }
+      ] }
+    ]
+  });
+
+  /* ---------- Task 2 ---------- */
+  Course.sort({
+    task: "t2", container: "t2-list", button: "t2-check", feedback: "t2-fb",
+    categories: ["Leap year", "Not a leap year"],
+    items: [
+      { text: "2028", cat: 0 }, { text: "2027", cat: 1 }, { text: "1900", cat: 1 }, { text: "2000", cat: 0 },
+      { text: "2100", cat: 1 }, { text: "1996", cat: 0 }, { text: "2400", cat: 0 }
+    ],
+    okMsg: "All correct. You just ran the same algorithm your iPad's calendar runs.",
+    hints: { button: "t2-hint", box: "t2-hints", list: [
+      "Always start at step 1 and stop at the first step that gives an answer.",
+      "1900 and 2100 divide by 100 but not by 400. Which step catches them?",
+      "2000 and 2400 divide by 400, so step 1 decides right away."
+    ] }
+  });
+
+  /* ---------- Robot ---------- */
+  var DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]]; // N E S W
+  function Robot(opts) {
+    var rows = opts.map, H = rows.length, W = rows[0].length, CELL = 50;
+    var svgEl = $(opts.svg), cmdsEl = $(opts.cmds), fb = $(opts.fb);
+    var prog = state.extra[opts.key] || (state.extra[opts.key] = []);
+    var start, goal, cans = [];
+    svgEl.setAttribute("viewBox", "0 0 " + (W * CELL) + " " + (H * CELL));
+    var trailLayer = svg("g");
+    for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+      var ch = rows[y][x];
+      svgEl.appendChild(svg("rect", { "class": "cell" + (ch === "#" ? " wall" : ""), x: x * CELL, y: y * CELL, width: CELL, height: CELL }));
+      if (ch === "S") start = { x: x, y: y };
+      if (ch === "G") goal = { x: x, y: y };
+      if (ch === "C") cans.push({ x: x, y: y });
+    }
+    svgEl.appendChild(trailLayer);
+    function star(cx, cy, r) {
+      var pts = [];
+      for (var i = 0; i < 10; i++) { var a = Math.PI / 5 * i - Math.PI / 2, rr = i % 2 ? r * 0.45 : r; pts.push((cx + rr * Math.cos(a)).toFixed(1) + "," + (cy + rr * Math.sin(a)).toFixed(1)); }
+      return svg("polygon", { "class": "goal", points: pts.join(" ") });
+    }
+    svgEl.appendChild(star(goal.x * CELL + CELL / 2, goal.y * CELL + CELL / 2, 19));
+    var canEls = cans.map(function (c) { var e = svg("circle", { "class": "can", cx: c.x * CELL + CELL / 2, cy: c.y * CELL + CELL / 2, r: 11 }); svgEl.appendChild(e); return e; });
+    var bot = svg("polygon", { "class": "bot", points: "0,-17 14,13 -14,13" });
+    svgEl.appendChild(bot);
+    function place(p, crashed) {
+      bot.setAttribute("transform", "translate(" + (p.x * CELL + CELL / 2) + "," + (p.y * CELL + CELL / 2) + ") rotate(" + (p.d * 90) + ")");
+      bot.setAttribute("class", crashed ? "crash" : "bot");
+    }
+    function reset() {
+      trailLayer.innerHTML = "";
+      canEls.forEach(function (e) { e.classList.remove("got"); });
+      place({ x: start.x, y: start.y, d: opts.dir });
+    }
+    function renderCmds() {
+      cmdsEl.innerHTML = "";
+      prog.forEach(function (c, i) {
+        var b = el("button", { type: "button", "class": "cmd", "aria-label": "Remove step " + (i + 1) + ": " + CMD_LABEL[c] }, (i + 1) + " " + CMD_LABEL[c]);
+        b.addEventListener("click", function () { if (running) return; prog.splice(i, 1); Course.save(); renderCmds(); });
+        cmdsEl.appendChild(b);
+      });
+      if (!prog.length) cmdsEl.appendChild(el("span", { "class": "empty" }, "Your program is empty. Tap the command buttons."));
+      if (opts.onChange) opts.onChange(prog);
+    }
+    var running = false;
+    var root = svgEl.closest(".task");
+    root.querySelectorAll("[data-cmd]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        if (running) return;
+        if (prog.length >= opts.max) { Course.feedback(fb, false, "That's the most commands allowed (" + opts.max + "). Remove some, or plan a shorter route."); return; }
+        prog.push(b.getAttribute("data-cmd")); Course.save(); fb.innerHTML = ""; reset(); renderCmds();
+      });
+    });
+    $(opts.undo).addEventListener("click", function () { if (running) return; prog.pop(); Course.save(); reset(); renderCmds(); });
+    $(opts.clear).addEventListener("click", function () { if (running) return; prog.length = 0; Course.save(); fb.innerHTML = ""; reset(); renderCmds(); });
+    $(opts.run).addEventListener("click", function () {
+      if (running) return;
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!prog.length) { Course.feedback(fb, false, "Add some commands first."); return; }
+      running = true; fb.innerHTML = ""; reset();
+      var p = { x: start.x, y: start.y, d: opts.dir }, got = {}, i = 0;
+      function step() {
+        if (i >= prog.length) { running = false; finish(p, got); return; }
+        var c = prog[i++];
+        if (c === "L") p.d = (p.d + 3) % 4;
+        else if (c === "R") p.d = (p.d + 1) % 4;
+        else {
+          var nx = p.x + DIRS[p.d][0], ny = p.y + DIRS[p.d][1];
+          if (nx < 0 || ny < 0 || nx >= W || ny >= H || rows[ny][nx] === "#") {
+            place(p, true); running = false;
+            Course.feedback(fb, false, "Crash! Step " + i + " (" + CMD_LABEL[c] + ") runs into " + (nx < 0 || ny < 0 || nx >= W || ny >= H ? "the edge" : "a wall") + ". Check which way the robot is facing before that step.");
+            return;
+          }
+          trailLayer.appendChild(svg("rect", { "class": "trail", x: p.x * CELL + 4, y: p.y * CELL + 4, width: CELL - 8, height: CELL - 8, rx: 6 }));
+          p.x = nx; p.y = ny;
+          cans.forEach(function (cn, k) { if (cn.x === p.x && cn.y === p.y) { got[k] = true; canEls[k].classList.add("got"); } });
+        }
+        place(p);
+        setTimeout(step, reduce ? 0 : 280);
+      }
+      step();
+    });
+    function finish(p, got) {
+      var onGoal = p.x === goal.x && p.y === goal.y;
+      var n = Object.keys(got).length;
+      var res = opts.judge({ onGoal: onGoal, cans: n, totalCans: cans.length, length: prog.length });
+      Course.feedback(fb, res.ok, res.msg);
+      if (res.ok) Course.markDone(opts.task);
+    }
+    reset(); renderCmds();
+  }
+
+  /* ---------- Task 3: robot level 1 ---------- */
+  Robot({
+    key: "r1", task: "t3", svg: "r1-svg", cmds: "r1-cmds", fb: "r1-fb", run: "r1-run", undo: "r1-undo", clear: "r1-clear",
+    map: ["...#G", ".#.#.", ".#...", ".###.", "S...."], dir: 1, max: 30,
+    judge: function (r) {
+      if (r.onGoal) return { ok: true, msg: "Made it in " + r.length + " commands. You just wrote an algorithm: precise steps, in order, that finish." };
+      return { ok: false, msg: "The robot stopped safely, but not on the star. Add or change commands and run again." };
+    }
+  });
+  Course.hints("t3", [
+    "The robot starts facing right (east). Forward moves it one square the way it's facing.",
+    "Try going all the way along the bottom row first.",
+    "At the bottom-right corner, turn left to face up, then go forward until you reach the star."
+  ], $("t3-hint"), $("t3-hints"));
+
+  /* ---------- Task 4 ---------- */
+  Course.sort({
+    task: "t4", container: "t4-list", button: "t4-check", feedback: "t4-fb",
+    categories: ["Plan", "Collect", "Deliver & thank"],
+    items: [
+      { text: "Ask the pantry which foods they need most", cat: 0 },
+      { text: "Put collection boxes in every homeroom", cat: 1 },
+      { text: "Drive the boxes to the pantry", cat: 2 },
+      { text: "Pick a date and a goal of 1,000 cans", cat: 0 },
+      { text: "Count the cans each afternoon", cat: 1 },
+      { text: "Write thank-you notes to the homerooms", cat: 2 },
+      { text: "Make posters and morning announcements", cat: 0 },
+      { text: "Remind students during the week", cat: 1 }
+    ],
+    okMsg: "Sorted. One overwhelming job became three manageable ones. That's decomposition.",
+    hints: { button: "t4-hint", box: "t4-hints", list: [
+      "Ask yourself: does this happen before, during or after the collection week?",
+      "Anything you have to decide or announce before the first can arrives is planning."
+    ] }
+  });
+
+  /* ---------- Task 5 ---------- */
+  Course.order({
+    task: "t5", bank: "t5-bank", seq: "t5-seq", button: "t5-check", feedback: "t5-fb",
+    items: [
+      "If this card is bigger than the biggest so far, call it the biggest so far instead.",
+      "Pick the card that looks the biggest.",
+      "Look at the first card. Call it the biggest so far.",
+      "Say the biggest so far. That's the answer.",
+      "Look at the next card.",
+      "Repeat the two steps above until there are no cards left."
+    ],
+    correct: [2, 4, 0, 5, 3],
+    okMsg: "That's a real algorithm, and it works for 5 cards or 5 million. It uses sequence, selection and repetition.",
+    hints: { button: "t5-hint", box: "t5-hints", list: [
+      "\"Looks the biggest\" isn't precise. A computer can't eyeball cards. Leave it out.",
+      "You need somewhere to start: the first card. Then look at the next one and compare.",
+      "The repeat step comes after the two steps it repeats. The answer comes last."
+    ] }
+  });
+
+  /* ---------- Build: robot level 2 ---------- */
+  Robot({
+    key: "r2", task: "build", svg: "r2-svg", cmds: "r2-cmds", fb: "r2-fb", run: "r2-run", undo: "r2-undo", clear: "r2-clear",
+    map: ["S..#.G", ".#.#..", ".#C..#", "...#..", "##.#C.", "......"], dir: 1, max: 22,
+    onChange: function (prog) { $("r2-count").textContent = prog.length + " of 22 commands used. Tap a command to remove it."; },
+    judge: function (r) {
+      if (r.onGoal && r.cans === r.totalCans) return { ok: true, msg: "Both cans delivered in " + r.length + " commands. Copy your program into Blackbaud in Step 6." };
+      if (r.onGoal) return { ok: false, msg: "You reached the pantry, but picked up only " + r.cans + " of " + r.totalCans + " cans. Plan a route over both cans." };
+      return { ok: false, msg: "The robot stopped before the pantry" + (r.cans ? " (with " + r.cans + " can" + (r.cans > 1 ? "s" : "") + ")" : "") + ". Keep going." };
+    }
+  });
+
+  /* ---------- Go further ---------- */
+  $("x1-check").addEventListener("click", function () {
+    var v = $("x1-a").value;
+    if (Course.matches(v, 24)) Course.feedback($("x1-fb"), true, "Right. Every 4th year from 2004 to 2096 is 24 years, and 2100 isn't a leap year.");
+    else if (Course.matches(v, 25)) Course.feedback($("x1-fb"), false, "Close. Run the algorithm on 2100. Is it really a leap year?");
+    else Course.feedback($("x1-fb"), false, "Not yet. Start with 2004, count every 4th year, and check the last one carefully.");
+  });
+})();
+</script>
+
+</body>
+</html>

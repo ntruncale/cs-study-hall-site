@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Efficiency</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.growth { overflow-x: auto; }
+.growth table { border-collapse: collapse; width: 100%; min-width: 30rem; font-variant-numeric: tabular-nums; font-size: var(--step-0); }
+.growth th, .growth td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: right; }
+.growth th:first-child, .growth td:first-child { text-align: left; }
+.growth th { color: var(--muted); font-weight: 650; }
+.growth td.big { font-weight: 800; }
+.slider-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.slider-row input[type=range] { flex: 1 1 14rem; accent-color: var(--accent); min-height: 44px; }
+.slider-row output { font-weight: 800; font-size: var(--step-2); font-variant-numeric: tabular-nums; min-width: 8rem; }
+.map line { stroke: var(--accent); stroke-width: 5; stroke-linecap: round; }
+.map text.leg { fill: var(--accent); font-size: 14px; font-weight: 800; text-anchor: middle; paint-order: stroke; stroke: var(--surface); stroke-width: 5px; }
+.map g.stop { cursor: pointer; }
+.map g.stop circle { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.map g.stop.base circle { fill: var(--ok-soft); stroke: var(--ok); }
+.map g.stop.visited circle { fill: var(--accent); stroke: var(--accent); }
+.map g.stop.visited text.name { fill: var(--surface); }
+.map g.stop text.name { font-size: 16px; font-weight: 800; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.map g.stop text.sub { font-size: 12px; fill: var(--muted); text-anchor: middle; pointer-events: none; }
+.dist { overflow-x: auto; }
+.dist table { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: var(--step-0); }
+.dist th, .dist td { border: 1px solid var(--line); padding: 4px 10px; text-align: center; }
+.dist th { color: var(--muted); font-weight: 650; background: var(--surface); }
+.dist caption { caption-side: top; text-align: left; font-size: var(--step-0); color: var(--muted); padding-bottom: 4px; }
+.tried { font-size: var(--step-0); color: var(--muted); }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U2 · M3</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 2: Algorithms · Module 3 of 3</span>
+    <h1>Efficiency</h1>
+    <p class="lede">Two algorithms can solve the same problem, but one might take a second while the other takes a century. Today you'll learn to tell the difference before you run them.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 35 minutes</span>
+      <span><b>To pass:</b> finish the 6 tasks, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (U2 · M2)</strong>
+      <span><b>Linear search</b> checks items one at a time. <b>Binary search</b> checks the middle of a sorted list and throws away half each time, so it needs only about 20 checks for a million items.</span>
+    </div>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>The boy who added 1 to 100</h2><span class="ipp">Context</span></div>
+    <div class="prose">
+      <p>There's a famous story, probably improved over the years, about the mathematician <b>Carl Friedrich Gauss</b> as a schoolboy in Germany in the 1780s. His teacher wanted some peace and quiet, so he told the class to add up every number from 1 to 100.</p>
+      <p>Most students started grinding away: 1 + 2 = 3, 3 + 3 = 6, 6 + 4 = 10… Gauss wrote one number on his slate almost immediately. He had noticed that 1 + 100 = 101, 2 + 99 = 101, 3 + 98 = 101, and so on. There are 50 of those pairs, so the total is 50 × 101 = <b>5,050</b>.</p>
+      <p>His classmates' method needed 99 additions. His needed one multiplication. Both are correct, but one is far more <b>efficient</b>. Thinking about efficiency is how computer scientists make programs that finish in seconds instead of years.</p>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Three ideas</h2><span class="ipp">Experience</span></div>
+
+    <div class="prose">
+      <h3>Idea 1: Count steps, not seconds</h3>
+      <p>Computers keep getting faster, so timing a program doesn't tell you much. Instead, computer scientists ask: <b>as the input gets bigger, how fast does the number of steps grow?</b> That's what <b>efficiency</b> means.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 2: Three common growth patterns</h3>
+      <ul>
+        <li><b>Slow growth (logarithmic):</b> binary search. Double the list and you add just <b>one</b> more step.</li>
+        <li><b>Steady growth (linear):</b> linear search, or reading every name aloud. Double the list and the steps <b>double</b>.</li>
+        <li><b>Fast growth (quadratic):</b> comparing every item with every other item. Double the list and the steps go up about <b>four times</b>.</li>
+      </ul>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 3: Some problems explode</h3>
+      <p>Imagine planning a delivery route by trying <b>every possible order</b> of stops. With 5 stops there are 120 orders. With 10 stops, 3,628,800. With 20 stops, about 2.4 quintillion. Even the fastest computer can't try them all, so real route-planning apps use clever shortcuts that find a <b>very good</b> route quickly instead of a perfect one slowly.</p>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Try it</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Task 1: Think like Gauss</h3><span class="chip" data-chip="t1">To do</span></div>
+      <p>Use Gauss's pairing trick, not 999 additions.</p>
+      <div class="num-q"><label class="goal" for="t1-a">1 + 2 + 3 + … + 100 =</label><input id="t1-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t1-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t1-b">1 + 2 + 3 + … + 1,000 =</label><input id="t1-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t1-b-m"></span></div>
+      <div class="row"><button class="primary" id="t1-check">Check my answers</button><button class="ghost" id="t1-hint">Show a hint</button></div>
+      <div id="t1-fb"></div>
+      <div class="hints" id="t1-hints"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Task 2: Watch the steps grow</h3><span class="chip" data-chip="t2">To do</span></div>
+      <p>Drag the slider to change the number of items. The table shows how many steps each kind of algorithm needs, and how long that takes at a million steps per second.</p>
+      <div class="sim">
+        <div class="slider-row"><label class="goal" for="t2-n">Items:</label><input type="range" id="t2-n" min="1" max="6" step="1" value="2"><output id="t2-out" for="t2-n"></output></div>
+        <div class="growth"><table>
+          <thead><tr><th>Algorithm</th><th>Steps</th><th>Time</th></tr></thead>
+          <tbody id="t2-body"></tbody>
+        </table></div>
+      </div>
+      <div id="t2-quiz"></div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Task 3: Everyone shakes hands</h3><span class="chip" data-chip="t3">To do</span></div>
+      <p>At the start of a retreat, everyone in the group shakes hands with everyone else exactly once. That's "every item with every other item."</p>
+      <div class="num-q"><label class="goal" for="t3-a">How many handshakes in a group of 10?</label><input id="t3-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t3-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t3-b">How many in a class of 30?</label><input id="t3-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t3-b-m"></span></div>
+      <div class="row"><button class="primary" id="t3-check">Check my answers</button><button class="ghost" id="t3-hint">Show a hint</button></div>
+      <div id="t3-fb"></div>
+      <div class="hints" id="t3-hints"></div>
+    </div>
+
+    <div class="task" id="t4">
+      <div class="task-head"><h3>Task 4: How fast does it grow?</h3><span class="chip" data-chip="t4">To do</span></div>
+      <div class="sort-list" id="t4-list"></div>
+      <div class="row"><button class="primary" id="t4-check">Check</button><button class="ghost" id="t4-hint">Show a hint</button></div>
+      <div id="t4-fb"></div>
+      <div class="hints" id="t4-hints"></div>
+    </div>
+
+    <div class="task" id="t5">
+      <div class="task-head"><h3>Task 5: When perfect is too slow</h3><span class="chip" data-chip="t5">To do</span></div>
+      <p>A delivery company has 40 stops today. Trying every possible order would take longer than the age of the universe. What do real route-planning apps do?</p>
+      <div class="choices" id="t5-choices"></div>
+      <div id="t5-fb"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: plan the pantry's delivery route</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>The food pantry's van starts at the <b>Pantry</b>, delivers groceries to four families who can't travel (A, B, C and D), and comes back. Gas is expensive. Find the <b>shortest</b> route. Tap the homes in the order you want to visit them; the van returns to the pantry automatically.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>Find the shortest route</h3><span class="chip" data-chip="build">To do</span></div>
+      <div class="sim">
+        <svg class="map" id="b-map" viewBox="0 0 560 400" role="group" aria-label="Delivery map"></svg>
+      </div>
+      <div class="dist" id="b-dist"></div>
+      <p class="route" id="b-route"></p>
+      <p class="tried" id="b-tried"></p>
+      <div class="row"><button class="ghost" id="b-undo">Undo</button><button class="ghost" id="b-clear">Start a new route</button></div>
+      <div id="b-fb"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">Efficiency is a gift when it means the pantry van saves gas or a program finishes in seconds. But some things shouldn't be rushed or optimized, like listening to a friend who's struggling, or praying. Jesuits call this kind of attention <i>cura personalis</i>, care for the whole person. When is it good to be efficient? When is it better to take your time?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="It's good to be efficient when…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all 6 tasks to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All tasks done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U2·M3 Check: Efficiency.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your delivery route. Tap the button below, then paste it in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my route</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: Gauss at scale</h3><span class="chip opt">Optional</span></div>
+      <p>Gauss's trick works for any number. What is 1 + 2 + 3 + … + 10,000?</p>
+      <div class="num-q"><label class="goal" for="x1-a">Total:</label><input id="x1-a" inputmode="numeric" autocomplete="off"><button id="x1-check">Check</button></div>
+      <div id="x1-fb"></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var el = Course.el, $ = function (id) { return document.getElementById(id); };
+  var state = Course.state;
+  var SVGNS = "http://www.w3.org/2000/svg";
+  function svg(tag, attrs, text) {
+    var e = document.createElementNS(SVGNS, tag);
+    Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  /* ---------- Build data ---------- */
+  var STOPS = [
+    { name: "Pantry", x: 280, y: 200, base: true }, { name: "A", x: 90, y: 90 }, { name: "B", x: 470, y: 70 },
+    { name: "C", x: 480, y: 320 }, { name: "D", x: 100, y: 330 }
+  ];
+  // Miles between stops (symmetric).
+  var DIST = [
+    [0, 5, 5, 4, 4],
+    [5, 0, 7, 9, 6],
+    [5, 7, 0, 6, 9],
+    [4, 9, 6, 0, 8],
+    [4, 6, 9, 8, 0]
+  ];
+  function routeLength(order) {
+    var total = 0, at = 0;
+    order.forEach(function (s) { total += DIST[at][s]; at = s; });
+    return total + DIST[at][0];
+  }
+  var BEST = (function () {
+    var best = Infinity;
+    (function perm(rest, chosen) {
+      if (!rest.length) { best = Math.min(best, routeLength(chosen)); return; }
+      rest.forEach(function (r, i) { perm(rest.slice(0, i).concat(rest.slice(i + 1)), chosen.concat([r])); });
+    })([1, 2, 3, 4], []);
+    return best;
+  })();
+  function names(order) { return ["Pantry"].concat(order.map(function (s) { return STOPS[s].name; })).concat(["Pantry"]).join(" → "); }
+
+  Course.init({
+    id: "u2m3",
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Think like Gauss", t2: "Task 2: Watch the steps grow", t3: "Task 3: Everyone shakes hands", t4: "Task 4: How fast does it grow?", t5: "Task 5: When perfect is too slow", build: "Build: plan the pantry's delivery route" },
+    code: [71, 65, 85, 83, 83, 45, 53, 48, 53, 48],
+    buildText: function () {
+      var b = state.extra.route || {};
+      if (!b.best) return "Delivery route: not finished yet";
+      return "My delivery route\n" + names(b.best) + "\nTotal: " + routeLength(b.best) + " miles\nRoutes I tried: " + (b.tried || []).length;
+    }
+  });
+
+  /* ---------- Task 1 ---------- */
+  Course.answers({
+    task: "t1", button: "t1-check", feedback: "t1-fb",
+    items: [{ id: "t1-a", answer: 5050 }, { id: "t1-b", answer: 500500 }],
+    okMsg: "Both right. 50 pairs of 101 make 5,050, and 500 pairs of 1,001 make 500,500. One multiplication instead of hundreds of additions.",
+    hints: { button: "t1-hint", box: "t1-hints", list: [
+      "Pair the first and last numbers: 1 + 100 = 101. Then 2 + 99 = 101. How many pairs are there?",
+      "For 1 to 100 there are 50 pairs of 101.",
+      "For 1 to 1,000: what does each pair add up to, and how many pairs are there?"
+    ] }
+  });
+
+  /* ---------- Task 2: growth table + quiz ---------- */
+  (function () {
+    function fmt(n) { return Math.round(n).toLocaleString(); }
+    function time(steps) {
+      var s = steps / 1e6;
+      if (s < 0.001) return "instant";
+      if (s < 1) return (s * 1000).toFixed(s < 0.01 ? 1 : 0) + " ms";
+      if (s < 60) return s.toFixed(1) + " seconds";
+      if (s < 3600) return (s / 60).toFixed(1) + " minutes";
+      if (s < 86400) return (s / 3600).toFixed(1) + " hours";
+      if (s < 86400 * 365) return (s / 86400).toFixed(1) + " days";
+      return (s / (86400 * 365)).toLocaleString(undefined, { maximumFractionDigits: 0 }) + " years";
+    }
+    var slider = $("t2-n");
+    function render() {
+      var n = Math.pow(10, Number(slider.value));
+      $("t2-out").textContent = fmt(n);
+      var rows = [
+        ["Binary search (slow growth)", Math.ceil(Math.log2(n))],
+        ["Linear search (steady growth)", n],
+        ["Compare every pair (fast growth)", n * (n - 1) / 2]
+      ];
+      var body = $("t2-body"); body.innerHTML = "";
+      rows.forEach(function (r) {
+        var tr = el("tr");
+        tr.appendChild(el("td", null, r[0]));
+        tr.appendChild(el("td", { "class": r[1] > 1e9 ? "big" : "" }, fmt(r[1])));
+        tr.appendChild(el("td", { "class": r[1] > 1e9 ? "big" : "" }, time(r[1])));
+        body.appendChild(tr);
+      });
+    }
+    slider.addEventListener("input", render);
+    render();
+  })();
+  Course.quiz({
+    task: "t2", container: "t2-quiz",
+    okMsg: "All right. Use the slider to see it: slow growth barely moves, fast growth explodes.",
+    questions: [
+      { q: "A list doubles from 1,000 to 2,000 items. What happens to the number of steps for linear search?", choices: [
+        { text: "It stays the same", why: "Not quite. Linear search checks every item, so more items means more steps." },
+        { text: "It doubles", right: true, why: "Right. Twice the items, twice the checks." },
+        { text: "It goes up by one", why: "Not quite. That's binary search." }
+      ] },
+      { q: "The same list doubles. What happens to the number of steps for binary search?", choices: [
+        { text: "It goes up by about one", right: true, why: "Right. One extra check cuts 2,000 down to 1,000, and you're back where you were." },
+        { text: "It doubles", why: "Not quite. That's linear search. Binary search throws away half the list each check." },
+        { text: "It goes up four times", why: "Not quite. That's comparing every pair." }
+      ] },
+      { q: "Slide to 1,000,000 items. About how long does comparing every pair take at a million steps per second?", choices: [
+        { text: "About a second", why: "Not quite. Look at the bottom row of the table." },
+        { text: "About an hour", why: "Not quite. Look at the bottom row of the table." },
+        { text: "About 6 days", right: true, why: "Right. Around 500 billion steps. Fast growth makes some approaches useless for big inputs." }
+      ] }
+    ]
+  });
+
+  /* ---------- Task 3 ---------- */
+  Course.answers({
+    task: "t3", button: "t3-check", feedback: "t3-fb",
+    items: [{ id: "t3-a", answer: 45 }, { id: "t3-b", answer: 435 }],
+    okMsg: "Both right. Triple the people (10 → 30) and the handshakes go up almost ten times (45 → 435). That's fast growth.",
+    hints: { button: "t3-hint", box: "t3-hints", list: [
+      "In a group of 10, each person shakes 9 hands. But 10 × 9 counts every handshake twice (yours with me, and mine with you).",
+      "So the group of 10 has 10 × 9 ÷ 2 handshakes.",
+      "For 30 people: 30 × 29 ÷ 2."
+    ] }
+  });
+
+  /* ---------- Task 4 ---------- */
+  Course.sort({
+    task: "t4", container: "t4-list", button: "t4-check", feedback: "t4-fb",
+    categories: ["Slow", "Steady", "Fast"],
+    items: [
+      { text: "Binary search through a sorted list", cat: 0 },
+      { text: "Reading every name on the honor roll aloud", cat: 1 },
+      { text: "Comparing every student's schedule with every other student's schedule", cat: 2 },
+      { text: "Guessing a number using \"higher\" and \"lower\"", cat: 0 },
+      { text: "Counting the cans in a box one by one", cat: 1 },
+      { text: "Everyone at a retreat shaking hands with everyone else", cat: 2 }
+    ],
+    okMsg: "Sorted. Halving is slow growth, going through once is steady, and every-pair is fast.",
+    hints: { button: "t4-hint", box: "t4-hints", list: [
+      "Does the job cut the problem in half each step (slow), go through each item once (steady), or pair up every item with every other (fast)?",
+      "\"Every … with every other …\" is always fast growth."
+    ] }
+  });
+
+  /* ---------- Task 5 ---------- */
+  Course.mc({
+    task: "t5", container: "t5-choices", feedback: "t5-fb",
+    choices: [
+      { text: "Buy faster computers until they can try every order", why: "Not quite. Even a computer a million times faster couldn't try every order of 40 stops." },
+      { text: "Use clever shortcuts that find a very good route quickly, even if it isn't perfect", right: true, why: "Right. A route that's 1% longer but found in a second beats a perfect route found never." },
+      { text: "Pick the stops in alphabetical order", why: "Not quite. That's fast, but the route could be terrible." },
+      { text: "Only deliver to 5 stops a day", why: "Not quite. That would fail the customers. Smarter algorithms are the answer." }
+    ]
+  });
+
+  /* ---------- Build: delivery route ---------- */
+  (function () {
+    var b = state.extra.route || (state.extra.route = { order: [], tried: [], best: null });
+    var map = $("b-map"), fb = $("b-fb");
+    var legLayer = svg("g"); map.appendChild(legLayer);
+    var groups = STOPS.map(function (s, i) {
+      var g = svg("g", { "class": "stop" + (s.base ? " base" : ""), tabindex: s.base ? "-1" : "0", role: "button", "aria-label": s.base ? "Pantry (start and finish)" : "Home " + s.name });
+      g.appendChild(svg("circle", { cx: s.x, cy: s.y, r: s.base ? 38 : 28 }));
+      g.appendChild(svg("text", { "class": "name", x: s.x, y: s.y }, s.base ? "Pantry" : s.name));
+      if (!s.base) {
+        g.addEventListener("click", function () { tap(i); });
+        g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tap(i); } });
+      }
+      map.appendChild(g); return g;
+    });
+    // distance table
+    var t = el("table"); t.appendChild(el("caption", null, "Miles between places"));
+    var hr = el("tr"); hr.appendChild(el("th", null, ""));
+    STOPS.forEach(function (s) { hr.appendChild(el("th", null, s.name)); }); t.appendChild(hr);
+    STOPS.forEach(function (s, i) {
+      var tr = el("tr"); tr.appendChild(el("th", null, s.name));
+      STOPS.forEach(function (_, j) { tr.appendChild(el("td", null, i === j ? "–" : String(DIST[i][j]))); });
+      t.appendChild(tr);
+    });
+    $("b-dist").appendChild(t);
+    function render() {
+      legLayer.innerHTML = "";
+      var pts = [0].concat(b.order); if (b.order.length === 4) pts.push(0);
+      for (var k = 1; k < pts.length; k++) {
+        var a = STOPS[pts[k - 1]], c = STOPS[pts[k]];
+        legLayer.appendChild(svg("line", { x1: a.x, y1: a.y, x2: c.x, y2: c.y }));
+        legLayer.appendChild(svg("text", { "class": "leg", x: (a.x + c.x) / 2, y: (a.y + c.y) / 2 - 6 }, String(DIST[pts[k - 1]][pts[k]])));
+      }
+      groups.forEach(function (g, i) { g.classList.toggle("visited", b.order.indexOf(i) !== -1); });
+      var partial = 0; for (var j = 1; j < pts.length; j++) partial += DIST[pts[j - 1]][pts[j]];
+      $("b-route").textContent = "Route: " + ["Pantry"].concat(b.order.map(function (s) { return STOPS[s].name; })).concat(b.order.length === 4 ? ["Pantry"] : []).join(" → ") + "   (" + partial + " miles" + (b.order.length === 4 ? "" : " so far") + ")";
+      $("b-tried").textContent = b.tried.length ? "Routes you've tried: " + b.tried.map(function (o) { return routeLength(o); }).join(", ") + " miles" : "";
+    }
+    function tap(i) {
+      if (b.order.length === 4 || b.order.indexOf(i) !== -1) return;
+      b.order.push(i); fb.innerHTML = "";
+      if (b.order.length === 4) {
+        var len = routeLength(b.order);
+        b.tried.push(b.order.slice());
+        if (len === BEST) {
+          b.best = b.order.slice();
+          Course.feedback(fb, true, len + " miles. That's the shortest possible route. With 4 homes there are only 24 orders to check, but with 40 homes you'd need a smarter algorithm.");
+          Course.markDone("build");
+        } else {
+          Course.feedback(fb, false, len + " miles. There's a shorter route. Tap \"Start a new route\" and try a different order. Look at the distance table for short hops.");
+        }
+      }
+      Course.save(); render();
+    }
+    $("b-undo").addEventListener("click", function () { if (b.order.length && b.order.length < 4) { b.order.pop(); Course.save(); render(); } });
+    $("b-clear").addEventListener("click", function () { b.order = []; fb.innerHTML = ""; Course.save(); render(); });
+    render();
+    if (state.done.build) Course.feedback(fb, true, "Done. Your shortest route is saved for the Blackbaud check.");
+  })();
+
+  /* ---------- Go further ---------- */
+  $("x1-check").addEventListener("click", function () {
+    var ok = Course.matches($("x1-a").value, 50005000);
+    Course.feedback($("x1-fb"), ok, ok ? "Right. 5,000 pairs of 10,001 = 50,005,000. Same one multiplication, no matter how big the number." : "Not yet. What does 1 + 10,000 equal? How many pairs are there?");
+  });
+})();
+</script>
+
+</body>
+</html>
