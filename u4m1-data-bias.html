@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Data and Bias</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.datatable { overflow-x: auto; }
+.datatable table { border-collapse: collapse; font-size: var(--step-0); min-width: 24rem; font-variant-numeric: tabular-nums; }
+.datatable th, .datatable td { border: 1px solid var(--line); padding: 5px 10px; text-align: left; background: var(--surface); }
+.datatable th { color: var(--muted); font-weight: 650; }
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 560px) { .charts { grid-template-columns: 1fr; } }
+.chart { width: 100%; height: auto; }
+.chart .bar { fill: var(--accent); }
+.chart .bar.b2 { fill: var(--ok); }
+.chart .axis { stroke: var(--muted); stroke-width: 1.5; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart text { fill: var(--ink); font: 600 12px var(--font-body); }
+.chart text.t { font-size: 14px; font-weight: 800; }
+.chart text.v { font-weight: 800; }
+.chart text.tick { fill: var(--muted); font-weight: 500; }
+.responses { display: flex; flex-wrap: wrap; gap: 4px; }
+.responses span { font-size: 0.8rem; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); }
+.tally { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 8px; }
+.tally label { display: grid; gap: 4px; font-size: var(--step-0); font-weight: 650; }
+.tally input { font: inherit; font-size: 1.1rem; width: 7rem; min-height: 44px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); font-weight: 500; }
+.toggle { display: flex; gap: 8px; align-items: center; font-size: var(--step-0); min-height: 44px; }
+.toggle input { width: 22px; height: 22px; accent-color: var(--accent); }
+input.title-in { font: inherit; width: 100%; min-height: 44px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); }
+.rose { width: 100px; flex: none; }
+.rose path { stroke: var(--surface); stroke-width: 1; }
+.rose .p1 { fill: var(--accent); } .rose .p2 { fill: var(--hint-ink); } .rose .p3 { fill: var(--bad); }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U4 · M1</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 4: Data and security · Module 1 of 3</span>
+    <h1>Data and Bias</h1>
+    <p class="lede">Data can save lives, change minds and shape decisions. It can also mislead, and leave people out. Today you'll learn to read data carefully and present it honestly.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 35 minutes</span>
+      <span><b>To pass:</b> finish the 6 tasks, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (Unit 3)</strong>
+      <span>You wrote Python programs with input, decisions, loops and functions, and built a program to help a real kind of person.</span>
+    </div>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>The nurse who used a chart to save lives</h2><span class="ipp">Context</span></div>
+    <div class="busa">
+      <svg class="rose" viewBox="-50 -50 100 100" aria-hidden="true">
+        <path class="p3" d="M0,0 L0,-46 A46,46 0 0,1 32.5,-32.5 Z"/><path class="p3" d="M0,0 L28,-28 A40,40 0 0,1 40,0 Z"/>
+        <path class="p1" d="M0,0 L26,0 A26,26 0 0,1 18.4,18.4 Z"/><path class="p3" d="M0,0 L24,24 A34,34 0 0,1 0,34 Z"/>
+        <path class="p2" d="M0,0 L0,20 A20,20 0 0,1 -14.1,14.1 Z"/><path class="p3" d="M0,0 L-21,21 A30,30 0 0,1 -30,0 Z"/>
+        <path class="p1" d="M0,0 L-18,0 A18,18 0 0,1 -12.7,-12.7 Z"/><path class="p3" d="M0,0 L-25,-25 A36,36 0 0,1 0,-36 Z"/>
+      </svg>
+      <div class="prose">
+        <p>During the Crimean War in the 1850s, <b>Florence Nightingale</b> led a team of nurses at a British army hospital. She kept careful records and noticed something shocking: far more soldiers were dying from diseases they caught in dirty, crowded hospitals than from their battle wounds.</p>
+        <p>Officials ignored tables of numbers, so in 1858 she drew a new kind of chart, now called a <b>rose diagram</b>, where the size of each wedge showed how many soldiers died each month and from what. The huge wedges for preventable disease were impossible to ignore. Her charts helped convince the government to clean up military hospitals, and the reforms saved many thousands of lives.</p>
+        <p>Nightingale was a pioneer of using data to care for people. She also knew data only tells the truth when it's collected and shown honestly.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Three ideas</h2><span class="ipp">Experience</span></div>
+
+    <div class="prose">
+      <h3>Idea 1: Data is organized in tables</h3>
+      <p><b>Data</b> is information that's been collected: numbers, answers, measurements. It's usually stored in a table. Each <b>row</b> is one record (one person, one day, one donation), and each <b>column</b> is one kind of information about it.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 2: Charts can tell the truth, or mislead</h3>
+      <p>A chart can make a pattern obvious in a second. But a chart can also <b>mislead</b>. The most common trick is a bar chart whose axis doesn't start at zero, which makes tiny differences look enormous. Always check where the axis starts.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 3: Who's in the data, and who's missing?</h3>
+      <p>In 1936, a popular magazine called the <i>Literary Digest</i> mailed surveys to millions of Americans and got back about 2.4 million answers. It predicted that Alf Landon would beat President Franklin Roosevelt easily. Roosevelt won one of the biggest landslides in history.</p>
+      <p>What went wrong? Many of the names came from lists of car owners, telephone owners and magazine subscribers. During the Great Depression, those people tended to be wealthier than average, and the people who chose to mail back an answer weren't typical either. A huge survey of the wrong people is still wrong. This is called <b>sampling bias</b>: the people in the data don't represent the whole group.</p>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Try it</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Task 1: Read the table</h3><span class="chip" data-chip="t1">To do</span></div>
+      <p>The student council surveyed 10 students about the cafeteria.</p>
+      <div class="datatable"><table>
+        <tr><th>Student</th><th>Grade</th><th>Favorite lunch</th><th>Ate breakfast today?</th></tr>
+        <tr><td>1</td><td>9</td><td>Tacos</td><td>Yes</td></tr>
+        <tr><td>2</td><td>10</td><td>Pizza</td><td>No</td></tr>
+        <tr><td>3</td><td>10</td><td>Tacos</td><td>Yes</td></tr>
+        <tr><td>4</td><td>11</td><td>Salad bar</td><td>Yes</td></tr>
+        <tr><td>5</td><td>9</td><td>Pizza</td><td>No</td></tr>
+        <tr><td>6</td><td>12</td><td>Tacos</td><td>No</td></tr>
+        <tr><td>7</td><td>10</td><td>Pasta</td><td>Yes</td></tr>
+        <tr><td>8</td><td>11</td><td>Tacos</td><td>Yes</td></tr>
+        <tr><td>9</td><td>12</td><td>Pizza</td><td>Yes</td></tr>
+        <tr><td>10</td><td>10</td><td>Salad bar</td><td>No</td></tr>
+      </table></div>
+      <div class="num-q"><label class="goal" for="t1-a">How many students chose Tacos?</label><input id="t1-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t1-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t1-b">How many 10th graders were surveyed?</label><input id="t1-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t1-b-m"></span></div>
+      <div class="num-q"><label class="goal" for="t1-c">What percent of students ate breakfast?</label><input id="t1-c" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t1-c-m"></span></div>
+      <div class="row"><button class="primary" id="t1-check">Check my answers</button><button class="ghost" id="t1-hint">Show a hint</button></div>
+      <div id="t1-fb"></div>
+      <div class="hints" id="t1-hints"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Task 2: Spot the misleading chart</h3><span class="chip" data-chip="t2">To do</span></div>
+      <p>Two homerooms collected cans for the food drive: Homeroom 214 collected <b>98</b> and Homeroom 216 collected <b>102</b>. Both charts use the same numbers.</p>
+      <div class="charts">
+        <div class="sim"><svg class="chart" id="chart-a" viewBox="0 0 260 200" role="img" aria-label="Chart A"></svg></div>
+        <div class="sim"><svg class="chart" id="chart-b" viewBox="0 0 260 200" role="img" aria-label="Chart B"></svg></div>
+      </div>
+      <div id="t2-quiz"></div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Task 3: Fair or biased?</h3><span class="chip" data-chip="t3">To do</span></div>
+      <p>Each survey is trying to learn what <b>the whole school</b> thinks. Is the sample fair or biased?</p>
+      <div class="sort-list" id="t3-list"></div>
+      <div class="row"><button class="primary" id="t3-check">Check</button><button class="ghost" id="t3-hint">Show a hint</button></div>
+      <div id="t3-fb"></div>
+      <div class="hints" id="t3-hints"></div>
+    </div>
+
+    <div class="task" id="t4">
+      <div class="task-head"><h3>Task 4: What went wrong in 1936?</h3><span class="chip" data-chip="t4">To do</span></div>
+      <p>The <i>Literary Digest</i> got about 2.4 million answers, far more than most polls today. Why was its prediction still wrong?</p>
+      <div class="choices" id="t4-choices"></div>
+      <div id="t4-fb"></div>
+    </div>
+
+    <div class="task" id="t5">
+      <div class="task-head"><h3>Task 5: Percents and missing voices</h3><span class="chip" data-chip="t5">To do</span></div>
+      <div class="num-q"><label class="goal" for="t5-a">A survey went to 300 students and 60 answered. What percent answered?</label><input id="t5-a" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t5-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t5-b">So what percent of students' opinions are missing?</label><input id="t5-b" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t5-b-m"></span></div>
+      <div class="row"><button class="primary" id="t5-check">Check my answers</button><button class="ghost" id="t5-hint">Show a hint</button></div>
+      <div id="t5-fb"></div>
+      <div class="hints" id="t5-hints"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: an honest chart</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>The 10th grade class asked students which service project the grade should take on this spring. Here are all 24 answers. Count them, build a chart, and make sure it tells the truth.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>Your chart must:</h3><span class="chip" data-chip="build">To do</span></div>
+      <ul class="status-list" id="b-reqs"></ul>
+      <div class="responses" id="b-responses" aria-label="Survey answers"></div>
+      <div class="tally" id="b-tally"></div>
+      <label class="goal" for="b-title">Chart title</label>
+      <input id="b-title" class="title-in" autocomplete="off" placeholder="For example: Which service project should 10th grade choose?">
+      <label class="toggle"><input type="checkbox" id="b-zero"> Start the axis at 0</label>
+      <div class="sim"><svg class="chart" id="b-chart" viewBox="0 0 420 260" role="img" aria-label="Your chart"></svg></div>
+      <div class="row"><button class="primary" id="b-check">Check my chart</button></div>
+      <div id="b-fb"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">Florence Nightingale used data to make suffering visible so people would act. Data can also make people invisible when they're left out. Think of a group at your school or in your community whose needs might not show up in the data, maybe because nobody asks them or they don't fill out surveys. How could you make sure their voices are counted?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="One group that might be missing is…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all 6 tasks to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All tasks done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U4·M1 Check: Data and Bias.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your chart's title and counts. Tap the button below, then paste them in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my chart data</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: mean or median?</h3><span class="chip opt">Optional</span></div>
+      <p>Six students reported their service hours: 3, 9, 4, 7, 5 and 100. The <b>mean</b> (average) is about 21, which makes it look like a typical student has 21 hours. The <b>median</b> is the middle value when the numbers are in order. With an even count, it's halfway between the two middle numbers. What is the median?</p>
+      <div class="num-q"><label class="goal" for="x1-a">Median:</label><input id="x1-a" inputmode="numeric" autocomplete="off"><button id="x1-check">Check</button></div>
+      <div id="x1-fb"></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var el = Course.el, $ = function (id) { return document.getElementById(id); };
+  var state = Course.state;
+  var SVGNS = "http://www.w3.org/2000/svg";
+  function svg(tag, attrs, text) {
+    var e = document.createElementNS(SVGNS, tag);
+    Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  // Draws a bar chart into an SVG. data: [{ label, value }]; axisMin: where the vertical axis starts.
+  function barChart(svgEl, opts) {
+    svgEl.innerHTML = "";
+    var W = opts.width, H = opts.height, left = 40, right = 10, top = opts.title ? 30 : 12, bottom = 34;
+    var max = opts.axisMax, min = opts.axisMin;
+    var plotH = H - top - bottom, plotW = W - left - right;
+    var y = function (v) { return top + plotH - (Math.max(v, min) - min) / (max - min) * plotH; };
+    if (opts.title) svgEl.appendChild(svg("text", { "class": "t", x: left, y: 18 }, opts.title));
+    opts.ticks.forEach(function (t) {
+      svgEl.appendChild(svg("line", { "class": "grid", x1: left, x2: W - right, y1: y(t), y2: y(t) }));
+      svgEl.appendChild(svg("text", { "class": "tick", x: left - 6, y: y(t) + 4, "text-anchor": "end" }, String(t)));
+    });
+    var slot = plotW / opts.data.length, bw = Math.min(56, slot * 0.6);
+    opts.data.forEach(function (d, i) {
+      var x = left + slot * i + (slot - bw) / 2;
+      svgEl.appendChild(svg("rect", { "class": "bar" + (i % 2 ? " b2" : ""), x: x, y: y(d.value), width: bw, height: Math.max(0, y(min) - y(d.value)), rx: 3 }));
+      svgEl.appendChild(svg("text", { "class": "v", x: x + bw / 2, y: y(d.value) - 5, "text-anchor": "middle" }, String(d.value)));
+      svgEl.appendChild(svg("text", { x: x + bw / 2, y: H - bottom + 16, "text-anchor": "middle" }, d.label));
+    });
+    svgEl.appendChild(svg("line", { "class": "axis", x1: left, x2: left, y1: top, y2: top + plotH }));
+    svgEl.appendChild(svg("line", { "class": "axis", x1: left, x2: W - right, y1: top + plotH, y2: top + plotH }));
+  }
+
+  /* ---------- Build data ---------- */
+  var OPTIONS = ["Food pantry", "Tutoring", "Park cleanup", "Coat drive"];
+  var ANSWER = [9, 6, 5, 4];
+  var RESPONSES = [0, 1, 0, 2, 3, 0, 1, 2, 0, 3, 1, 0, 2, 0, 1, 3, 0, 2, 1, 0, 3, 2, 1, 0];
+  var b; // set after Course.init
+
+  Course.init({
+    id: "u4m1",
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Read the table", t2: "Task 2: Spot the misleading chart", t3: "Task 3: Fair or biased?", t4: "Task 4: What went wrong in 1936?", t5: "Task 5: Percents and missing voices", build: "Build: an honest chart" },
+    code: [82, 79, 83, 69, 45, 49, 56, 53, 56],
+    buildText: function () {
+      return "My chart: " + (b.title || "(no title)") + "\n" + OPTIONS.map(function (o, i) { return o + ": " + (b.counts[i] || 0); }).join("\n") + "\nAxis starts at 0: " + (b.zero ? "yes" : "no");
+    }
+  });
+  b = state.extra.chart || (state.extra.chart = { counts: ["", "", "", ""], title: "", zero: false });
+
+  /* ---------- Task 1 ---------- */
+  Course.answers({
+    task: "t1", button: "t1-check", feedback: "t1-fb",
+    items: [{ id: "t1-a", answer: 4 }, { id: "t1-b", answer: 4 }, { id: "t1-c", answer: 60 }],
+    okMsg: "All correct. 4 chose tacos, 4 were 10th graders, and 6 of 10 ate breakfast, which is 60%.",
+    hints: { button: "t1-hint", box: "t1-hints", list: [
+      "Each row is one student. Look down one column at a time.",
+      "For the percent: count the Yes answers, then divide by the 10 students and multiply by 100."
+    ] }
+  });
+
+  /* ---------- Task 2 ---------- */
+  var cans = [{ label: "Rm 214", value: 98 }, { label: "Rm 216", value: 102 }];
+  barChart($("chart-a"), { width: 260, height: 200, title: "Chart A", data: cans, axisMin: 96, axisMax: 103, ticks: [96, 98, 100, 102] });
+  barChart($("chart-b"), { width: 260, height: 200, title: "Chart B", data: cans, axisMin: 0, axisMax: 110, ticks: [0, 25, 50, 75, 100] });
+  Course.quiz({
+    task: "t2", container: "t2-quiz",
+    okMsg: "All right. Chart A's axis starts at 96, so a 4-can difference looks like Room 216 crushed Room 214.",
+    questions: [
+      { q: "Which chart is misleading?", choices: [
+        { text: "Chart A", right: true, why: "Right. Look at the numbers on its axis." },
+        { text: "Chart B", why: "Not quite. Chart B's axis starts at 0, so the bars show the real sizes." },
+        { text: "Neither, because they use the same numbers", why: "Not quite. Same numbers, but one chart draws them in a way that exaggerates the difference." }
+      ] },
+      { q: "Why is it misleading?", choices: [
+        { text: "It uses the wrong colors", why: "Not quite. Colors aren't the problem here." },
+        { text: "Its axis starts at 96 instead of 0, so a small difference looks huge", right: true, why: "Right. Room 216's bar looks about three times taller, but it only collected 4% more." },
+        { text: "It has too many numbers", why: "Not quite. Look at where the axis starts." }
+      ] }
+    ]
+  });
+
+  /* ---------- Task 3 ---------- */
+  Course.sort({
+    task: "t3", container: "t3-list", button: "t3-check", feedback: "t3-fb",
+    categories: ["Fair", "Biased"],
+    items: [
+      { text: "Asking only the robotics club whether the school should spend more on robotics", cat: 1 },
+      { text: "Randomly picking 60 names from the whole school roster", cat: 0 },
+      { text: "An Instagram poll asking whether students use Instagram", cat: 1 },
+      { text: "Surveying every 10th student who walks in the front door on a normal school day", cat: 0 },
+      { text: "Asking only seniors what freshmen think of orientation", cat: 1 },
+      { text: "Drawing 10 names from each grade out of a hat", cat: 0 }
+    ],
+    okMsg: "All sorted. A fair sample gives everyone in the group a similar chance to be included.",
+    hints: { button: "t3-hint", box: "t3-hints", list: [
+      "Ask: does every student in the school have a similar chance of being asked?",
+      "If the way you pick people is connected to the answer you're looking for, the sample is biased."
+    ] }
+  });
+
+  /* ---------- Task 4 ---------- */
+  Course.mc({
+    task: "t4", container: "t4-choices", feedback: "t4-fb",
+    choices: [
+      { text: "It didn't get enough answers", why: "Not quite. 2.4 million is an enormous number of answers." },
+      { text: "The people it heard from didn't represent all American voters", right: true, why: "Right. Its lists leaned toward wealthier people, and the people who chose to answer weren't typical either. Size can't fix a biased sample." },
+      { text: "Computers made a math mistake", why: "Not quite. This was 1936. The problem was who was asked, not the math." },
+      { text: "Voters changed their minds on election day", why: "Not quite. Better polls that year, using smaller but fairer samples, predicted Roosevelt would win." }
+    ]
+  });
+
+  /* ---------- Task 5 ---------- */
+  Course.answers({
+    task: "t5", button: "t5-check", feedback: "t5-fb",
+    items: [{ id: "t5-a", answer: 20 }, { id: "t5-b", answer: 80 }],
+    okMsg: "Right. Only 20% answered, so 80% of students' voices are missing. Before trusting results, ask who answered and who didn't.",
+    hints: { button: "t5-hint", box: "t5-hints", list: [
+      "Percent = part ÷ whole × 100.",
+      "60 ÷ 300 = 0.2. Multiply by 100."
+    ] }
+  });
+
+  /* ---------- Build ---------- */
+  (function () {
+    var resp = $("b-responses");
+    RESPONSES.forEach(function (r) { resp.appendChild(el("span", null, OPTIONS[r])); });
+    var tally = $("b-tally");
+    var inputs = OPTIONS.map(function (o, i) {
+      var lab = el("label", { "for": "b-c" + i }, o);
+      var inp = el("input", { id: "b-c" + i, inputmode: "numeric", autocomplete: "off" });
+      inp.value = b.counts[i] || "";
+      inp.addEventListener("input", function () { b.counts[i] = inp.value; Course.save(); render(); });
+      lab.appendChild(inp); tally.appendChild(lab);
+      return inp;
+    });
+    $("b-title").value = b.title || "";
+    $("b-title").addEventListener("input", function () { b.title = $("b-title").value; Course.save(); render(); });
+    $("b-zero").checked = !!b.zero;
+    $("b-zero").addEventListener("change", function () { b.zero = $("b-zero").checked; Course.save(); render(); });
+    function nums() { return b.counts.map(function (c) { var n = parseInt(c, 10); return isNaN(n) ? 0 : n; }); }
+    function reqs() {
+      var n = nums();
+      return {
+        counts: n.every(function (v, i) { return v === ANSWER[i]; }),
+        title: (b.title || "").trim().length >= 10,
+        zero: !!b.zero
+      };
+    }
+    function render() {
+      var n = nums();
+      var maxV = Math.max(10, Math.max.apply(null, n) + 1);
+      barChart($("b-chart"), {
+        width: 420, height: 260, title: (b.title || "").trim() || "(add a title)",
+        data: OPTIONS.map(function (o, i) { return { label: o, value: n[i] }; }),
+        axisMin: b.zero ? 0 : 3, axisMax: maxV, ticks: b.zero ? [0, 2, 4, 6, 8, 10].filter(function (t) { return t <= maxV; }) : [3, 5, 7, 9].filter(function (t) { return t <= maxV; })
+      });
+      var q = reqs(), list = $("b-reqs"); list.innerHTML = "";
+      [["counts", "Show the correct count for each project"], ["title", "Have a clear title (at least 10 characters)"], ["zero", "Start the axis at 0, so the bars are honest"]].forEach(function (r) {
+        list.appendChild(el("li", { "class": q[r[0]] ? "done" : "" }, (q[r[0]] ? "✓ " : "○ ") + r[1]));
+      });
+    }
+    $("b-check").addEventListener("click", function () {
+      var q = reqs(), n = nums();
+      if (!q.counts) {
+        var total = n.reduce(function (a, c) { return a + c; }, 0);
+        Course.feedback($("b-fb"), false, total !== 24 ? "Your counts add up to " + total + ", but there are 24 answers. Count again." : "Your counts add up to 24, but at least one is off. Recount each project carefully.");
+      } else if (!q.title) Course.feedback($("b-fb"), false, "Give your chart a clear title so readers know what it shows.");
+      else if (!q.zero) Course.feedback($("b-fb"), false, "Look at the chart with the axis starting at 3. The food pantry looks about 6 times more popular than the coat drive, but 9 isn't 6 times 4. Start the axis at 0.");
+      else { Course.feedback($("b-fb"), true, "An honest chart: correct counts, a clear title and an axis that starts at 0. The food pantry is the most popular, but 15 of 24 students picked something else."); Course.markDone("build"); }
+    });
+    render();
+    if (state.done.build) Course.feedback($("b-fb"), true, "Done.");
+  })();
+
+  /* ---------- Go further ---------- */
+  $("x1-check").addEventListener("click", function () {
+    var ok = Course.matches($("x1-a").value, 6);
+    Course.feedback($("x1-fb"), ok, ok ? "Right. In order: 3, 4, 5, 7, 9, 100. Halfway between 5 and 7 is 6. One unusual value (100) pulls the mean up but barely moves the median." : "Not yet. Put the numbers in order first. Which two are in the middle?");
+  });
+})();
+</script>
+
+</body>
+</html>

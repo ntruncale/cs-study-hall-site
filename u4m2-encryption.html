@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Passwords and Encryption</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.wheel { display: grid; gap: 8px; }
+.alpha { overflow-x: auto; }
+.alpha table { border-collapse: collapse; font-family: var(--font-code); font-variation-settings: "MONO" 1; font-weight: 700; font-size: 0.95rem; }
+.alpha td, .alpha th { border: 1px solid var(--line); min-width: 1.7rem; padding: 4px 2px; text-align: center; background: var(--surface); }
+.alpha th { color: var(--muted); font-size: 0.7rem; font-family: var(--font-body); font-variation-settings: "MONO" 0; text-align: left; padding: 4px 8px; white-space: nowrap; }
+.alpha tr.c td { background: var(--accent-soft); color: var(--accent); }
+.slider-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.slider-row input[type=range] { flex: 1 1 14rem; accent-color: var(--accent); min-height: 44px; }
+.slider-row output { font-weight: 800; font-size: var(--step-2); min-width: 5rem; }
+.secret { display: flex; flex-wrap: wrap; gap: 8px; }
+.secret span { font-family: var(--font-code); font-variation-settings: "MONO" 1; font-weight: 700; font-size: 1.15rem; padding: 6px 10px; border-radius: 8px; background: var(--console-bg); color: var(--console-ink); letter-spacing: 0.1em; }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U4 · M2</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 4: Data and security · Module 2 of 3</span>
+    <h1>Passwords and Encryption</h1>
+    <p class="lede">Every time you log in or see a little lock in your browser, encryption is protecting you. Today you'll encrypt and crack secret messages, and learn what actually makes a password strong.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 35 minutes</span>
+      <span><b>To pass:</b> finish the 6 tasks, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (U4 · M1)</strong>
+      <span>Data is stored in tables of rows and columns. Charts can mislead when the axis doesn't start at zero, and <b>sampling bias</b> leaves people out of the data.</span>
+    </div>
+    <p class="loadnote" id="loadnote">Loading Python…</p>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>The codebreakers of Bletchley Park</h2><span class="ipp">Context</span></div>
+    <div class="prose">
+      <p>During World War II, the German military sent its radio messages scrambled by a machine called <b>Enigma</b>. Each day the settings changed, giving more than 150 million million million possible ways to scramble a message. The Germans believed it was unbreakable.</p>
+      <p>At <b>Bletchley Park</b>, a country estate in England, thousands of people worked in secret to break it. Mathematician <b>Alan Turing</b> designed a machine called the <b>bombe</b>, and the first one began working in 1940. It raced through Enigma settings far faster than any person could. About three out of four people working at Bletchley Park were women, who ran the machines, decoded messages and analyzed what they meant.</p>
+      <p>Many historians believe their work shortened the war and saved many lives. The workers kept their secret for decades, many of them for the rest of their lives. Today, encryption protects your messages, your passwords and your bank account, and the people trying to break it are criminals instead of armies.</p>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Three ideas</h2><span class="ipp">Experience</span></div>
+
+    <div class="prose">
+      <h3>Idea 1: Encryption uses a key</h3>
+      <p><b>Encryption</b> scrambles a readable message (the <b>plaintext</b>) into unreadable <b>ciphertext</b>. Only someone with the <b>key</b> can unscramble it. Remember from Unit 1 that packets pass through many routers on the way. Encryption means anyone who grabs a packet along the way sees only gibberish.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 2: The Caesar cipher, and how to crack it</h3>
+      <p>Julius Caesar reportedly protected messages by shifting every letter 3 places down the alphabet: A becomes D, B becomes E, and so on. The <b>key</b> is the number of places to shift. But there are only 25 possible keys, so an enemy can simply try them all. Trying every possible key is called a <b>brute-force attack</b>. Modern encryption uses keys with so many possibilities that trying them all would take longer than the age of the universe.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 3: What makes a password strong</h3>
+      <ul>
+        <li><b>Length beats cleverness.</b> Each extra character multiplies the number of guesses an attacker needs. A passphrase of four or five random words is long, strong and easy to remember.</li>
+        <li><b>Avoid the obvious.</b> Attackers try common passwords, dictionary words, names, birthdays and simple swaps like "p@ssw0rd" first.</li>
+        <li><b>Never reuse a password.</b> If one site is hacked, attackers try that same password everywhere else.</li>
+        <li><b>Turn on two-factor authentication.</b> It asks for a second proof, like a code on your phone, so a stolen password alone isn't enough.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Try it</h2><span class="ipp">Experience</span></div>
+
+    <div class="sim wheel">
+      <h3>Your cipher wheel</h3>
+      <div class="slider-row"><label class="goal" for="wheel-key">Key (shift):</label><input type="range" id="wheel-key" min="0" max="25" step="1" value="3"><output id="wheel-out" for="wheel-key">3</output></div>
+      <div class="alpha"><table id="wheel-table"></table></div>
+      <p class="goal">To encrypt, find each letter in the top row and use the letter below it. To decrypt, go from the bottom row up.</p>
+    </div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Task 1: Encrypt and decrypt</h3><span class="chip" data-chip="t1">To do</span></div>
+      <p>Set the wheel to key 3.</p>
+      <div class="num-q"><label class="goal" for="t1-a">Encrypt SERVE:</label><input id="t1-a" class="answer wide" autocomplete="off" autocapitalize="characters" spellcheck="false"><span class="mark" id="t1-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t1-b">Decrypt KRSH:</label><input id="t1-b" class="answer wide" autocomplete="off" autocapitalize="characters" spellcheck="false"><span class="mark" id="t1-b-m"></span></div>
+      <div class="row"><button class="primary" id="t1-check">Check my answers</button><button class="ghost" id="t1-hint">Show a hint</button></div>
+      <div id="t1-fb"></div>
+      <div class="hints" id="t1-hints"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Task 2: Brute-force attack</h3><span class="chip" data-chip="t2">To do</span></div>
+      <p>You intercepted this message, but you don't know the key. Move the slider and try keys until the message makes sense.</p>
+      <div class="secret" aria-label="Intercepted message"><span>MHPAO</span></div>
+      <div class="num-q"><label class="goal" for="t2-a">The message says:</label><input id="t2-a" class="answer wide" autocomplete="off" autocapitalize="characters" spellcheck="false"><span class="mark" id="t2-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t2-b">The key was:</label><input id="t2-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t2-b-m"></span></div>
+      <div class="row"><button class="primary" id="t2-check">Check my answers</button><button class="ghost" id="t2-hint">Show a hint</button></div>
+      <div id="t2-fb"></div>
+      <div class="hints" id="t2-hints"></div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Task 3: Weak or strong?</h3><span class="chip" data-chip="t3">To do</span></div>
+      <div class="sort-list" id="t3-list"></div>
+      <div class="row"><button class="primary" id="t3-check">Check</button><button class="ghost" id="t3-hint">Show a hint</button></div>
+      <div id="t3-fb"></div>
+      <div class="hints" id="t3-hints"></div>
+    </div>
+
+    <div class="task" id="t4">
+      <div class="task-head"><h3>Task 4: Count the guesses</h3><span class="chip" data-chip="t4">To do</span></div>
+      <div class="num-q"><label class="goal" for="t4-a">A PIN has 4 digits, each 0–9. How many possible PINs are there?</label><input id="t4-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t4-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t4-b">A password uses only lowercase letters. Adding one more letter multiplies the number of possible passwords by how much?</label><input id="t4-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t4-b-m"></span></div>
+      <div class="row"><button class="primary" id="t4-check">Check my answers</button><button class="ghost" id="t4-hint">Show a hint</button></div>
+      <div id="t4-fb"></div>
+      <div class="hints" id="t4-hints"></div>
+    </div>
+
+    <div class="task" id="t5">
+      <div class="task-head"><h3>Task 5: Staying safe</h3><span class="chip" data-chip="t5">To do</span></div>
+      <div id="t5-quiz"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: your own cipher machine</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>Write a Python program that encrypts any message with a Caesar cipher. The <code class="inline">shift_letter</code> function is already written. It shifts one letter. Your job is to finish <code class="inline">encrypt</code>, which loops through every character of the message and builds the result.</p>
+      <p>Strings work in <code class="inline">for</code> loops just like lists: <code class="inline">for ch in "HELLO":</code> goes through H, E, L, L, O. You can add to a string with <code class="inline">+</code>, like <code class="inline">result = result + "K"</code>.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>Your program must:</h3><span class="chip" data-chip="build">To do</span></div>
+      <ul class="status-list">
+        <li>Finish <code class="inline">encrypt(message, key)</code> so it returns the whole encrypted message</li>
+        <li>Leave spaces and punctuation unchanged (shift_letter already does this)</li>
+        <li>Decrypt when given a negative key: <code class="inline">encrypt("KHOOR", -3)</code> gives back <code class="inline">HELLO</code></li>
+      </ul>
+      <p class="goal">Try it: run your program, type a message to a friend, and pick a key. The page will also test <code class="inline">encrypt</code> with its own messages.</p>
+      <div data-editor="build"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">Strong encryption protects your privacy, your family's bank account and journalists who report on dangerous governments. It can also hide the messages of criminals. Some leaders want a "back door" that lets police read encrypted messages. Others say a back door would let criminals in too. What do you think matters most here, and why?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="I think what matters most is…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all 6 tasks to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All tasks done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U4·M2 Check: Passwords and Encryption.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your cipher program. Tap the button below, then paste it in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my Build program</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: a brute-force program</h3><span class="chip opt">Optional</span></div>
+      <p>Write a loop that tries every key from 1 to 25 on the message <code class="inline">"WKH JDWH LV RSHQ"</code> and prints each attempt with its key. Then read the output to find the real message.</p>
+      <div data-editor="x1"></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js" onerror="window.__skFail=true"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js" onerror="window.__skFail=true"></script>
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var py = Course.python, el = Course.el, $ = function (id) { return document.getElementById(id); };
+
+  Course.init({
+    id: "u4m2",
+    usesPython: true,
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Encrypt and decrypt", t2: "Task 2: Brute-force attack", t3: "Task 3: Weak or strong?", t4: "Task 4: Count the guesses", t5: "Task 5: Staying safe", build: "Build: your own cipher machine" },
+    code: [66, 79, 77, 66, 69, 45, 52, 48],
+    buildText: function () { return document.getElementById("code-build").value; },
+    buildFallbackEl: function () { return document.getElementById("code-build"); }
+  });
+
+  function after(o, marker) { var i = o.indexOf(marker); return i === -1 ? null : o.slice(i + marker.length); }
+
+  /* ---------- Cipher wheel ---------- */
+  (function () {
+    var slider = $("wheel-key"), table = $("wheel-table");
+    function render() {
+      var k = Number(slider.value);
+      $("wheel-out").textContent = String(k);
+      table.innerHTML = "";
+      var top = el("tr"), bot = el("tr", { "class": "c" });
+      top.appendChild(el("th", null, "Plain")); bot.appendChild(el("th", null, "Cipher"));
+      for (var i = 0; i < 26; i++) {
+        top.appendChild(el("td", null, String.fromCharCode(65 + i)));
+        bot.appendChild(el("td", null, String.fromCharCode(65 + (i + k) % 26)));
+      }
+      table.appendChild(top); table.appendChild(bot);
+    }
+    slider.addEventListener("input", render);
+    render();
+  })();
+
+  /* ---------- Task 1 ---------- */
+  Course.answers({
+    task: "t1", button: "t1-check", feedback: "t1-fb",
+    items: [{ id: "t1-a", answer: "VHUYH" }, { id: "t1-b", answer: "HOPE" }],
+    okMsg: "Both right. SERVE becomes VHUYH, and KRSH decrypts to HOPE.",
+    hints: { button: "t1-hint", box: "t1-hints", list: [
+      "Encrypting: find S in the Plain row. The letter under it is the first letter of your answer.",
+      "Decrypting: find K in the Cipher row. The letter above it is the first letter of your answer."
+    ] }
+  });
+
+  /* ---------- Task 2 ---------- */
+  Course.answers({
+    task: "t2", button: "t2-check", feedback: "t2-fb",
+    items: [{ id: "t2-a", answer: "FAITH" }, { id: "t2-b", answer: 7 }],
+    okMsg: "Cracked! The key was 7 and the message is FAITH. With only 25 keys, a Caesar cipher can be broken in minutes. Real encryption has trillions of trillions of keys.",
+    hints: { button: "t2-hint", box: "t2-hints", list: [
+      "For each key, decrypt just the first letter, M. Does any key turn it into a letter that could start a word?",
+      "Try keys around 5 to 10 and decrypt all five letters. The message is a word you'd hear in a Jesuit school."
+    ] }
+  });
+
+  /* ---------- Task 3 ---------- */
+  Course.sort({
+    task: "t3", container: "t3-list", button: "t3-check", feedback: "t3-fb",
+    categories: ["Weak", "Strong"],
+    items: [
+      { text: "password123", cat: 0 },
+      { text: "rainy-tacos-orbit-fern-canoe", cat: 1 },
+      { text: "Fido2012 (your dog's name and birth year)", cat: 0 },
+      { text: "qwerty", cat: 0 },
+      { text: "M7#qL2v!pX9z (12 random characters)", cat: 1 },
+      { text: "P@ssw0rd", cat: 0 },
+      { text: "violin-gravy-maple-thunder-pond", cat: 1 },
+      { text: "The same strong password you use on every site", cat: 0 }
+    ],
+    okMsg: "All sorted. Long and random is strong. Short, common, personal or reused is weak, even with symbols.",
+    hints: { button: "t3-hint", box: "t3-hints", list: [
+      "Attackers try common passwords, words, names and dates first, and they know about @ for a and 0 for o.",
+      "Even a strong password becomes weak if you reuse it: one hacked site exposes all your accounts."
+    ] }
+  });
+
+  /* ---------- Task 4 ---------- */
+  Course.answers({
+    task: "t4", button: "t4-check", feedback: "t4-fb",
+    items: [{ id: "t4-a", answer: 10000 }, { id: "t4-b", answer: 26 }],
+    okMsg: "Both right. 10 × 10 × 10 × 10 = 10,000 PINs, and each extra lowercase letter multiplies the possibilities by 26. That's why length matters so much.",
+    hints: { button: "t4-hint", box: "t4-hints", list: [
+      "Each digit has 10 choices, and there are 4 digits: 10 × 10 × 10 × 10.",
+      "How many choices are there for one extra lowercase letter?"
+    ] }
+  });
+
+  /* ---------- Task 5 ---------- */
+  Course.quiz({
+    task: "t5", container: "t5-quiz",
+    okMsg: "All right. Encryption, strong passwords and two-factor authentication work together.",
+    questions: [
+      { q: "Why is it risky to use the same password on many sites?", choices: [
+        { text: "Websites don't allow it", why: "Not quite. Most sites can't even tell." },
+        { text: "If one site is hacked, attackers can use that password to get into your other accounts", right: true, why: "Right. Attackers automatically try stolen passwords on hundreds of other sites." },
+        { text: "It makes your password shorter", why: "Not quite. Reusing doesn't change the length." }
+      ] },
+      { q: "What does the lock icon (HTTPS) in your browser's address bar mean?", choices: [
+        { text: "The website is safe and trustworthy", why: "Not quite. Scam sites can have a lock too. It only means the connection is encrypted." },
+        { text: "Your connection to the site is encrypted, so others can't read what you send", right: true, why: "Right. It protects data in transit. You still have to decide whether to trust the site." },
+        { text: "The website is locked and you can't use it", why: "Not quite. It's about encryption, not access." }
+      ] },
+      { q: "What is two-factor authentication?", choices: [
+        { text: "Having two passwords that are the same", why: "Not quite." },
+        { text: "Logging in twice", why: "Not quite." },
+        { text: "Needing a second proof, like a code sent to your phone, in addition to your password", right: true, why: "Right. A stolen password alone isn't enough to get in." }
+      ] }
+    ]
+  });
+
+  /* ---------- Editors ---------- */
+  var HELPER = 'def shift_letter(ch, key):\n    # Shifts one capital letter by key places. Leaves anything else alone.\n    if "A" <= ch <= "Z":\n        return chr((ord(ch) - ord("A") + key) % 26 + ord("A"))\n    return ch\n';
+  py.editors({
+    build: {
+      starter: '# Caesar cipher machine\n' + HELPER + '\ndef encrypt(message, key):\n    result = ""\n    # Loop through each character in message,\n    # shift it with shift_letter, and add it to result\n    return result\n\nmessage = input("Message: ").upper()\nkey = int(input("Key: "))\nprint(encrypt(message, key))\n',
+      hints: [
+        "Inside encrypt, before return, write a loop: for ch in message:",
+        "Inside the loop (indented 8 spaces), add the shifted letter: result = result + shift_letter(ch, key)",
+        "Keep return result at the end of the function, lined up with the for (4 spaces), so it runs after the loop finishes."
+      ],
+      errorsGoToCheck: true,
+      tests: [
+        { inputs: ["X", "1"], append: 'print("<<t>>" + encrypt("HELLO", 3) + "|" + encrypt("AD MAJOREM!", 1) + "|" + encrypt("KHOOR", -3) + "|" + encrypt("XYZ", 3))', expect: function (o) {
+          var got = after(o, "<<t>>");
+          if (got === null) return "The page couldn't test your encrypt function.";
+          var parts = got.trim().split("|");
+          if (parts[0] === "") return "encrypt returned an empty message. Did you add each shifted letter to result inside the loop?";
+          if (parts[0] === "K" || parts[0] === "O") return "encrypt(\"HELLO\", 3) returned only one letter. Is return result inside the loop? Move it out so it runs after the loop.";
+          if (parts[0] !== "KHOOR") return "encrypt(\"HELLO\", 3) should return KHOOR, but returned " + parts[0] + ".";
+          if (parts[1] !== "BE NBKPSFN!") return "encrypt(\"AD MAJOREM!\", 1) should return BE NBKPSFN! (spaces and ! unchanged), but returned " + parts[1] + ".";
+          if (parts[2] !== "HELLO") return "encrypt(\"KHOOR\", -3) should decrypt back to HELLO.";
+          if (parts[3] !== "ABC") return "encrypt(\"XYZ\", 3) should wrap around to ABC.";
+          return null;
+        } }
+      ],
+      check: function (r, code) {
+        if (!/^\s*for\b/m.test(code)) return { ok: false, msg: "Use a for loop inside encrypt." };
+        return { ok: true, msg: "Your cipher machine works: it encrypts, keeps spaces and punctuation, wraps from Z back to A, and decrypts with a negative key." };
+      }
+    },
+    x1: {
+      starter: HELPER + '\nsecret = "WKH JDWH LV RSHQ"\n\n# Try every key from 1 to 25 and print each attempt\n',
+      hints: ["for key in range(1, 26):", "Inside that loop, build the decrypted text with another loop over secret using shift_letter(ch, -key), then print the key and the text."],
+      optional: true,
+      check: function (r) {
+        if (/THE GATE IS OPEN/.test(r.output) && py.outLines(r.output).length >= 25) return { ok: true, msg: "Cracked by brute force: THE GATE IS OPEN (key 3). A computer tried all 25 keys in a blink." };
+        return { ok: false, msg: "Print an attempt for every key from 1 to 25. One of them should read as English." };
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
