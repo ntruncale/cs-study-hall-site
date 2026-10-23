@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Bits and Binary</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.hexagram { width: 92px; flex: none; }
+.hexagram rect { fill: var(--ink); }
+.hexagram text { fill: var(--muted); font: 700 11px var(--font-code); }
+.places { overflow-x: auto; }
+.places table { border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 26rem; }
+.places th, .places td { border: 1px solid var(--line); padding: 6px 10px; text-align: center; }
+.places th { font-size: var(--step-0); color: var(--muted); font-weight: 650; background: var(--surface); }
+.places td { font-family: var(--font-code); font-variation-settings: "MONO" 1; font-weight: 700; font-size: 1.1rem; background: var(--surface); }
+.places td.one { color: var(--accent); background: var(--accent-soft); }
+.places caption { caption-side: bottom; text-align: left; padding-top: 8px; font-size: var(--step-0); color: var(--muted); }
+.letters { display: grid; grid-template-columns: repeat(auto-fill, minmax(3.6rem, 1fr)); gap: 4px; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.letters span { border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; text-align: center; background: var(--surface); }
+.letters b { color: var(--accent); }
+.secret { display: flex; flex-wrap: wrap; gap: 8px; }
+.secret span { font-family: var(--font-code); font-variation-settings: "MONO" 1; font-weight: 700; font-size: 1.15rem; padding: 6px 10px; border-radius: 8px; background: var(--console-bg); color: var(--console-ink); letter-spacing: 0.06em; }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U1 · M1</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 1: How computers work · Module 1 of 3</span>
+    <h1>Bits and Binary</h1>
+    <p class="lede">Every photo, song, and message on your iPad is stored as a long list of 0s and 1s. Today you'll learn to read and write that code yourself.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 35 minutes</span>
+      <span><b>To pass:</b> finish the 6 tasks, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="welcome">
+      <h2>Welcome to CS in Study Hall</h2>
+      <ul>
+        <li>You'll do <b>one module each study hall</b>. Work through the 7 steps from top to bottom.</li>
+        <li>The tasks <b>check your work automatically</b>. If you're stuck, tap <b>Show a hint</b> first.</li>
+        <li>The <b>senior helpers</b> can coach you, but they won't give you answers.</li>
+        <li>When all 6 tasks are done, you get a <b>completion code</b>. Enter it in the Blackbaud check with a short quiz. That's how you pass.</li>
+        <li>Your progress saves on this iPad, so you can stop and come back.</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>A letter from Beijing</h2><span class="ipp">Context</span></div>
+    <div class="busa">
+      <svg class="hexagram" viewBox="0 0 92 120" role="img" aria-label="A hexagram: six stacked lines, solid lines labeled 1 and broken lines labeled 0">
+        <rect x="0" y="4" width="64" height="10" rx="2"/><text x="74" y="13">1</text>
+        <rect x="0" y="24" width="28" height="10" rx="2"/><rect x="36" y="24" width="28" height="10" rx="2"/><text x="74" y="33">0</text>
+        <rect x="0" y="44" width="64" height="10" rx="2"/><text x="74" y="53">1</text>
+        <rect x="0" y="64" width="64" height="10" rx="2"/><text x="74" y="73">1</text>
+        <rect x="0" y="84" width="28" height="10" rx="2"/><rect x="36" y="84" width="28" height="10" rx="2"/><text x="74" y="93">0</text>
+        <rect x="0" y="104" width="64" height="10" rx="2"/><text x="74" y="113">1</text>
+      </svg>
+      <div class="prose">
+        <p>Around 1700, the German mathematician <b>Gottfried Leibniz</b> invented a way to write every number using only two digits: <b>0 and 1</b>. He wrote about it in letters to a friend in China, a French Jesuit missionary named <b>Fr. Joachim Bouvet, S.J.</b>, who lived at the court of the Kangxi Emperor in Beijing.</p>
+        <p>Bouvet had been studying the <i>I Ching</i>, an ancient Chinese book. It contains 64 symbols called hexagrams, each a stack of six lines that are either solid or broken. Bouvet noticed something amazing. If a solid line means 1 and a broken line means 0, the hexagrams line up with Leibniz's binary numbers. He sent Leibniz a diagram, and in 1703 Leibniz published his famous paper on binary.</p>
+        <p>Two people from different countries and cultures shared what they knew, and saw something new. Three hundred years later, <b>every computer on Earth runs on binary</b>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Three ideas</h2><span class="ipp">Experience</span></div>
+
+    <div class="prose">
+      <h3>Idea 1: A bit is a tiny switch</h3>
+      <p>Inside your iPad are billions of tiny electronic switches. Each one is either <b>on (1)</b> or <b>off (0)</b>. One switch holds one <b>bit</b>, short for "binary digit." A group of <b>8 bits</b> is called a <b>byte</b>.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 2: Each place is worth double the one to its right</h3>
+      <p>In normal numbers, places are worth 1, 10, 100, and so on. In binary, the places are worth <b>1, 2, 4, 8, 16, 32, 64, 128</b>, doubling each time. To read a binary number, add up the places that have a 1.</p>
+    </div>
+    <div class="places">
+      <table>
+        <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td>0</td><td class="one">1</td><td class="one">1</td><td>0</td><td class="one">1</td></tr>
+        <caption>00001101 = 8 + 4 + 1 = <b>13</b></caption>
+      </table>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 3: Bits mean whatever we agree they mean</h3>
+      <p>The bits <code class="inline">01000001</code> are the number 65. But computers also agree that 65 stands for the letter <b>A</b>. In a picture, a 1 can mean "color this dot dark." The bits are the same. The <b>code</b> that people agree on gives them meaning.</p>
+    </div>
+
+    <div class="callout"><b>Tip:</b> Keep the place values handy: <b>16, 8, 4, 2, 1</b>. You'll use them in almost every task today.</div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Try it</h2><span class="ipp">Experience</span></div>
+
+    <!-- T1 -->
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Task 1: Flip the cards</h3><span class="chip" data-chip="t1">To do</span></div>
+      <p>Each card is one bit. Tap a card to flip it on (1) or off (0). Make each target number, one at a time.</p>
+      <div class="targets" id="t1-targets"></div>
+      <div class="bitcards" id="t1-cards"></div>
+      <div class="bit-readout">Binary: <b id="t1-bits">00000</b> Number: <span class="dec" id="t1-dec">0</span></div>
+      <div id="t1-fb"></div>
+      <div class="row"><button class="ghost" id="t1-hint">Show a hint</button></div>
+      <div class="hints" id="t1-hints"></div>
+    </div>
+
+    <!-- T2 -->
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Task 2: Binary to number</h3><span class="chip" data-chip="t2">To do</span></div>
+      <p>Write each binary number as a regular number.</p>
+      <div class="num-q"><span class="bits">0101</span><label class="goal" for="t2-a">=</label><input id="t2-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t2-a-m"></span></div>
+      <div class="num-q"><span class="bits">1100</span><label class="goal" for="t2-b">=</label><input id="t2-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t2-b-m"></span></div>
+      <div class="num-q"><span class="bits">10110</span><label class="goal" for="t2-c">=</label><input id="t2-c" inputmode="numeric" autocomplete="off"><span class="mark" id="t2-c-m"></span></div>
+      <div class="row"><button class="primary" id="t2-check">Check my answers</button><button class="ghost" id="t2-hint">Show a hint</button></div>
+      <div id="t2-fb"></div>
+      <div class="hints" id="t2-hints"></div>
+    </div>
+
+    <!-- T3 -->
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Task 3: The biggest byte</h3><span class="chip" data-chip="t3">To do</span></div>
+      <p>A byte is 8 bits. What is the <b>biggest</b> number you can write with one byte?</p>
+      <div class="choices" id="t3-choices"></div>
+      <div id="t3-fb"></div>
+    </div>
+
+    <!-- T4 -->
+    <div class="task" id="t4">
+      <div class="task-head"><h3>Task 4: Decode the secret word</h3><span class="chip" data-chip="t4">To do</span></div>
+      <p>In this code, each letter is a number: A = 1, B = 2, and so on up to Z = 26. Each number is written in 5-bit binary. Decode the word.</p>
+      <div class="secret" aria-label="Secret word in binary">
+        <span>10011</span><span>00101</span><span>10010</span><span>10110</span><span>00101</span>
+      </div>
+      <div class="letters" id="t4-letters" aria-label="Letter chart"></div>
+      <div class="num-q"><label class="goal" for="t4-a">The word is</label><input id="t4-a" class="answer wide" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
+      <div class="row"><button class="primary" id="t4-check">Check</button><button class="ghost" id="t4-hint">Show a hint</button></div>
+      <div id="t4-fb"></div>
+      <div class="hints" id="t4-hints"></div>
+    </div>
+
+    <!-- T5 -->
+    <div class="task" id="t5">
+      <div class="task-head"><h3>Task 5: Draw with bits</h3><span class="chip" data-chip="t5">To do</span></div>
+      <p>Pictures are made of tiny dots called <b>pixels</b>. Here, 1 means a dark pixel and 0 means a light one. Tap pixels to match the code for each row. A ✓ appears when a row is right.</p>
+      <div class="pixel-wrap">
+        <div class="pixels" id="t5-grid" aria-label="8 by 8 pixel grid"></div>
+        <ul class="rowcodes" id="t5-rows"></ul>
+      </div>
+      <div class="row"><button class="ghost" id="t5-clear">Clear grid</button><button class="ghost" id="t5-hint">Show a hint</button></div>
+      <div id="t5-fb"></div>
+      <div class="hints" id="t5-hints"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: your own pixel icon</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>Design an 8×8 icon for a school club, team, or service group: a heart, a ball, a book, a smile, anything you like. The page writes your picture in binary as you draw.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>Your icon must:</h3><span class="chip" data-chip="build">To do</span></div>
+      <ul class="status-list" id="build-reqs">
+        <li data-req="pixels">○ Use at least 10 dark pixels</li>
+        <li data-req="rows">○ Have at least 3 different rows (not just the same row repeated)</li>
+        <li data-req="numbers">○ Convert two of your rows to regular numbers (shown below once your drawing is ready)</li>
+      </ul>
+      <div class="pixel-wrap">
+        <div class="pixels" id="b-grid" aria-label="Your 8 by 8 icon"></div>
+        <ul class="rowcodes" id="b-rows"></ul>
+      </div>
+      <div class="row"><button class="ghost" id="b-clear">Clear grid</button></div>
+      <div id="b-numbers" hidden>
+        <p class="goal">Use the place values 128, 64, 32, 16, 8, 4, 2, 1.</p>
+        <div class="num-q"><span class="bits" id="b-q1-bits"></span><label class="goal" for="b-q1" id="b-q1-label">=</label><input id="b-q1" inputmode="numeric" autocomplete="off"><span class="mark" id="b-q1-m"></span></div>
+        <div class="num-q"><span class="bits" id="b-q2-bits"></span><label class="goal" for="b-q2" id="b-q2-label">=</label><input id="b-q2" inputmode="numeric" autocomplete="off"><span class="mark" id="b-q2-m"></span></div>
+        <div class="row"><button class="primary" id="b-check">Check my numbers</button></div>
+      </div>
+      <div id="b-fb"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">A photo on your phone is just millions of 0s and 1s, yet it can hold a memory of someone you love. What is something about a person that could never be stored in bits? Why does that matter as computers do more and more?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="Something that could never be stored in bits is…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all 6 tasks to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All tasks done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U1·M1 Check: Bits and Binary.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your icon's binary rows. Tap the button below, then paste them in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my icon's binary</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: counting on your fingers</h3><span class="chip opt">Optional</span></div>
+      <div class="prose">
+        <p>If each finger is a bit (up = 1, down = 0), one hand can count from 0 to 31. What is the biggest number you can show using <b>all ten fingers</b>?</p>
+      </div>
+      <div class="num-q"><label class="goal" for="x1-a">Biggest number:</label><input id="x1-a" inputmode="numeric" autocomplete="off"><button id="x1-check">Check</button></div>
+      <div id="x1-fb"></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var el = Course.el, $ = function (id) { return document.getElementById(id); };
+  var state = Course.state;
+
+  function rowBits(n) { return ("00000000" + n.toString(2)).slice(-8); }
+  function rowsText(rows) {
+    return rows.map(function (n, i) { return "Row " + (i + 1) + ": " + rowBits(n); }).join("\n");
+  }
+
+  Course.init({
+    id: "u1m1",
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Flip the cards", t2: "Task 2: Binary to number", t3: "Task 3: The biggest byte", t4: "Task 4: Decode the secret word", t5: "Task 5: Draw with bits", build: "Build: your own pixel icon" },
+    code: [76, 69, 73, 66, 45, 49, 55, 48, 51],
+    buildText: function () { return "My pixel icon in binary\n" + rowsText(state.extra.icon || [0, 0, 0, 0, 0, 0, 0, 0]); }
+  });
+
+  /* ---------- small helper for typed number answers ---------- */
+  function checkNumber(inputId, expected) {
+    var input = $(inputId), mark = $(inputId + "-m");
+    var v = input.value.trim();
+    var ok = v !== "" && Number(v) === expected;
+    mark.textContent = ok ? "✓" : (v === "" ? "" : "✗");
+    mark.className = "mark " + (ok ? "ok" : "bad");
+    return ok;
+  }
+
+  /* ---------- Task 1: binary cards ---------- */
+  (function () {
+    var values = [16, 8, 4, 2, 1];
+    var targets = [9, 21, 31];
+    var on = [false, false, false, false, false];
+    var step = state.extra.t1Step || 0;
+    if (state.done.t1) step = targets.length;
+    var cardsEl = $("t1-cards"), targetsEl = $("t1-targets"), fb = $("t1-fb");
+    var cards = values.map(function (v, i) {
+      var b = el("button", { "class": "bitcard off", type: "button", "aria-pressed": "false", "aria-label": "Card worth " + v });
+      var dots = el("span", { "class": "dots" });
+      for (var d = 0; d < v; d++) dots.appendChild(el("i"));
+      b.appendChild(dots);
+      b.appendChild(el("span", { "class": "val" }, String(v)));
+      b.appendChild(el("span", { "class": "bit" }, "0"));
+      b.addEventListener("click", function () { on[i] = !on[i]; update(); });
+      cardsEl.appendChild(b);
+      return b;
+    });
+    function renderTargets() {
+      targetsEl.innerHTML = "";
+      targets.forEach(function (t, i) {
+        var cls = "target" + (i < step ? " hit" : i === step ? " now" : "");
+        targetsEl.appendChild(el("span", { "class": cls }, (i < step ? "✓ " : "Make ") + t));
+      });
+    }
+    function update() {
+      var total = 0, bits = "";
+      cards.forEach(function (c, i) {
+        c.classList.toggle("off", !on[i]);
+        c.setAttribute("aria-pressed", on[i] ? "true" : "false");
+        c.querySelector(".bit").textContent = on[i] ? "1" : "0";
+        if (on[i]) total += values[i];
+        bits += on[i] ? "1" : "0";
+      });
+      $("t1-bits").textContent = bits;
+      $("t1-dec").textContent = total;
+      if (step < targets.length && total === targets[step]) {
+        step++;
+        state.extra.t1Step = step; Course.save();
+        if (step === targets.length) {
+          Course.feedback(fb, true, "All three made. " + bits + " is 31, the biggest number 5 bits can hold.");
+          Course.markDone("t1");
+        } else {
+          Course.feedback(fb, true, targets[step - 1] + " is " + bits + " in binary. Now make " + targets[step] + ".");
+        }
+      }
+      renderTargets();
+    }
+    update();
+    if (state.done.t1) Course.feedback(fb, true, "Done. You can keep flipping cards to explore.");
+    Course.hints("t1", [
+      "Start with the biggest card that fits. For 9: does 16 fit into 9? No. Does 8? Yes. Then you need 1 more.",
+      "21 = 16 + 4 + 1. Turn those three cards on and the rest off.",
+      "31 is all the cards added together."
+    ], $("t1-hint"), $("t1-hints"));
+  })();
+
+  /* ---------- Task 2: binary to number ---------- */
+  (function () {
+    var answers = { "t2-a": 5, "t2-b": 12, "t2-c": 22 };
+    var saved = state.extra.t2 || {};
+    Object.keys(answers).forEach(function (id) {
+      $(id).value = saved[id] || "";
+      $(id).addEventListener("input", function () { saved[id] = $(id).value; state.extra.t2 = saved; Course.save(); });
+    });
+    $("t2-check").addEventListener("click", function () {
+      var wrong = Object.keys(answers).filter(function (id) { return !checkNumber(id, answers[id]); });
+      if (!wrong.length) {
+        Course.feedback($("t2-fb"), true, "All correct. You're reading binary.");
+        Course.markDone("t2");
+      } else {
+        Course.feedback($("t2-fb"), false, wrong.length === 3 ? "Not yet. Write the place values over each digit, then add the ones with a 1." : "Close. Fix the ones marked ✗.");
+      }
+    });
+    Course.hints("t2", [
+      "For a 4-bit number, the places are 8, 4, 2, 1 from left to right. For 5 bits: 16, 8, 4, 2, 1.",
+      "0101: the 1s are in the 4 place and the 1 place. So 4 + 1 = ?",
+      "10110: the 1s are in the 16, 4, and 2 places."
+    ], $("t2-hint"), $("t2-hints"));
+  })();
+
+  /* ---------- Task 3: multiple choice ---------- */
+  Course.mc({
+    task: "t3", container: "t3-choices", feedback: "t3-fb",
+    choices: [
+      { text: "8", why: "Not quite. 8 is the number of bits in a byte, not the biggest number it can hold." },
+      { text: "128", why: "Close. 128 is the value of the leftmost place. But you can turn on all the other places too." },
+      { text: "255", right: true, why: "Right. 11111111 = 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = 255. Counting 0, one byte can hold 256 different values." },
+      { text: "256", why: "Close. A byte can hold 256 different values, but one of them is 0. So the biggest is 255." }
+    ]
+  });
+
+  /* ---------- Task 4: secret word ---------- */
+  (function () {
+    var chart = $("t4-letters");
+    for (var i = 0; i < 26; i++) {
+      var s = el("span");
+      s.appendChild(el("b", null, String.fromCharCode(65 + i)));
+      s.appendChild(document.createTextNode(" " + (i + 1)));
+      chart.appendChild(s);
+    }
+    var input = $("t4-a");
+    input.value = (state.extra.t4 || "");
+    input.addEventListener("input", function () { state.extra.t4 = input.value; Course.save(); });
+    $("t4-check").addEventListener("click", function () {
+      var v = input.value.trim().toUpperCase().replace(/\s+/g, "");
+      if (v === "SERVE") {
+        Course.feedback($("t4-fb"), true, "SERVE. Fitting for a school that forms people for others.");
+        Course.markDone("t4");
+      } else if (v.length !== 5) {
+        Course.feedback($("t4-fb"), false, "There are 5 binary codes, so the word has 5 letters.");
+      } else {
+        var right = "SERVE".split("").filter(function (c, i) { return v[i] === c; }).length;
+        Course.feedback($("t4-fb"), false, right + " of 5 letters are right. Re-check the others with the place values 16, 8, 4, 2, 1.");
+      }
+    });
+    Course.hints("t4", [
+      "Decode one code at a time. 10011 = 16 + 2 + 1 = 19. Which letter is 19?",
+      "00101 = 4 + 1 = 5, which is E. That letter appears twice.",
+      "10010 = 16 + 2. 10110 = 16 + 4 + 2."
+    ], $("t4-hint"), $("t4-hints"));
+  })();
+
+  /* ---------- pixel grids ---------- */
+  function pixelGrid(gridEl, rows, onChange) {
+    var buttons = [];
+    for (var r = 0; r < 8; r++) {
+      for (var c = 0; c < 8; c++) {
+        (function (r, c) {
+          var b = el("button", { type: "button", "aria-label": "Row " + (r + 1) + ", column " + (c + 1) });
+          b.addEventListener("click", function () { rows[r] ^= (128 >> c); paint(); onChange(); });
+          gridEl.appendChild(b);
+          buttons.push(b);
+        })(r, c);
+      }
+    }
+    function paint() {
+      buttons.forEach(function (b, i) {
+        var on = (rows[Math.floor(i / 8)] & (128 >> (i % 8))) !== 0;
+        b.classList.toggle("on", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+    }
+    paint();
+    return { paint: paint };
+  }
+  function countOn(rows) { return rows.reduce(function (s, n) { var k = 0; while (n) { k += n & 1; n >>= 1; } return s + k; }, 0); }
+
+  /* ---------- Task 5: match the picture ---------- */
+  (function () {
+    var target = [24, 24, 126, 126, 24, 24, 24, 24]; // a cross
+    var rows = state.extra.t5 || [0, 0, 0, 0, 0, 0, 0, 0];
+    state.extra.t5 = rows;
+    var list = $("t5-rows");
+    function renderRows() {
+      list.innerHTML = "";
+      target.forEach(function (t, i) {
+        var li = el("li");
+        li.appendChild(el("span", { "class": "rn" }, "Row " + (i + 1)));
+        li.appendChild(el("span", null, rowBits(t)));
+        li.appendChild(el("span", { "class": rows[i] === t ? "ok" : "bad" }, rows[i] === t ? "✓" : ""));
+        list.appendChild(li);
+      });
+    }
+    function changed() {
+      Course.save();
+      renderRows();
+      var all = target.every(function (t, i) { return rows[i] === t; });
+      if (all) {
+        Course.feedback($("t5-fb"), true, "You drew a cross from nothing but 0s and 1s. Your screen does the same thing with millions of pixels.");
+        Course.markDone("t5");
+      } else {
+        $("t5-fb").innerHTML = "";
+      }
+    }
+    var grid = pixelGrid($("t5-grid"), rows, changed);
+    $("t5-clear").addEventListener("click", function () { for (var i = 0; i < 8; i++) rows[i] = 0; grid.paint(); changed(); });
+    renderRows();
+    if (state.done.t5) Course.feedback($("t5-fb"), true, "Done.");
+    Course.hints("t5", [
+      "Work one row at a time, left to right. Each 1 is a dark pixel in that column.",
+      "Rows 1 and 2 are 00011000: only the 4th and 5th pixels are dark.",
+      "Rows 3 and 4 are 01111110: everything dark except the first and last pixel."
+    ], $("t5-hint"), $("t5-hints"));
+  })();
+
+  /* ---------- Build: own icon ---------- */
+  (function () {
+    var rows = state.extra.icon || [0, 0, 0, 0, 0, 0, 0, 0];
+    state.extra.icon = rows;
+    var list = $("b-rows");
+    var asked = [];
+    function pickRows() {
+      // Ask about the first two different rows that have at least one dark pixel.
+      var seen = {}, picked = [];
+      rows.forEach(function (n, i) { if (n && !seen[n] && picked.length < 2) { seen[n] = true; picked.push(i); } });
+      return picked;
+    }
+    function reqs() {
+      var distinct = {};
+      rows.forEach(function (n) { if (n) distinct[n] = true; });
+      return { pixels: countOn(rows) >= 10, rows: Object.keys(distinct).length >= 3 };
+    }
+    function renderReqs(numbersOk) {
+      var q = reqs();
+      q.numbers = !!numbersOk;
+      document.querySelectorAll("#build-reqs li").forEach(function (li) {
+        var ok = q[li.getAttribute("data-req")];
+        li.classList.toggle("done", ok);
+        li.textContent = (ok ? "✓ " : "○ ") + li.textContent.replace(/^[✓○]\s*/, "");
+      });
+      return q;
+    }
+    function render() {
+      list.innerHTML = "";
+      rows.forEach(function (n, i) {
+        var li = el("li");
+        li.appendChild(el("span", { "class": "rn" }, "Row " + (i + 1)));
+        li.appendChild(el("span", null, rowBits(n)));
+        list.appendChild(li);
+      });
+      var q = renderReqs(state.done.build && sameAsked());
+      var ready = q.pixels && q.rows;
+      $("b-numbers").hidden = !ready;
+      if (ready) {
+        var picked = pickRows();
+        if (picked.join() !== asked.join()) {
+          asked = picked;
+          ["b-q1", "b-q2"].forEach(function (id, k) {
+            $(id + "-bits").textContent = rowBits(rows[asked[k]]);
+            $(id + "-label").textContent = "(row " + (asked[k] + 1) + ") =";
+            $(id).value = ""; $(id + "-m").textContent = "";
+          });
+        }
+      }
+    }
+    function sameAsked() {
+      var saved = state.extra.iconAsked;
+      return !!saved && saved.join() === pickRows().map(function (i) { return rows[i]; }).join();
+    }
+    function changed() { Course.save(); $("b-fb").innerHTML = ""; render(); }
+    var grid = pixelGrid($("b-grid"), rows, changed);
+    $("b-clear").addEventListener("click", function () { for (var i = 0; i < 8; i++) rows[i] = 0; grid.paint(); changed(); });
+    $("b-check").addEventListener("click", function () {
+      var a = checkNumber("b-q1", rows[asked[0]]);
+      var b = checkNumber("b-q2", rows[asked[1]]);
+      if (a && b) {
+        state.extra.iconAsked = asked.map(function (i) { return rows[i]; });
+        Course.save();
+        renderReqs(true);
+        Course.feedback($("b-fb"), true, "Your icon is done. Copy its binary into Blackbaud in Step 6.");
+        Course.markDone("build");
+      } else {
+        Course.feedback($("b-fb"), false, "Not yet. Write 128, 64, 32, 16, 8, 4, 2, 1 over the digits and add the places that have a 1.");
+      }
+    });
+    render();
+    if (state.done.build) Course.feedback($("b-fb"), true, "Done. You can keep editing your icon; the copy button always uses your latest design.");
+  })();
+
+  /* ---------- Go further ---------- */
+  $("x1-check").addEventListener("click", function () {
+    var v = Number($("x1-a").value.trim());
+    if (v === 1023) Course.feedback($("x1-fb"), true, "Right. 10 bits make 1,024 values, from 0 to 1,023. Every bit you add doubles the count.");
+    else if (v === 1024) Course.feedback($("x1-fb"), false, "Close. There are 1,024 different values, but one of them is 0.");
+    else Course.feedback($("x1-fb"), false, "Not yet. One hand (5 bits) goes up to 31. Each extra finger doubles what you can count.");
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -14,224 +14,11 @@ img { max-width: 100%; }
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
-<style>
-/* Layout: one reading column under a sticky step bar; every module uses the same seven steps so students always know where they are. */
-:root {
-  --paper: #F4F6FA;
-  --surface: #FFFFFF;
-  --ink: #172033;
-  --muted: #586379;
-  --line: #DCE1EA;
-  --accent: #2346B8;
-  --accent-soft: #E7ECFB;
-  --hint-bg: #FFF4C2;
-  --hint-ink: #5C4700;
-  --ok: #13744A;
-  --ok-soft: #E2F4EA;
-  --bad: #B42318;
-  --bad-soft: #FDECEA;
-  --console-bg: #121826;
-  --console-ink: #E3E8F2;
-  --console-dim: #8C97AD;
-  --font-body: "Recursive", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-code: "Recursive", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --step-0: 0.875rem;
-  --step-1: 1rem;
-  --step-2: 1.1875rem;
-  --step-3: 1.5rem;
-  --step-4: 2.25rem;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #0E131C; --surface: #161D29; --ink: #E5EAF3; --muted: #9AA5BA; --line: #2A3445;
-    --accent: #8EA8FF; --accent-soft: #1F2A4A; --hint-bg: #3B3210; --hint-ink: #FBE38E;
-    --ok: #5FD394; --ok-soft: #12301F; --bad: #FF8A80; --bad-soft: #3A1715;
-    --console-bg: #090D14; --console-ink: #E3E8F2; --console-dim: #7D889E;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --paper: #0E131C; --surface: #161D29; --ink: #E5EAF3; --muted: #9AA5BA; --line: #2A3445;
-  --accent: #8EA8FF; --accent-soft: #1F2A4A; --hint-bg: #3B3210; --hint-ink: #FBE38E;
-  --ok: #5FD394; --ok-soft: #12301F; --bad: #FF8A80; --bad-soft: #3A1715;
-  --console-bg: #090D14; --console-ink: #E3E8F2; --console-dim: #7D889E;
-  color-scheme: dark;
-}
+<link rel="stylesheet" href="assets/course.css">
 
-* { box-sizing: border-box; }
-body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-size: var(--step-1);
-  line-height: 1.6;
-  font-variation-settings: "CASL" 0, "MONO" 0;
-}
-body::before {
-  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
-  z-index: 10; background: var(--surface);
-}
-code, pre, textarea, .mono { font-family: var(--font-code); font-variation-settings: "MONO" 1, "CASL" 0; }
-h1, h2, h3 { text-wrap: balance; line-height: 1.2; margin: 0; }
-h1, h2 { font-variation-settings: "CASL" 1, "MONO" 0; }
-h1 { font-size: var(--step-4); font-weight: 850; letter-spacing: -0.01em; }
-h2 { font-size: var(--step-3); font-weight: 800; }
-h3 { font-size: var(--step-2); font-weight: 700; }
-p { margin: 0; }
-a { color: var(--accent); }
-:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 
-/* Sticky step bar */
-.bar {
-  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
-  background: var(--surface); border-bottom: 1px solid var(--line);
-}
-.bar-inner, .wrap {
-  max-width: 780px; margin: 0 auto;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-}
-.bar-inner { display: flex; align-items: center; gap: 12px; padding-block: 10px; }
-.bar-title { font-weight: 750; white-space: nowrap; font-size: var(--step-0); }
-.steps { display: flex; gap: 6px; overflow-x: auto; flex: 1; min-width: 0; scrollbar-width: none; }
-.steps::-webkit-scrollbar { display: none; }
-.steps a {
-  flex: none; text-decoration: none; color: var(--muted); font-size: var(--step-0);
-  padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap;
-}
-.steps a.done { color: var(--ok); border-color: var(--ok); background: var(--ok-soft); }
-.meter { flex: none; font-size: var(--step-0); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-
-/* Page */
-.wrap { padding-block: 28px 64px; display: grid; gap: 40px; }
-header.intro { display: grid; gap: 12px; }
-.eyebrow { font-size: var(--step-0); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
-.lede { font-size: var(--step-2); color: var(--muted); max-width: 62ch; }
-.facts { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: var(--step-0); color: var(--muted); }
-.facts b { color: var(--ink); font-weight: 650; }
-
-.recap {
-  border: 1px dashed var(--line); border-radius: 10px; padding: 14px 16px;
-  display: grid; gap: 4px; font-size: var(--step-0);
-}
-.recap strong { font-size: var(--step-0); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-
-section.step { display: grid; gap: 16px; scroll-margin-top: 72px; }
-.step-head { display: flex; align-items: baseline; gap: 12px; }
-.step-num {
-  flex: none; width: 2rem; height: 2rem; border-radius: 50%; display: grid; place-items: center;
-  background: var(--accent); color: var(--surface); font-weight: 800; font-size: var(--step-0);
-}
-.step-head .ipp { font-size: var(--step-0); color: var(--muted); margin-left: auto; white-space: nowrap; }
-.prose { display: grid; gap: 12px; max-width: 66ch; }
-
-.example { display: grid; gap: 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
-.example pre { margin: 0; padding: 12px 14px; overflow-x: auto; font-size: 0.95rem; line-height: 1.5; }
-.example .src { background: var(--surface); }
-.example .out { background: var(--console-bg); color: var(--console-ink); }
-.example .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 6px 14px 0; }
-.example .src-wrap .label { color: var(--muted); background: var(--surface); }
-.example .out-wrap { background: var(--console-bg); }
-.example .out-wrap .label { color: var(--console-dim); }
-code.inline { background: var(--accent-soft); padding: 1px 6px; border-radius: 4px; font-size: 0.92em; }
-
-.callout { background: var(--hint-bg); color: var(--hint-ink); border-radius: 10px; padding: 12px 16px; font-size: var(--step-0); }
-.callout b { font-weight: 750; }
-
-.busa {
-  display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px;
-}
-.punch { width: 84px; height: 110px; flex: none; }
-.punch rect.card { fill: var(--hint-bg); stroke: var(--line); }
-.punch rect.hole { fill: var(--ink); }
-@media (max-width: 480px) { .busa { grid-template-columns: 1fr; } }
-
-/* Task cards */
-.task { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 12px; min-width: 0; }
-.task-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.task-head h3 { flex: 1; min-width: 0; }
-.chip { font-size: 0.8rem; font-weight: 650; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
-.chip.done { color: var(--ok); border-color: var(--ok); background: var(--ok-soft); }
-.chip.opt { color: var(--accent); border-color: var(--accent); }
-.goal { font-size: var(--step-0); color: var(--muted); }
-.goal pre { margin: 6px 0 0; padding: 10px 12px; background: var(--console-bg); color: var(--console-ink); border-radius: 8px; overflow-x: auto; font-size: 0.9rem; }
-
-textarea.code {
-  width: 100%; min-height: 9.5rem; resize: vertical; padding: 12px 14px;
-  font-size: 1rem; line-height: 1.5; tab-size: 4;
-  border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink);
-}
-.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-button {
-  font: inherit; font-size: var(--step-0); font-weight: 650; cursor: pointer;
-  padding: 9px 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
-  min-height: 44px;
-}
-button.primary { background: var(--accent); color: var(--surface); border-color: var(--accent); }
-button.ghost { background: transparent; }
-button:disabled { opacity: 0.55; cursor: not-allowed; }
-.console {
-  background: var(--console-bg); color: var(--console-ink); border-radius: 8px; padding: 10px 14px;
-  font-size: 0.95rem; min-height: 2.6rem; white-space: pre-wrap; overflow-x: auto; margin: 0;
-}
-.console:empty::before { content: "Output appears here after you tap Run."; color: var(--console-dim); }
-.feedback { border-radius: 8px; padding: 10px 14px; font-size: var(--step-0); display: grid; gap: 6px; }
-.feedback.ok { background: var(--ok-soft); color: var(--ok); }
-.feedback.bad { background: var(--bad-soft); color: var(--bad); }
-.feedback .raw { font-family: var(--font-code); font-variation-settings: "MONO" 1; opacity: 0.85; font-size: 0.82rem; }
-.feedback ul { margin: 0; padding-left: 1.2rem; }
-.hints { display: grid; gap: 8px; }
-.hint { background: var(--hint-bg); color: var(--hint-ink); border-radius: 8px; padding: 8px 12px; font-size: var(--step-0); }
-
-/* Multiple choice */
-.choices { display: grid; gap: 8px; }
-.choice {
-  text-align: left; display: grid; grid-template-columns: 1.6rem 1fr; gap: 8px; align-items: start; font-weight: 500;
-}
-.choice .letter { font-weight: 800; color: var(--accent); }
-.choice pre { margin: 0; font-size: 0.92rem; white-space: pre-wrap; }
-.choice.right { border-color: var(--ok); background: var(--ok-soft); }
-.choice.wrong { border-color: var(--bad); background: var(--bad-soft); }
-
-/* Parsons */
-.parsons { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-@media (max-width: 640px) { .parsons { grid-template-columns: 1fr; } }
-.parsons h4 { margin: 0 0 6px; font-size: var(--step-0); color: var(--muted); font-weight: 650; }
-.pzone { min-height: 9rem; border: 1px dashed var(--line); border-radius: 8px; padding: 8px; display: grid; gap: 6px; align-content: start; background: var(--paper); }
-.pline {
-  text-align: left; font-family: var(--font-code); font-variation-settings: "MONO" 1; font-weight: 500;
-  font-size: 0.9rem; white-space: pre-wrap; word-break: break-word; min-height: 40px; padding: 8px 10px;
-}
-.pzone .empty { color: var(--muted); font-size: var(--step-0); padding: 6px; }
-
-/* Reflection + check */
-.reflect-q { font-size: var(--step-2); font-weight: 600; max-width: 62ch; }
-textarea.draft { width: 100%; min-height: 7rem; padding: 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; resize: vertical; }
-.check-card { background: var(--surface); border: 2px solid var(--line); border-radius: 12px; padding: 20px; display: grid; gap: 14px; }
-.check-card.unlocked { border-color: var(--ok); }
-.code-badge {
-  font-family: var(--font-code); font-variation-settings: "MONO" 1; font-weight: 800; letter-spacing: 0.12em;
-  font-size: 2rem; color: var(--ok); background: var(--ok-soft); padding: 8px 18px; border-radius: 10px; justify-self: start;
-  user-select: all;
-}
-ol.todo { margin: 0; padding-left: 1.3rem; display: grid; gap: 6px; }
-.status-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: var(--step-0); }
-.status-list li.done { color: var(--ok); }
-.status-list li:not(.done) { color: var(--muted); }
-.loadnote { font-size: var(--step-0); color: var(--muted); }
-.loadnote.bad { color: var(--bad); }
-footer { font-size: var(--step-0); color: var(--muted); display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 18px; }
-
-@media (prefers-reduced-motion: no-preference) {
-  .feedback, .hint { animation: rise 160ms ease-out; }
-  @keyframes rise { from { transform: translateY(4px); opacity: 0.4; } to { transform: none; opacity: 1; } }
-}
-</style>
 </head>
 <body>
-
-
 <div class="bar">
   <div class="bar-inner">
     <span class="bar-title">U3 · M1</span>
@@ -470,179 +257,64 @@ For the greater glory of God.</pre></div>
 
 <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js" onerror="window.__skFail=true"></script>
 <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js" onerror="window.__skFail=true"></script>
+<script src="assets/course.js"></script>
 <script>
 (function () {
   "use strict";
+  var py = Course.python;
 
-  var MODULE_ID = "u3m1";
-  var REQUIRED = ["t1", "t2", "t3", "t4", "t5", "build"];
-  var TASK_NAMES = { t1: "Task 1: Predict the output", t2: "Task 2: Make it yours", t3: "Task 3: Put the code in order", t4: "Task 4: Fix the bugs", t5: "Task 5: Use variables", build: "Build: service announcement" };
-  // Completion code is assembled at runtime so it doesn't appear as plain text in the page.
-  var CODE = [66, 85, 83, 65, 45, 52, 57].map(function (c) { return String.fromCharCode(c); }).join("");
+  Course.init({
+    id: "u3m1",
+    usesPython: true,
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Predict the output", t2: "Task 2: Make it yours", t3: "Task 3: Put the code in order", t4: "Task 4: Fix the bugs", t5: "Task 5: Use variables", build: "Build: service announcement" },
+    code: [66, 85, 83, 65, 45, 52, 57],
+    buildText: function () { return document.getElementById("code-build").value; },
+    buildFallbackEl: function () { return document.getElementById("code-build"); }
+  });
 
-  /* ---------- saved progress ---------- */
-  var KEY = "cs-study-hall:" + MODULE_ID;
-  var state = { done: {}, code: {}, parsons: [], hints: {}, reflect: "" };
-  try {
-    var saved = JSON.parse(localStorage.getItem(KEY) || "null");
-    if (saved && typeof saved === "object") state = Object.assign(state, saved);
-  } catch (e) {}
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  /* Task 1 */
+  Course.mc({
+    task: "t1", container: "t1-choices", feedback: "t1-fb",
+    choices: [
+      { text: "saint\nIgnatius", right: true, why: "Right. \"saint\" in quotes is text, so Python prints the word saint. Without quotes, saint is the variable, so Python prints what's inside it: Ignatius." },
+      { text: "Ignatius\nIgnatius", why: "Not quite. Look at line 2: the quotes mean \"print these exact letters,\" so it prints the word saint, not the variable." },
+      { text: "saint\nsaint", why: "Not quite. Line 3 has no quotes, so Python looks inside the variable saint and finds \"Ignatius\"." },
+      { text: "An error message", why: "Not quite. Both lines are valid Python. One prints text in quotes; the other prints a variable." }
+    ]
+  });
 
-  /* ---------- Python runner ---------- */
-  var pythonReady = !window.__skFail && typeof window.Sk !== "undefined";
-  var note = document.getElementById("loadnote");
-  if (pythonReady) {
-    note.textContent = "Python is ready.";
-    note.hidden = true;
-  } else {
-    note.textContent = "Python couldn't load, so the Run buttons won't work. Tell a helper or your teacher. (The school network may be blocking cdn.jsdelivr.net.)";
-    note.classList.add("bad");
-  }
-
-  // iPads often swap in curly quotes and non-breaking spaces; Python needs plain ones.
-  function normalize(code) {
-    return code
-      .replace(/[“”„‟″«»]/g, '"')
-      .replace(/[‘’‚‛′]/g, "'")
-      .replace(/ /g, " ")
-      .replace(/\t/g, "    ");
-  }
-
-  function runPython(code) {
-    var out = "";
-    if (!pythonReady) return Promise.resolve({ output: "", error: "Python is not loaded." });
-    Sk.configure({
-      output: function (t) { out += t; },
-      read: function (x) {
-        if (!Sk.builtinFiles || !Sk.builtinFiles.files[x]) throw "File not found: " + x;
-        return Sk.builtinFiles.files[x];
-      },
-      __future__: Sk.python3,
-      execLimit: 3000
+  /* Build requirements checklist */
+  function buildReqs(code, r) {
+    var names = {};
+    code.split("\n").forEach(function (l) {
+      var m = /^\s*([A-Za-z_]\w*)\s*=(?!=)/.exec(l);
+      if (m) names[m[1]] = true;
     });
-    return Sk.misceval.asyncToPromise(function () {
-      return Sk.importMainWithBody("<stdin>", false, code, true);
-    }).then(function () {
-      return { output: out, error: null };
-    }, function (err) {
-      return { output: out, error: String(err) };
+    var vars = Object.keys(names);
+    var printLines = code.split("\n").filter(function (l) { return /^\s*print\s*\(/.test(l); }).join("\n");
+    var used = vars.filter(function (v) { return new RegExp("\\b" + v + "\\b").test(printLines); });
+    var lineCount = py.outLines(r ? r.output : "").length;
+    return {
+      varCount: vars.length, vars: vars.length >= 3,
+      lineCount: lineCount, lines: lineCount >= 4,
+      usedCount: used.length, used: used.length >= 3,
+      clean: !!r && !r.error
+    };
+  }
+  function renderBuildReqs(code, r) {
+    var q = buildReqs(code, r);
+    document.querySelectorAll("#build-reqs li").forEach(function (li) {
+      var ok = q[li.getAttribute("data-req")];
+      li.classList.toggle("done", ok);
+      li.textContent = (ok ? "✓ " : "○ ") + li.textContent.replace(/^[✓○]\s*/, "");
     });
   }
 
-  function countChar(s, ch) {
-    // Count quote characters, ignoring backslash-escaped ones.
-    var n = 0;
-    for (var i = 0; i < s.length; i++) { if (s[i] === "\\") { i++; continue; } if (s[i] === ch) n++; }
-    return n;
-  }
-  function parenGap(s) {
-    var stripped = s.replace(/"[^"]*"|'[^']*'/g, "");
-    return (stripped.match(/\(/g) || []).length - (stripped.match(/\)/g) || []).length;
-  }
-  function syntaxHint(line, n) {
-    if (countChar(line, '"') % 2 === 1 || countChar(line, "'") % 2 === 1)
-      return "Line " + n + " has an opening quote but no closing quote. Every string needs a quote at the start and the end.";
-    if (parenGap(line) > 0) return "Line " + n + " is missing a closing parenthesis ).";
-    if (parenGap(line) < 0) return "Line " + n + " has an extra ) or is missing an opening (.";
-    return null;
-  }
-
-  // Turn Python's error into advice a first-time programmer can act on.
-  function friendly(err, code) {
-    var m = /on line (\d+)/.exec(err);
-    var n = m ? parseInt(m[1], 10) : null;
-    var lines = code.split("\n");
-    var line = n ? (lines[n - 1] || "") : "";
-    var prev = n && n > 1 ? (lines[n - 2] || "") : "";
-    var name = /NameError: name '([^']+)'/.exec(err);
-    if (name) {
-      var w = name[1];
-      if (w.toLowerCase() === "print") return "Python doesn't know “" + w + "”. Use lowercase: print";
-      return "Python doesn't know “" + w + "” on line " + n + ". If it's meant to be text, put it in quotes. If it's a variable, check the spelling (capitals count) and make sure you created it on an earlier line.";
-    }
-    if (/SyntaxError/.test(err)) {
-      if (n && /^\s+\S/.test(line) && !/:\s*$/.test(prev))
-        return "Line " + n + " starts with extra spaces. In Python, spaces at the start of a line matter. Delete them.";
-      var h = (n && syntaxHint(line, n)) || (n > 1 && syntaxHint(prev, n - 1));
-      if (h) return h;
-      // Python sometimes reports the line after the real mistake (or past the end), so scan the whole program.
-      for (var i = 0; i < lines.length; i++) { h = syntaxHint(lines[i], i + 1); if (h) return h; }
-      if (n && /^\s*print\s+["'f]/.test(line)) return "On line " + n + ", print needs parentheses: print(\"like this\")";
-      return "Python couldn't understand line " + (n || "?") + ". Check its quotes, parentheses, and spelling.";
-    }
-    if (/concatenate|can only concatenate|unsupported operand/.test(err))
-      return "On line " + n + " you're joining text and a number with +. Use an f-string instead, like print(f\"Grade {grade}\").";
-    if (/TimeLimitError/.test(err)) return "Your program ran too long and was stopped.";
-    if (/IndentationError/.test(err)) return "Line " + n + " has spaces at the start that shouldn't be there.";
-    return "Python found a problem" + (n ? " on line " + n : "") + ".";
-  }
-
-  /* ---------- helpers ---------- */
-  function el(tag, attrs, text) {
-    var e = document.createElement(tag);
-    if (attrs) Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
-    if (text != null) e.textContent = text;
-    return e;
-  }
-  function outLines(output) {
-    return output.replace(/\s+$/, "").split("\n").filter(function (l) { return l.trim() !== ""; });
-  }
-  function showFeedback(box, ok, msg, raw, list) {
-    box.innerHTML = "";
-    if (!msg) return;
-    var fb = el("div", { "class": "feedback " + (ok ? "ok" : "bad"), role: "status" });
-    fb.appendChild(el("span", null, (ok ? "✓ " : "") + msg));
-    if (list && list.length) {
-      var ul = el("ul");
-      list.forEach(function (t) { ul.appendChild(el("li", null, t)); });
-      fb.appendChild(ul);
-    }
-    if (raw) fb.appendChild(el("span", { "class": "raw" }, "Python says: " + raw));
-    box.appendChild(fb);
-  }
-  function markDone(id) {
-    if (!state.done[id]) { state.done[id] = true; save(); }
-    refresh();
-  }
-  function addHint(id, hints, box) {
-    var shown = state.hints[id] || 0;
-    if (shown < hints.length) { state.hints[id] = shown + 1; save(); }
-    renderHints(id, hints, box);
-  }
-  function renderHints(id, hints, box) {
-    box.innerHTML = "";
-    var shown = Math.min(state.hints[id] || 0, hints.length);
-    for (var i = 0; i < shown; i++) box.appendChild(el("div", { "class": "hint" }, "Hint " + (i + 1) + ": " + hints[i]));
-  }
-
-  /* ---------- Task 1: multiple choice ---------- */
-  var T1 = [
-    { text: "saint\nIgnatius", right: true, why: "Right. \"saint\" in quotes is text, so Python prints the word saint. Without quotes, saint is the variable, so Python prints what's inside it: Ignatius." },
-    { text: "Ignatius\nIgnatius", why: "Not quite. Look at line 2: the quotes mean \"print these exact letters,\" so it prints the word saint, not the variable." },
-    { text: "saint\nsaint", why: "Not quite. Line 3 has no quotes, so Python looks inside the variable saint and finds \"Ignatius\"." },
-    { text: "An error message", why: "Not quite. Both lines are valid Python. One prints text in quotes; the other prints a variable." }
-  ];
-  (function () {
-    var wrap = document.getElementById("t1-choices");
-    var fb = document.getElementById("t1-fb");
-    T1.forEach(function (c, i) {
-      var b = el("button", { "class": "choice", type: "button" });
-      b.appendChild(el("span", { "class": "letter" }, "ABCD"[i]));
-      b.appendChild(el("pre", null, c.text));
-      b.addEventListener("click", function () {
-        wrap.querySelectorAll(".choice").forEach(function (x) { x.classList.remove("right", "wrong"); });
-        b.classList.add(c.right ? "right" : "wrong");
-        showFeedback(fb, !!c.right, c.why);
-        if (c.right) markDone("t1");
-      });
-      if (state.done.t1 && c.right) b.classList.add("right");
-      wrap.appendChild(b);
-    });
-  })();
-
-  /* ---------- code editors ---------- */
-  var EDITORS = {
+  /* Tasks 2, 4, 5, Build, Go Further */
+  py.editors({
     t2: {
       starter: 'print("Hello, world!")\nprint("My name is Python.")\n',
       hints: [
@@ -651,7 +323,7 @@ For the greater glory of God.</pre></div>
         'Example third line: print("My favorite food is tacos.")'
       ],
       check: function (r) {
-        var lines = outLines(r.output);
+        var lines = py.outLines(r.output);
         if (/My name is Python/.test(r.output)) return { ok: false, msg: "Line 2 still says Python. Change it to your own first name." };
         if (lines.length < 3) return { ok: false, msg: "Your program printed " + lines.length + " line" + (lines.length === 1 ? "" : "s") + ". Add a third print line about you." };
         return { ok: true, msg: "Nice. That's your first custom program." };
@@ -665,7 +337,7 @@ For the greater glory of God.</pre></div>
         "Line 1 needs a \" right before the ). Line 2 needs a ) at the very end."
       ],
       check: function (r) {
-        var lines = outLines(r.output).map(function (l) { return l.trim(); });
+        var lines = py.outLines(r.output).map(function (l) { return l.trim(); });
         if (lines[0] === "Ad majorem Dei gloriam" && lines[1] === "For the greater glory of God." && lines.length === 2)
           return { ok: true, msg: "Both bugs fixed. Reading error messages is a real programming skill." };
         return { ok: false, msg: "It runs now, but the output doesn't match the goal exactly. Check the spelling and punctuation inside the quotes." };
@@ -699,13 +371,15 @@ For the greater glory of God.</pre></div>
         "Each print line can use variables inside { } in an f-string: print(f\"Meet us at {place} on {day}.\")",
         "Your last line could thank people or say who to contact. Variables can hold any text you want."
       ],
+      onRun: renderBuildReqs,
+      errorsGoToCheck: true,
       check: function (r, code) {
-        var reqs = buildReqs(code, r);
+        var q = buildReqs(code, r);
         var missing = [];
-        if (!reqs.vars) missing.push("Create at least 3 variables (you have " + reqs.varCount + ").");
-        if (!reqs.lines) missing.push("Print at least 4 lines (you printed " + reqs.lineCount + ").");
-        if (!reqs.used) missing.push("Use at least 3 variables inside print lines (you used " + reqs.usedCount + ").");
-        if (!reqs.clean) missing.push("Fix the error so the program runs.");
+        if (!q.vars) missing.push("Create at least 3 variables (you have " + q.varCount + ").");
+        if (!q.lines) missing.push("Print at least 4 lines (you printed " + q.lineCount + ").");
+        if (!q.used) missing.push("Use at least 3 variables inside print lines (you used " + q.usedCount + ").");
+        if (!q.clean) missing.push("Fix the error so the program runs.");
         if (missing.length) return { ok: false, msg: "Almost there. Still to do:", list: missing };
         return { ok: true, msg: "Your announcement works. Copy it into Blackbaud in Step 6." };
       }
@@ -715,217 +389,32 @@ For the greater glory of God.</pre></div>
       hints: ["Add one more line at the end that prints the same border again."],
       optional: true,
       check: function (r) {
-        var lines = outLines(r.output);
+        var lines = py.outLines(r.output);
         if (lines.length >= 3 && lines[0] === lines[lines.length - 1] && /^(.)\1*$/.test(lines[0]))
           return { ok: true, msg: "Framed. Try changing the event name and watch the border resize." };
         return { ok: false, msg: "Make the first and last lines matching borders." };
       }
     }
-  };
-
-  function buildReqs(code, r) {
-    var names = {};
-    code.split("\n").forEach(function (l) {
-      var m = /^\s*([A-Za-z_]\w*)\s*=(?!=)/.exec(l);
-      if (m) names[m[1]] = true;
-    });
-    var vars = Object.keys(names);
-    var printLines = code.split("\n").filter(function (l) { return /^\s*print\s*\(/.test(l); }).join("\n");
-    var used = vars.filter(function (v) { return new RegExp("\\b" + v + "\\b").test(printLines); });
-    var lineCount = outLines(r ? r.output : "").length;
-    return {
-      varCount: vars.length, vars: vars.length >= 3,
-      lineCount: lineCount, lines: lineCount >= 4,
-      usedCount: used.length, used: used.length >= 3,
-      clean: !!r && !r.error
-    };
-  }
-  function renderBuildReqs(code, r) {
-    var q = buildReqs(code, r);
-    document.querySelectorAll("#build-reqs li").forEach(function (li) {
-      var ok = q[li.getAttribute("data-req")];
-      li.classList.toggle("done", ok);
-      li.textContent = (ok ? "✓ " : "○ ") + li.textContent.replace(/^[✓○]\s*/, "");
-    });
-  }
-
-  document.querySelectorAll("[data-editor]").forEach(function (host) {
-    var id = host.getAttribute("data-editor");
-    var cfg = EDITORS[id];
-    var ta = el("textarea", {
-      "class": "code", id: "code-" + id, spellcheck: "false", autocapitalize: "off",
-      autocomplete: "off", autocorrect: "off", "aria-label": "Python code for " + id
-    });
-    ta.value = state.code[id] != null ? state.code[id] : cfg.starter;
-    var row = el("div", { "class": "row" });
-    var run = el("button", { "class": "primary", type: "button" }, "Run");
-    var hintBtn = el("button", { "class": "ghost", type: "button" }, "Show a hint");
-    var reset = el("button", { "class": "ghost", type: "button" }, "Reset code");
-    row.appendChild(run); row.appendChild(hintBtn); row.appendChild(reset);
-    var out = el("pre", { "class": "console", "aria-live": "polite" });
-    var fb = el("div");
-    var hints = el("div", { "class": "hints" });
-    host.appendChild(ta); host.appendChild(row); host.appendChild(out); host.appendChild(fb); host.appendChild(hints);
-    renderHints(id, cfg.hints, hints);
-    if (id === "build") renderBuildReqs(ta.value, null);
-
-    ta.addEventListener("input", function () { state.code[id] = ta.value; save(); });
-    ta.addEventListener("keydown", function (e) {
-      if (e.key === "Tab" && !e.shiftKey) {
-        e.preventDefault();
-        var s = ta.selectionStart;
-        ta.setRangeText("    ", s, ta.selectionEnd, "end");
-        state.code[id] = ta.value; save();
-      }
-    });
-    hintBtn.addEventListener("click", function () { addHint(id, cfg.hints, hints); });
-    reset.addEventListener("click", function () {
-      ta.value = cfg.starter; state.code[id] = cfg.starter; save();
-      out.textContent = ""; fb.innerHTML = "";
-      if (id === "build") renderBuildReqs(ta.value, null);
-    });
-    run.addEventListener("click", function () {
-      var code = normalize(ta.value);
-      if (code !== ta.value) { ta.value = code; state.code[id] = code; save(); }
-      run.disabled = true; run.textContent = "Running…";
-      runPython(code).then(function (r) {
-        run.disabled = false; run.textContent = "Run";
-        out.textContent = r.output;
-        if (id === "build") renderBuildReqs(code, r);
-        if (r.error && id !== "build") {
-          showFeedback(fb, false, friendly(r.error, code), r.error);
-          return;
-        }
-        var res = cfg.check(r, code);
-        if (r.error && id === "build") {
-          showFeedback(fb, false, friendly(r.error, code), r.error, res.list);
-          return;
-        }
-        showFeedback(fb, res.ok, res.msg, null, res.list);
-        if (res.ok && !cfg.optional) markDone(id);
-      });
-    });
   });
 
-  /* ---------- Task 3: Parsons ---------- */
-  var PLINES = [
-    'print("Bring canned goods to the gym.")',
-    'print("Thank you, {volunteer}!")',
-    'volunteer = "Mia"',
-    'print(f"Thank you, {volunteer}!")',
-    'print("Welcome to the Food Drive!")'
-  ];
-  var P_EXPECT = "Welcome to the Food Drive!\nBring canned goods to the gym.\nThank you, Mia!";
-  var P_HINTS = [
-    "Python reads top to bottom. A variable has to be created before a line can use it.",
-    "Compare the two \"Thank you\" blocks. Only one has an f before the quotes. Without the f, Python prints {volunteer} as plain text."
-  ];
-  var bank = document.getElementById("p-bank");
-  var prog = document.getElementById("p-prog");
-  var pOut = document.getElementById("p-out");
-  var pFb = document.getElementById("p-fb");
-  var pHints = document.getElementById("p-hints");
-  function renderParsons() {
-    bank.innerHTML = ""; prog.innerHTML = "";
-    PLINES.forEach(function (txt, i) {
-      if (state.parsons.indexOf(i) !== -1) return;
-      var b = el("button", { "class": "pline", type: "button", "aria-label": "Add line: " + txt }, txt);
-      b.addEventListener("click", function () { state.parsons.push(i); save(); renderParsons(); });
-      bank.appendChild(b);
-    });
-    state.parsons.forEach(function (i, pos) {
-      var b = el("button", { "class": "pline", type: "button", "aria-label": "Remove line " + (pos + 1) + ": " + PLINES[i] }, PLINES[i]);
-      b.addEventListener("click", function () { state.parsons.splice(pos, 1); save(); renderParsons(); });
-      prog.appendChild(b);
-    });
-    if (!state.parsons.length) prog.appendChild(el("div", { "class": "empty" }, "Tap blocks on the left to add them here, in order."));
-    if (bank.children.length === 0) bank.appendChild(el("div", { "class": "empty" }, "All blocks used."));
-  }
-  renderParsons();
-  renderHints("t3", P_HINTS, pHints);
-  document.getElementById("p-hint").addEventListener("click", function () { addHint("t3", P_HINTS, pHints); });
-  document.getElementById("p-run").addEventListener("click", function () {
-    var code = state.parsons.map(function (i) { return PLINES[i]; }).join("\n");
-    if (!code) { showFeedback(pFb, false, "Add some blocks to Your program first."); return; }
-    runPython(code).then(function (r) {
-      pOut.textContent = r.output;
-      if (r.error) { showFeedback(pFb, false, friendly(r.error, code), r.error); return; }
-      if (r.output.replace(/\s+$/, "") === P_EXPECT) {
-        showFeedback(pFb, true, "Correct order. You also skipped the trap block.");
-        markDone("t3");
-      } else if (/\{volunteer\}/.test(r.output)) {
-        showFeedback(pFb, false, "Your program printed {volunteer} instead of Mia. Swap in the other \"Thank you\" block.");
-      } else {
-        showFeedback(pFb, false, "The output doesn't match the goal yet. Compare it line by line with the goal above.");
-      }
-    });
-  });
-
-  /* ---------- reflection ---------- */
-  var draft = document.getElementById("reflect-draft");
-  draft.value = state.reflect || "";
-  draft.addEventListener("input", function () { state.reflect = draft.value; save(); });
-
-  function copyText(text, msgEl, fallbackEl) {
-    function fallback() {
-      msgEl.textContent = "Copy didn't work here. Select the text and copy it yourself.";
-      if (fallbackEl) { fallbackEl.focus(); fallbackEl.select(); }
-    }
-    try {
-      navigator.clipboard.writeText(text).then(function () { msgEl.textContent = "Copied. Paste it into Blackbaud."; }, fallback);
-    } catch (e) { fallback(); }
-  }
-  document.getElementById("copy-reflect").addEventListener("click", function () {
-    copyText(draft.value, document.getElementById("copy-reflect-msg"), draft);
-  });
-  document.getElementById("copy-build").addEventListener("click", function () {
-    var ta = document.getElementById("code-build");
-    copyText(ta.value, document.getElementById("copy-build-msg"), ta);
-  });
-
-  /* ---------- progress display ---------- */
-  function refresh() {
-    var count = REQUIRED.filter(function (id) { return state.done[id]; }).length;
-    document.getElementById("meter").textContent = count + " of " + REQUIRED.length;
-    document.querySelectorAll("[data-chip]").forEach(function (c) {
-      var d = !!state.done[c.getAttribute("data-chip")];
-      c.classList.toggle("done", d);
-      c.textContent = d ? "Done ✓" : "To do";
-    });
-    var tryDone = ["t1", "t2", "t3", "t4", "t5"].every(function (id) { return state.done[id]; });
-    var stepDone = {
-      context: true, learn: true, try: tryDone, build: !!state.done.build,
-      reflect: (state.reflect || "").trim().length >= 40, check: count === REQUIRED.length
-    };
-    document.querySelectorAll(".steps a").forEach(function (a) {
-      a.classList.toggle("done", !!stepDone[a.getAttribute("data-step")]);
-    });
-    var list = document.getElementById("check-status");
-    list.innerHTML = "";
-    REQUIRED.forEach(function (id) {
-      list.appendChild(el("li", { "class": state.done[id] ? "done" : "" }, (state.done[id] ? "✓ " : "○ ") + TASK_NAMES[id]));
-    });
-    var all = count === REQUIRED.length;
-    document.getElementById("check-locked").hidden = all;
-    document.getElementById("check-open").hidden = !all;
-    document.getElementById("check-card").classList.toggle("unlocked", all);
-    document.getElementById("code-badge").textContent = all ? CODE : "";
-  }
-  draft.addEventListener("input", refresh);
-  refresh();
-
-  /* ---------- start over (two taps, since confirm() isn't available) ---------- */
-  var resetBtn = document.getElementById("reset");
-  var armed = false, timer = null;
-  resetBtn.addEventListener("click", function () {
-    if (!armed) {
-      armed = true; resetBtn.textContent = "Tap again to erase all progress";
-      timer = setTimeout(function () { armed = false; resetBtn.textContent = "Start over"; }, 4000);
-      return;
-    }
-    clearTimeout(timer);
-    try { localStorage.removeItem(KEY); } catch (e) {}
-    location.reload();
+  /* Task 3 */
+  py.parsons({
+    task: "t3",
+    lines: [
+      'print("Bring canned goods to the gym.")',
+      'print("Thank you, {volunteer}!")',
+      'volunteer = "Mia"',
+      'print(f"Thank you, {volunteer}!")',
+      'print("Welcome to the Food Drive!")'
+    ],
+    expect: "Welcome to the Food Drive!\nBring canned goods to the gym.\nThank you, Mia!",
+    okMsg: "Correct order. You also skipped the trap block.",
+    trapPattern: /\{volunteer\}/,
+    trapMsg: "Your program printed {volunteer} instead of Mia. Swap in the other \"Thank you\" block.",
+    hints: [
+      "Python reads top to bottom. A variable has to be created before a line can use it.",
+      "Compare the two \"Thank you\" blocks. Only one has an f before the quotes. Without the f, Python prints {volunteer} as plain text."
+    ]
   });
 })();
 </script>
