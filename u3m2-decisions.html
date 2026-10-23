@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Making Decisions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.ops { overflow-x: auto; }
+.ops table { border-collapse: collapse; font-size: var(--step-0); min-width: 22rem; }
+.ops th, .ops td { border-bottom: 1px solid var(--line); padding: 6px 12px; text-align: left; }
+.ops th { color: var(--muted); font-weight: 650; }
+.ops code { font-family: var(--font-code); font-variation-settings: "MONO" 1; font-weight: 700; }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U3 · M2</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 3: Programming in Python · Module 2 of 5</span>
+    <h1>Making Decisions</h1>
+    <p class="lede">So far your programs did the same thing every time. Today they'll ask the user a question and decide what to do based on the answer.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 35 minutes</span>
+      <span><b>To pass:</b> finish the 6 tasks, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (U3 · M1)</strong>
+      <span><code class="inline">print()</code> shows text. Text goes in quotes. <b>Variables</b> store values, and <b>f-strings</b> put variables inside sentences: <code class="inline">print(f"Hi, {name}!")</code></span>
+    </div>
+    <p class="loadnote" id="loadnote">Loading Python…</p>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>A cannonball and a choice</h2><span class="ipp">Context</span></div>
+    <div class="prose">
+      <p>In 1521, a young Spanish soldier named <b>Íñigo López de Loyola</b> was badly wounded by a cannonball while defending the city of Pamplona. During months of recovery, the only books he could find were a life of Christ and stories of the saints.</p>
+      <p>Lying in bed, he noticed something. Daydreams about fame and adventure excited him for a while, then left him feeling empty. Imagining a life like the saints' left him with a peace that lasted. Paying attention to those feelings changed his life. He became <b>St. Ignatius</b>, founded the Jesuits, and taught people a way of making good decisions called <b>discernment</b>.</p>
+      <p>Computers make decisions too, but in a much simpler way: they check whether something is true or false, and then do one thing or another. Today you'll teach your programs to make those decisions.</p>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Three ideas</h2><span class="ipp">Experience</span></div>
+
+    <div class="prose">
+      <h3>Idea 1: <code class="inline">input()</code> asks the user a question</h3>
+      <p><code class="inline">input()</code> shows a question, waits for the user to type an answer, and gives you the answer as <b>text</b>. To do math or compare numbers, turn the text into a whole number with <code class="inline">int()</code>.</p>
+    </div>
+    <div class="example">
+      <div class="src-wrap"><div class="label">Code</div><pre class="src">name = input("What's your name? ")
+age = int(input("How old are you? "))
+print(f"{name}, next year you'll be {age + 1}.")</pre></div>
+      <div class="out-wrap"><div class="label">Output (the user typed Ana and 15)</div><pre class="out">What's your name? Ana
+How old are you? 15
+Ana, next year you'll be 16.</pre></div>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 2: Comparisons are True or False</h3>
+      <p>A <b>comparison</b> checks two values and gives back <code class="inline">True</code> or <code class="inline">False</code>.</p>
+    </div>
+    <div class="ops"><table>
+      <tr><th>Symbol</th><th>Means</th><th>Example that's True</th></tr>
+      <tr><td><code>==</code></td><td>equal to</td><td><code>5 == 5</code></td></tr>
+      <tr><td><code>!=</code></td><td>not equal to</td><td><code>5 != 3</code></td></tr>
+      <tr><td><code>&lt;</code> <code>&gt;</code></td><td>less than, greater than</td><td><code>3 &lt; 5</code></td></tr>
+      <tr><td><code>&lt;=</code> <code>&gt;=</code></td><td>at most, at least</td><td><code>5 &gt;= 5</code></td></tr>
+    </table></div>
+    <div class="callout"><b>Watch out:</b> one equals sign <code class="inline">=</code> <i>stores</i> a value. Two equals signs <code class="inline">==</code> <i>compare</i> values.</div>
+
+    <div class="prose">
+      <h3>Idea 3: <code class="inline">if</code>, <code class="inline">elif</code>, <code class="inline">else</code></h3>
+      <p><code class="inline">if</code> runs some lines only when a comparison is True. <code class="inline">elif</code> ("else if") checks another comparison. <code class="inline">else</code> runs when nothing above it was True. Python checks from the top and runs only the <b>first</b> match.</p>
+      <p>Two rules: the <code class="inline">if</code>, <code class="inline">elif</code> and <code class="inline">else</code> lines end with a <b>colon</b>, and the lines that belong to them are <b>indented 4 spaces</b>.</p>
+    </div>
+    <div class="example">
+      <div class="src-wrap"><div class="label">Code</div><pre class="src">temp = int(input("Temperature? "))
+if temp >= 85:
+    print("Bring water to the service site.")
+elif temp >= 60:
+    print("Perfect weather for the park cleanup.")
+else:
+    print("Wear a jacket!")</pre></div>
+      <div class="out-wrap"><div class="label">Output (the user typed 72)</div><pre class="out">Temperature? 72
+Perfect weather for the park cleanup.</pre></div>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Try it</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Task 1: Predict the output</h3><span class="chip" data-chip="t1">To do</span></div>
+      <div id="t1-quiz"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Task 2: Put the code in order</h3><span class="chip" data-chip="t2">To do</span></div>
+      <p>Build a program for the food drive. It asks how many cans were collected. If it's 100 or more, it prints <b>Goal reached!</b> Otherwise it prints <b>Keep collecting!</b> One block is a trap.</p>
+      <div class="parsons">
+        <div><h4>Code blocks</h4><div class="pzone" id="p-bank"></div></div>
+        <div><h4>Your program</h4><div class="pzone" id="p-prog"></div></div>
+      </div>
+      <div class="row"><button class="primary" id="p-run">Run my program</button><button class="ghost" id="p-hint">Show a hint</button></div>
+      <pre class="console" id="p-out"></pre>
+      <div id="p-fb"></div>
+      <div class="hints" id="p-hints"></div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Task 3: Fix the bugs</h3><span class="chip" data-chip="t3">To do</span></div>
+      <p>This program should say whether someone is old enough (14 or older) to volunteer at the soup kitchen. It has <b>three</b> bugs. Run it, read each error, and fix them one at a time.</p>
+      <div data-editor="t3"></div>
+    </div>
+
+    <div class="task" id="t4">
+      <div class="task-head"><h3>Task 4: Ticket prices</h3><span class="chip" data-chip="t4">To do</span></div>
+      <p>The spring musical charges <b>$5</b> for kids under 12, <b>$6</b> for seniors 65 and older, and <b>$10</b> for everyone else. Finish the program so it prints the right price. The page will test it with several ages.</p>
+      <div class="goal">For example, if the user types 8, it should print:
+<pre>Child ticket: $5</pre></div>
+      <div data-editor="t4"></div>
+    </div>
+
+    <div class="task" id="t5">
+      <div class="task-head"><h3>Task 5: Compare carefully</h3><span class="chip" data-chip="t5">To do</span></div>
+      <div id="t5-quiz"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: service hours tracker</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>The service office wants a program that encourages students. It asks for a student's name and service hours, then prints a personal message. Jesuits use the word <i>magis</i>, "the more," for the call to give your best.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>Your program must:</h3><span class="chip" data-chip="build">To do</span></div>
+      <ul class="status-list">
+        <li>Ask for the student's <b>name</b> first, then their <b>hours</b> (use <code class="inline">input()</code> twice and <code class="inline">int()</code> for the hours)</li>
+        <li>Print a <b>different message</b> for each of these: 40 or more hours (they earned the Magis Award) · 20 to 39 · 1 to 19 · 0 hours</li>
+        <li>Use the student's <b>name</b> in the message</li>
+        <li>Use <code class="inline">if</code>, <code class="inline">elif</code> and <code class="inline">else</code></li>
+      </ul>
+      <p class="goal">Write your own messages. The page tests your program with several names and numbers, so make sure each group of hours gets its own message.</p>
+      <div data-editor="build"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">Ignatius learned to notice which choices left him with lasting peace and which left him feeling empty. A computer's <code class="inline">if</code> only checks whether something is true or false. What is one decision in your life that can't be turned into a simple if-else rule? How do you go about making a decision like that?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="One decision that can't be an if-else rule is…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all 6 tasks to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All tasks done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U3·M2 Check: Making Decisions.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your service hours program. Tap the button below, then paste it in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my Build program</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: the leap year algorithm in Python</h3><span class="chip opt">Optional</span></div>
+      <div class="prose">
+        <p>Remember Clavius's leap year rule from Unit 2? The <code class="inline">%</code> symbol gives the remainder after dividing, so <code class="inline">year % 4 == 0</code> is True when the year divides evenly by 4. Finish the program so it prints <b>Leap year</b> or <b>Not a leap year</b>.</p>
+      </div>
+      <div data-editor="x1"></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js" onerror="window.__skFail=true"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js" onerror="window.__skFail=true"></script>
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var py = Course.python;
+
+  Course.init({
+    id: "u3m2",
+    usesPython: true,
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Predict the output", t2: "Task 2: Put the code in order", t3: "Task 3: Fix the bugs", t4: "Task 4: Ticket prices", t5: "Task 5: Compare carefully", build: "Build: service hours tracker" },
+    code: [80, 65, 77, 80, 45, 49, 53, 50, 49],
+    buildText: function () { return document.getElementById("code-build").value; },
+    buildFallbackEl: function () { return document.getElementById("code-build"); }
+  });
+
+  function has(output, text) { return output.toLowerCase().indexOf(text.toLowerCase()) !== -1; }
+
+  /* ---------- Task 1 ---------- */
+  Course.quiz({
+    task: "t1", container: "t1-quiz",
+    okMsg: "All right. Python checks from the top and runs only the first match.",
+    questions: [
+      { q: "What does this print?", code: 'hours = 12\nif hours >= 10:\n    print("Great work!")\nelse:\n    print("Keep going!")', choices: [
+        { text: "Great work!", code: true, right: true, why: "Right. 12 >= 10 is True, so the if part runs and the else part is skipped." },
+        { text: "Keep going!", code: true, why: "Not quite. Is 12 at least 10?" },
+        { text: "Great work!\nKeep going!", why: "Not quite. Only one part runs: either the if or the else, never both." }
+      ] },
+      { q: "What does this print?", code: 'temp = 50\nif temp > 80:\n    print("Hot")\nelif temp > 60:\n    print("Nice")\nelse:\n    print("Bring a jacket")', choices: [
+        { text: "Hot", code: true, why: "Not quite. Is 50 greater than 80?" },
+        { text: "Nice", code: true, why: "Not quite. Is 50 greater than 60?" },
+        { text: "Bring a jacket", code: true, right: true, why: "Right. Neither comparison is True, so the else runs." }
+      ] },
+      { q: "What does this print?", code: 'score = 95\nif score >= 70:\n    print("Pass")\nelif score >= 90:\n    print("Excellent")', choices: [
+        { text: "Pass", code: true, right: true, why: "Right. 95 >= 70 is True, so Python runs that part and skips the rest, even though 95 >= 90 is also True. Order matters!" },
+        { text: "Excellent", code: true, why: "Not quite. Python stops at the first True comparison. Which one comes first?" },
+        { text: "Pass\nExcellent", why: "Not quite. In an if/elif chain, only one part ever runs." }
+      ] }
+    ]
+  });
+
+  /* ---------- Task 2 ---------- */
+  py.parsons({
+    task: "t2",
+    lines: [
+      '    print("Goal reached!")',
+      'else:',
+      'cans = int(input("How many cans? "))',
+      'if cans = 100:',
+      '    print("Keep collecting!")',
+      'if cans >= 100:'
+    ],
+    tests: [
+      { inputs: ["120"], expect: function (o) { return has(o, "Goal reached!") && !has(o, "Keep collecting") ? null : "When someone types 120, it should print Goal reached! and nothing else."; } },
+      { inputs: ["100"], expect: function (o) { return has(o, "Goal reached!") && !has(o, "Keep collecting") ? null : "When someone types exactly 100, the goal is reached. Check your comparison."; } },
+      { inputs: ["40"], expect: function (o) { return has(o, "Keep collecting!") && !has(o, "Goal reached") ? null : "When someone types 40, it should print Keep collecting! and nothing else."; } }
+    ],
+    okMsg: "It works for 120, 100 and 40. You skipped the trap: if cans = 100 uses = instead of ==.",
+    hints: [
+      "First get the number of cans from the user. You can't check it before you have it.",
+      "The trap block uses a single =. Comparisons need ==, >= or another comparison symbol.",
+      "Each indented print goes right under the line it belongs to: the if, or the else."
+    ]
+  });
+
+  /* ---------- Editors ---------- */
+  var SOUP_YES = "You can volunteer at the soup kitchen!";
+  var SOUP_NO = "Ask about our family volunteer days!";
+  py.editors({
+    t3: {
+      starter: 'age = input("How old are you? ")\nif age >= 14\n    print("' + SOUP_YES + '")\nelse:\nprint("' + SOUP_NO + '")\n',
+      hints: [
+        "Bug 1: Lines that start with if, elif or else must end with a colon :",
+        "Bug 2: The line under else: must be indented 4 spaces, just like the line under if.",
+        "Bug 3: input() gives text. To compare with 14, wrap it in int(): int(input(\"How old are you? \"))"
+      ],
+      tests: [
+        { inputs: ["16"], expect: function (o) { return has(o, SOUP_YES) && !has(o, SOUP_NO) ? null : "When someone types 16, it should say they can volunteer."; } },
+        { inputs: ["14"], expect: function (o) { return has(o, SOUP_YES) ? null : "When someone types exactly 14, they're old enough. Check the comparison."; } },
+        { inputs: ["11"], expect: function (o) { return has(o, SOUP_NO) && !has(o, SOUP_YES) ? null : "When someone types 11, it should suggest family volunteer days."; } }
+      ],
+      okMsg: "All three bugs fixed, and it works for 16, 14 and 11. Colons, indentation and int() are the three most common if-statement bugs."
+    },
+    t4: {
+      starter: 'age = int(input("Age? "))\n\n# Under 12: Child ticket: $5\n# 65 or older: Senior ticket: $6\n# Everyone else: Adult ticket: $10\nif age < 12:\n    print("Child ticket: $5")\n',
+      hints: [
+        "The if for kids is done. Add an elif for seniors: elif age >= 65:",
+        "Under the elif, indent a print for the senior ticket. Then add else: for everyone else.",
+        'The full ending:\nelif age >= 65:\n    print("Senior ticket: $6")\nelse:\n    print("Adult ticket: $10")'
+      ],
+      tests: [
+        { inputs: ["8"], expect: function (o) { return has(o, "$5") && !has(o, "$6") && !has(o, "$10") ? null : "For age 8, it should print only the child ticket ($5)."; } },
+        { inputs: ["70"], expect: function (o) { return has(o, "$6") && !has(o, "$5") && !has(o, "$10") ? null : "For age 70, it should print only the senior ticket ($6)."; } },
+        { inputs: ["30"], expect: function (o) { return has(o, "$10") && !has(o, "$5") && !has(o, "$6") ? null : "For age 30, it should print only the adult ticket ($10)."; } },
+        { inputs: ["12"], expect: function (o) { return has(o, "$10") && !has(o, "$5") ? null : "For age 12 (not under 12), it should print the adult ticket ($10). Check your comparisons."; } },
+        { inputs: ["65"], expect: function (o) { return has(o, "$6") && !has(o, "$10") ? null : "For age 65, it should print the senior ticket ($6). Should that be > or >=?"; } }
+      ],
+      okMsg: "Correct for ages 8, 70, 30, 12 and 65. Testing the edges (12 and 65) is how programmers catch sneaky bugs."
+    },
+    build: {
+      starter: '# Service hours tracker\nname = input("What is your name? ")\nhours = int(input("How many service hours do you have? "))\n\n# 40 or more: Magis Award message\n# 20 to 39: halfway message\n# 1 to 19: getting started message\n# 0: invitation message\n',
+      hints: [
+        "Start with the biggest group: if hours >= 40: and an indented print that uses the name in an f-string.",
+        "Then elif hours >= 20: for 20 to 39, and elif hours >= 1: for 1 to 19. Python stops at the first match, so the order matters.",
+        "Finish with else: for 0 hours. Every message should include {name}."
+      ],
+      errorsGoToCheck: true,
+      tests: buildTests(),
+      check: function (r, code) {
+        var missing = [];
+        if ((code.match(/input\s*\(/g) || []).length < 2) missing.push("Ask two questions with input().");
+        if (!/int\s*\(/.test(code)) missing.push("Turn the hours into a number with int().");
+        if (!/^\s*if\b/m.test(code)) missing.push("Use an if.");
+        if (!/^\s*elif\b/m.test(code)) missing.push("Use at least one elif.");
+        if (!/^\s*else\s*:/m.test(code)) missing.push("Use an else.");
+        if (missing.length) return { ok: false, msg: "Your program runs, but it's missing:", list: missing };
+        return { ok: true, msg: "Every group of hours gets its own message, and each one uses the student's name. Copy your program into Blackbaud in Step 6." };
+      }
+    },
+    x1: {
+      starter: 'year = int(input("Year? "))\n\nif year % 400 == 0:\n    print("Leap year")\n',
+      hints: ["Follow the four steps from Unit 2: 400, then 100, then 4, then everything else.", 'Next: elif year % 100 == 0:\n    print("Not a leap year")'],
+      optional: true,
+      tests: [
+        { inputs: ["2000"], expect: function (o) { return has(o, "Leap year") && !has(o, "Not") ? null : "2000 should be a leap year."; } },
+        { inputs: ["1900"], expect: function (o) { return has(o, "Not a leap year") ? null : "1900 should not be a leap year."; } },
+        { inputs: ["2024"], expect: function (o) { return has(o, "Leap year") && !has(o, "Not") ? null : "2024 should be a leap year."; } },
+        { inputs: ["2023"], expect: function (o) { return has(o, "Not a leap year") ? null : "2023 should not be a leap year."; } }
+      ],
+      okMsg: "Correct for 2000, 1900, 2024 and 2023. Clavius would approve."
+    }
+  });
+
+  // Build tests: same name, different hours. Outputs in the same group should match; different groups should differ.
+  function buildTests() {
+    var NAMES = ["Sam", "Priya"];
+    var HOURS = [45, 40, 39, 20, 19, 1, 0];
+    var seen = {};
+    var tests = [];
+    HOURS.forEach(function (h, idx) {
+      tests.push({
+        inputs: [NAMES[idx % 2], String(h)],
+        expect: function (o, r) {
+          var nm = NAMES[idx % 2];
+          var msg = py.outLines(r.afterInputs).join("\n");
+          if (!msg) return "When someone types " + nm + " and " + h + ", your program doesn't print a message.";
+          if (msg.indexOf(nm) === -1) return "When the name is " + nm + " and hours are " + h + ", the message doesn't include the name. Use {name} in an f-string.";
+          seen[h] = msg.split(nm).join("NAME").split(String(h)).join("#");
+          if (idx === HOURS.length - 1) return judge(seen);
+          return null;
+        }
+      });
+    });
+    return tests;
+  }
+  function judge(m) {
+    if (m[45] !== m[40]) return "45 hours and 40 hours should get the same message (both earned the Magis Award). Check your first comparison.";
+    if (m[39] !== m[20]) return "39 hours and 20 hours should get the same message. Check the comparison for the 20-to-39 group.";
+    if (m[19] !== m[1]) return "19 hours and 1 hour should get the same message. Check the comparison for the 1-to-19 group.";
+    if (m[40] === m[39]) return "40 hours and 39 hours got the same message, but 40 should earn the Magis Award. Is it > or >=?";
+    if (m[20] === m[19]) return "20 hours and 19 hours got the same message, but they're in different groups.";
+    if (m[1] === m[0]) return "1 hour and 0 hours got the same message, but 0 hours should get the invitation message.";
+    if (m[40] === m[20] || m[40] === m[1] || m[40] === m[0] || m[20] === m[1] || m[20] === m[0]) return "Two different groups got the same message. Each group needs its own message.";
+    return null;
+  }
+
+  /* ---------- Task 5 ---------- */
+  Course.quiz({
+    task: "t5", container: "t5-quiz",
+    okMsg: "All right. Careful comparisons are the difference between a program that mostly works and one that always works.",
+    questions: [
+      { q: "What does 5 != 3 give?", choices: [
+        { text: "True", code: true, right: true, why: "Right. != means \"not equal to,\" and 5 is not equal to 3." },
+        { text: "False", code: true, why: "Not quite. != means \"not equal to.\" Are 5 and 3 different?" },
+        { text: "2", code: true, why: "Not quite. Comparisons give True or False, not numbers." }
+      ] },
+      { q: "Which line checks whether score is at least 90?", choices: [
+        { text: "if score > 90:", code: true, why: "Not quite. A score of exactly 90 would be left out." },
+        { text: "if score >= 90:", code: true, right: true, why: "Right. >= means \"greater than or equal to,\" so 90 counts." },
+        { text: "if score = 90:", code: true, why: "Not quite. A single = stores a value; it doesn't compare." }
+      ] },
+      { q: "Why does input() usually need int() around it?", choices: [
+        { text: "input() always gives text, and you can't do math or compare numbers with text", right: true, why: "Right. \"15\" in quotes is text; 15 without quotes is a number." },
+        { text: "int() makes the question appear", why: "Not quite. input() shows the question. int() converts the answer." },
+        { text: "Python can only ask about integers", why: "Not quite. input() can ask anything, like a name. It's the answer's type that matters." }
+      ] }
+    ]
+  });
+})();
+</script>
+
+</body>
+</html>

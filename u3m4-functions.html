@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Functions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U3 · M4</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 3: Programming in Python · Module 4 of 5</span>
+    <h1>Functions</h1>
+    <p class="lede">A function is a set of steps with a name. Write it once, then use it whenever you need it, with different information each time.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 35 minutes</span>
+      <span><b>To pass:</b> finish the 6 tasks, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (U3 · M3)</strong>
+      <span>A <code class="inline">for</code> loop repeats the indented lines under it. <code class="inline">range(1, 6)</code> gives 1 to 5. A running total starts at 0 before the loop and grows inside it.</span>
+    </div>
+    <p class="loadnote" id="loadnote">Loading Python…</p>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>Amazing Grace</h2><span class="ipp">Context</span></div>
+    <div class="prose">
+      <p><b>Grace Hopper</b> earned a Ph.D. in mathematics from Yale, joined the U.S. Navy during World War II, and became one of the first programmers of the Harvard Mark I computer. She later rose to the rank of rear admiral.</p>
+      <p>In the early 1950s, programmers wrote the same pieces of code again and again: code to calculate a square root, code to print a number. Hopper had an idea. Why not write each piece <b>once</b>, give it a name, store it in a library, and let a program called a <b>compiler</b> pull in the pieces automatically? In 1952 her team built one of the first compilers, called A-0.</p>
+      <p>Those named, reusable pieces of code are what we now call <b>functions</b>. Hopper went on to help create COBOL, a programming language that still runs many banks and government systems today.</p>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Three ideas</h2><span class="ipp">Experience</span></div>
+
+    <div class="prose">
+      <h3>Idea 1: <code class="inline">def</code> creates a function; calling it runs it</h3>
+      <p><code class="inline">def</code> gives a set of steps a name. The steps don't run until you <b>call</b> the function by writing its name with parentheses.</p>
+    </div>
+    <div class="example">
+      <div class="src-wrap"><div class="label">Code</div><pre class="src">def morning_prayer():
+    print("Lord, be with us today.")
+    print("Amen.")
+
+morning_prayer()
+morning_prayer()</pre></div>
+      <div class="out-wrap"><div class="label">Output</div><pre class="out">Lord, be with us today.
+Amen.
+Lord, be with us today.
+Amen.</pre></div>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 2: Parameters pass information in</h3>
+      <p>A <b>parameter</b> is a variable in the parentheses of <code class="inline">def</code>. When you call the function, the value you put in the parentheses goes into that variable.</p>
+    </div>
+    <div class="example">
+      <div class="src-wrap"><div class="label">Code</div><pre class="src">def thank(name, hours):
+    print(f"Thank you, {name}, for {hours} hours of service!")
+
+thank("Ana", 12)
+thank("Ben", 30)</pre></div>
+      <div class="out-wrap"><div class="label">Output</div><pre class="out">Thank you, Ana, for 12 hours of service!
+Thank you, Ben, for 30 hours of service!</pre></div>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 3: <code class="inline">return</code> sends an answer back</h3>
+      <p>Some functions calculate an answer. <code class="inline">return</code> sends the answer back to the line that called the function, so you can store it, print it or use it in more math. <code class="inline">print</code> only shows something on the screen; <code class="inline">return</code> hands it back to your program.</p>
+    </div>
+    <div class="example">
+      <div class="src-wrap"><div class="label">Code</div><pre class="src">def area(width, length):
+    return width * length
+
+garden = area(4, 6)
+print(f"The garden is {garden} square feet.")
+print(f"Two gardens: {area(4, 6) * 2} square feet.")</pre></div>
+      <div class="out-wrap"><div class="label">Output</div><pre class="out">The garden is 24 square feet.
+Two gardens: 48 square feet.</pre></div>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Try it</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Task 1: Predict the output</h3><span class="chip" data-chip="t1">To do</span></div>
+      <div id="t1-quiz"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Task 2: Call it three times</h3><span class="chip" data-chip="t2">To do</span></div>
+      <p>The <code class="inline">cheer</code> function is already written. Below it, <b>call</b> it three times with three different school teams or clubs.</p>
+      <div data-editor="t2"></div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Task 3: Fix the bugs</h3><span class="chip" data-chip="t3">To do</span></div>
+      <p>This program should welcome someone to the retreat by name. It has two bugs.</p>
+      <div data-editor="t3"></div>
+    </div>
+
+    <div class="task" id="t4">
+      <div class="task-head"><h3>Task 4: Return the answer</h3><span class="chip" data-chip="t4">To do</span></div>
+      <p>Finish <code class="inline">total_cost</code> so it <b>returns</b> the price times the quantity. The page will test your function with its own numbers too.</p>
+      <div data-editor="t4"></div>
+    </div>
+
+    <div class="task" id="t5">
+      <div class="task-head"><h3>Task 5: Put the code in order</h3><span class="chip" data-chip="t5">To do</span></div>
+      <p>Define a function that returns a number squared (times itself), then use it to print 16 and then 81. One block is a trap.</p>
+      <div class="parsons">
+        <div><h4>Code blocks</h4><div class="pzone" id="p-bank"></div></div>
+        <div><h4>Your program</h4><div class="pzone" id="p-prog"></div></div>
+      </div>
+      <div class="row"><button class="primary" id="p-run">Run my program</button><button class="ghost" id="p-hint">Show a hint</button></div>
+      <pre class="console" id="p-out"></pre>
+      <div id="p-fb"></div>
+      <div class="hints" id="p-hints"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: retreat name cards</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>The campus ministry team needs name cards for the retreat. Write a function called <code class="inline">make_card</code> that takes a person's <b>name</b> and their <b>role</b> (like "Retreatant" or "Small group leader") and prints a card. Then call it for at least three people.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>Your program must:</h3><span class="chip" data-chip="build">To do</span></div>
+      <ul class="status-list">
+        <li>Define <code class="inline">make_card(name, role)</code> with two parameters</li>
+        <li>Print a card at least 3 lines tall that shows the name and the role (a border line counts)</li>
+        <li>Call <code class="inline">make_card</code> at least 3 times</li>
+      </ul>
+      <div class="goal">For example, <code class="inline">make_card("Maria", "Small group leader")</code> might print:
+<pre>====================
+  Maria
+  Small group leader
+====================</pre></div>
+      <div data-editor="build"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">A function is written once and then called on again and again, wherever it's needed. Jesuits describe themselves as "contemplatives in action," ready to be sent wherever there's a need. What is a gift or skill you have that others could call on? How could you use it for others this year?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="One gift others could call on is…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all 6 tasks to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All tasks done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U3·M4 Check: Functions.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your name card program. Tap the button below, then paste it in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my Build program</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: is_leap</h3><span class="chip opt">Optional</span></div>
+      <p>Write a function <code class="inline">is_leap(year)</code> that <b>returns</b> <code class="inline">True</code> or <code class="inline">False</code> using the leap year algorithm. A function can return from inside an if: <code class="inline">return True</code>.</p>
+      <div data-editor="x1"></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js" onerror="window.__skFail=true"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js" onerror="window.__skFail=true"></script>
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var py = Course.python;
+
+  Course.init({
+    id: "u3m4",
+    usesPython: true,
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Predict the output", t2: "Task 2: Call it three times", t3: "Task 3: Fix the bugs", t4: "Task 4: Return the answer", t5: "Task 5: Put the code in order", build: "Build: retreat name cards" },
+    code: [72, 79, 80, 45, 49, 57, 53, 50],
+    buildText: function () { return document.getElementById("code-build").value; },
+    buildFallbackEl: function () { return document.getElementById("code-build"); }
+  });
+
+  function lines(o) { return py.outLines(o).map(function (l) { return l.trim(); }); }
+  // Count calls to a function, not counting the line that defines it.
+  function calls(code, name) {
+    return code.split("\n").filter(function (l) { return !/^\s*def\b/.test(l) && !/^\s*#/.test(l); }).join("\n").split(new RegExp("\\b" + name + "\\s*\\(")).length - 1;
+  }
+  function after(o, marker) { var i = o.indexOf(marker); return i === -1 ? null : o.slice(i + marker.length); }
+
+  /* ---------- Task 1 ---------- */
+  Course.quiz({
+    task: "t1", container: "t1-quiz",
+    okMsg: "All right. Defining a function doesn't run it; calling it does. And return hands a value back.",
+    questions: [
+      { q: "What does this print?", code: 'def hi():\n    print("Hi")\n\nhi()\nhi()', choices: [
+        { text: "Hi", why: "Not quite. The function is called twice." },
+        { text: "Hi\nHi", right: true, why: "Right. Each call runs the function's steps once." },
+        { text: "Nothing", why: "Not quite. The last two lines call the function." }
+      ] },
+      { q: "What does this print?", code: 'def bye():\n    print("Goodbye!")', choices: [
+        { text: "Goodbye!", code: true, why: "Not quite. The function is defined but never called." },
+        { text: "Nothing", right: true, why: "Right. def only creates the function. Nothing runs until something calls bye()." },
+        { text: "An error", why: "Not quite. Defining a function without calling it is allowed. It just doesn't do anything yet." }
+      ] },
+      { q: "What does this print?", code: 'def double(n):\n    return n * 2\n\nprint(double(5) + 1)', choices: [
+        { text: "10", code: true, why: "Not quite. double(5) returns 10, and then 1 is added." },
+        { text: "11", code: true, right: true, why: "Right. double(5) returns 10, and 10 + 1 = 11." },
+        { text: "12", code: true, why: "Not quite. Python works out double(5) first, then adds 1." }
+      ] }
+    ]
+  });
+
+  /* ---------- Task 5 ---------- */
+  py.parsons({
+    task: "t5",
+    lines: ['print(square(9))', '    return n * n', 'def square():', 'print(square(4))', 'def square(n):'],
+    expect: "16\n81",
+    okMsg: "Correct. The function needs the parameter n so it knows which number to square. The trap was def square(): with no parameter.",
+    hints: [
+      "The function has to be defined before it's called, so the def line comes first.",
+      "Which def line gives the function a way to receive a number?",
+      "The output should be 16 first, then 81."
+    ]
+  });
+
+  /* ---------- Editors ---------- */
+  py.editors({
+    t2: {
+      starter: 'def cheer(team):\n    print(f"Go, {team}!")\n\n# Call cheer three times below\n',
+      hints: [
+        "To call a function, write its name with a value in the parentheses.",
+        'Example: cheer("Robotics Club")',
+        "Write three lines like that, each with a different team or club in quotes."
+      ],
+      check: function (r, code) {
+        var ls = lines(r.output).filter(function (l) { return /^Go, /.test(l); });
+        var unique = ls.filter(function (l, i) { return ls.indexOf(l) === i; });
+        if (calls(code, "cheer") < 3) return { ok: false, msg: "Call cheer at least three times. You called it " + calls(code, "cheer") + " time" + (calls(code, "cheer") === 1 ? "" : "s") + "." };
+        if (unique.length < 3) return { ok: false, msg: "Use three different teams or clubs." };
+        return { ok: true, msg: "Three cheers from one function. If you change the function, all three cheers change." };
+      }
+    },
+    t3: {
+      starter: 'def welcome(name)\n    print(f"Welcome to the retreat, {name}!")\n\nwelcome()\n',
+      hints: [
+        "Bug 1: def lines end with a colon, just like if and for.",
+        "Bug 2: welcome needs a name. Put one in the parentheses when you call it, in quotes.",
+        'The call should look like: welcome("Ana")'
+      ],
+      check: function (r) {
+        if (/Welcome to the retreat, \S+/.test(r.output)) return { ok: true, msg: "Both bugs fixed. A function call has to give the function every value it asks for." };
+        return { ok: false, msg: "It should print Welcome to the retreat, followed by a name." };
+      }
+    },
+    t4: {
+      starter: 'def total_cost(price, quantity):\n    return 0  # change this line\n\nprint(f"3 shirts at $12 each: ${total_cost(12, 3)}")\nprint(f"5 tickets at $8 each: ${total_cost(8, 5)}")\n',
+      hints: [
+        "Change only the return line.",
+        "Multiplication in Python uses *.",
+        "return price * quantity"
+      ],
+      tests: [
+        { append: 'print("<<t>>", total_cost(3, 4), total_cost(10, 0), total_cost(7, 1))', expect: function (o) {
+          var got = after(o, "<<t>>");
+          if (got === null) return "The page couldn't test your function.";
+          if (/None/.test(got)) return "Your function doesn't return anything. Use return, not print, to send the answer back.";
+          return got.trim().split(/\s+/).join(" ") === "12 0 7" ? null : "When the page tried total_cost(3, 4), total_cost(10, 0) and total_cost(7, 1), it got " + got.trim() + " instead of 12 0 7.";
+        } }
+      ],
+      check: function (r) {
+        if (/\$36/.test(r.output) && /\$40/.test(r.output)) return { ok: true, msg: "Your function returns the right answer for any price and quantity. The page tested it with its own numbers too." };
+        return { ok: false, msg: "The receipt lines should show $36 and $40." };
+      }
+    },
+    build: {
+      starter: '# Retreat name cards\ndef make_card(name, role):\n    print("=" * 20)\n    # print the name and the role here\n    print("=" * 20)\n\n# Call make_card for at least three people\n',
+      hints: [
+        'Inside the function, add print(f"  {name}") and print(f"  {role}") between the two border lines.',
+        'Below the function (not indented), call it: make_card("Maria", "Small group leader")',
+        "Add two more calls with different people. Each call prints a whole card."
+      ],
+      errorsGoToCheck: true,
+      tests: [
+        { append: 'print("<<card>>")\nmake_card("Test Person", "Helper")', expect: function (o) {
+          var card = after(o, "<<card>>");
+          if (card === null) return "The page couldn't test your function.";
+          var ls = lines(card);
+          if (card.indexOf("Test Person") === -1 || card.indexOf("Helper") === -1) return "When the page called make_card(\"Test Person\", \"Helper\"), the card didn't show both the name and the role. Use both parameters.";
+          if (ls.length < 3) return "When the page called make_card(\"Test Person\", \"Helper\"), the card was only " + ls.length + " line" + (ls.length === 1 ? "" : "s") + ". Make it at least 3 lines tall.";
+          return null;
+        } }
+      ],
+      check: function (r, code) {
+        var missing = [];
+        if (!/^\s*def\s+make_card\s*\(\s*\w+\s*,\s*\w+\s*\)\s*:/m.test(code)) missing.push("Define make_card with two parameters: def make_card(name, role):");
+        if (calls(code, "make_card") < 3) missing.push("Call make_card at least three times (you have " + calls(code, "make_card") + ").");
+        if (missing.length) return { ok: false, msg: "Almost there:", list: missing };
+        return { ok: true, msg: "Name cards for everyone, from one function. Copy your program into Blackbaud in Step 6." };
+      }
+    },
+    x1: {
+      starter: 'def is_leap(year):\n    if year % 400 == 0:\n        return True\n    # finish the algorithm\n\nprint(is_leap(2024))\n',
+      hints: ["Add elif year % 100 == 0: return False, then elif year % 4 == 0: return True, then else: return False."],
+      optional: true,
+      tests: [
+        { append: 'print("<<t>>", is_leap(2000), is_leap(1900), is_leap(2024), is_leap(2023))', expect: function (o) {
+          var got = after(o, "<<t>>");
+          return got && got.trim().split(/\s+/).join(" ") === "True False True False" ? null : "is_leap(2000), is_leap(1900), is_leap(2024) and is_leap(2023) should return True False True False.";
+        } }
+      ],
+      okMsg: "Your is_leap function returns the right answer for all four years."
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

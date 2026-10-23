@@ -352,6 +352,7 @@ window.Course = (function () {
       var out = "";
       var live = opts.live || null;
       var scripted = opts.inputs ? opts.inputs.slice() : null;
+      var afterLastInput = 0; // where the output after the last input() answer begins
       function write(t) { out += t; if (live) live.appendChild(document.createTextNode(t)); }
       if (!ready()) return Promise.resolve({ output: "", error: "Python is not loaded." });
       Sk.configure({
@@ -368,6 +369,7 @@ window.Course = (function () {
           if (scripted || !live) {
             var v = scripted && scripted.length ? String(scripted.shift()) : "";
             write(v + "\n");
+            afterLastInput = out.length;
             return v;
           }
           return new Promise(function (resolve) {
@@ -381,6 +383,7 @@ window.Course = (function () {
               var v = inp.value;
               live.removeChild(ask);
               write(v + "\n");
+              afterLastInput = out.length;
               // Time spent typing shouldn't count toward the run-time limit.
               Sk.execStart = Date.now();
               resolve(v);
@@ -393,9 +396,9 @@ window.Course = (function () {
       return Sk.misceval.asyncToPromise(function () {
         return Sk.importMainWithBody("<stdin>", false, code, true);
       }).then(function () {
-        return { output: out, error: null };
+        return { output: out, error: null, afterInputs: out.slice(afterLastInput) };
       }, function (err) {
-        return { output: out, error: String(err) };
+        return { output: out, error: String(err), afterInputs: out.slice(afterLastInput) };
       });
     }
 
@@ -431,8 +434,16 @@ window.Course = (function () {
         return "Python doesn't know “" + w + "” on line " + n + ". If it's meant to be text, put it in quotes. If it's a variable, check the spelling (capitals count) and make sure you created it on an earlier line.";
       }
       if (/SyntaxError/.test(err)) {
-        if (n && /^\s+\S/.test(line) && !/:\s*$/.test(prev))
-          return "Line " + n + " starts with extra spaces. In Python, spaces at the start of a line matter. Delete them.";
+        var block = /^\s*(if|elif|else|for|while|def)\b/;
+        var noColon = function (l) { return block.test(l) && !/:\s*(#.*)?$/.test(l); };
+        if (n && noColon(line)) return "Line " + n + " needs a colon : at the end. Lines that start with " + line.trim().split(/[\s(:]/)[0] + " always end with a colon.";
+        if (n > 1 && noColon(prev)) return "Line " + (n - 1) + " needs a colon : at the end. Lines that start with " + prev.trim().split(/[\s(:]/)[0] + " always end with a colon.";
+        if (n && /^\s*(if|elif|while)\b[^=!<>]*[^=!<>]=[^=]/.test(line)) return "On line " + n + ", use == to compare. A single = stores a value in a variable.";
+        var indent = function (l) { return l.match(/^\s*/)[0].length; };
+        if (n > 1 && /:\s*$/.test(prev) && line.trim() && indent(line) <= indent(prev))
+          return "Line " + n + " should be indented 4 spaces, because it belongs to the line above it that ends with a colon.";
+        if (n && /^\s+\S/.test(line) && !/:\s*$/.test(prev) && indent(line) > indent(prev))
+          return "Line " + n + " starts with extra spaces. In Python, spaces at the start of a line matter. Line it up with the line above it.";
         var h = (n && syntaxHint(line, n)) || (n > 1 && syntaxHint(prev, n - 1));
         if (h) return h;
         // Python sometimes reports the line after the real mistake (or past the end), so scan the whole program.
@@ -440,6 +451,17 @@ window.Course = (function () {
         if (n && /^\s*print\s+["'f]/.test(line)) return "On line " + n + ", print needs parentheses: print(\"like this\")";
         return "Python couldn't understand line " + (n || "?") + ". Check its quotes, parentheses, and spelling.";
       }
+      if (/not supported between instances of 'str' and 'int'|not supported between instances of 'int' and 'str'/.test(err))
+        return "On line " + n + " you're comparing text with a number. input() always gives you text, so wrap it in int(), like: age = int(input(\"Age? \"))";
+      if (/invalid literal for int\(\)/.test(err)) {
+        var bad = /: '(.*)'/.exec(err);
+        return "int() can only turn whole-number text like \"25\" into a number" + (bad ? ", but it got \"" + bad[1] + "\"" : "") + ". Check what your program asks for and in what order.";
+      }
+      if (/missing \d+ required/.test(err)) return "On line " + n + " you called a function without all the information it needs. Put values inside the parentheses.";
+      if (/is not callable/.test(err)) return "On line " + n + " you put parentheses after something that isn't a function. Did a variable and a function end up with the same name?";
+      if (/has no len\(\)/.test(err)) return "On line " + n + ", len() only works on text and lists, not numbers.";
+      if (/IndexError/.test(err)) return "On line " + n + " you asked for a list item past the end of the list. Remember, lists start counting at 0.";
+      if (/can't multiply sequence by non-int/.test(err)) return "On line " + n + " you multiplied text by something that isn't a whole number. Text can only be repeated a whole number of times, like \"=\" * 10.";
       if (/concatenate|can only concatenate|unsupported operand/.test(err))
         return "On line " + n + " you're joining text and a number with +. Use an f-string instead, like print(f\"Grade {grade}\").";
       if (/TimeLimitError/.test(err)) return "Your program ran too long and was stopped.";
@@ -451,25 +473,27 @@ window.Course = (function () {
       return output.replace(/\s+$/, "").split("\n").filter(function (l) { return l.trim() !== ""; });
     }
 
-    // tests: [{ inputs: [...], expect(output) -> null when right, or a message saying what went wrong }]
+    // tests: [{ inputs: [...], append: "extra code", expect(output, result) -> null when right, or a message saying what went wrong }]
+    // result.afterInputs is just what the program printed after its last input() answer.
     function runTests(tests, code) {
       var i = 0;
       function next() {
         if (i >= tests.length) return Promise.resolve(null);
         var t = tests[i++];
-        return run(code, { inputs: t.inputs || [] }).then(function (r) {
+        // t.append adds lines after the student's code for this test only, e.g. calling their function.
+        return run(t.append ? code + "\n" + t.append : code, { inputs: t.inputs || [] }).then(function (r) {
           if (r.error) {
             var when = t.inputs && t.inputs.length ? " when someone types " + t.inputs.join(", then ") : "";
             return { msg: "Your program crashed" + when + ". " + friendly(r.error, code), raw: r.error };
           }
-          var m = t.expect(r.output);
+          var m = t.expect(r.output, r);
           return m ? { msg: m } : next();
         });
       }
       return next();
     }
 
-    // configs: { id: { starter, hints, check(result, code), tests, okMsg, optional, onRun(code, result|null), errorsGoToCheck } }
+    // configs: { id: { starter, hints, check(result, code) -> result or Promise, tests, okMsg, optional, onRun(code, result|null), errorsGoToCheck } }
     function editors(configs) {
       document.querySelectorAll("[data-editor]").forEach(function (host) {
         var id = host.getAttribute("data-editor");
@@ -514,23 +538,25 @@ window.Course = (function () {
             if (cfg.onRun) cfg.onRun(code, r);
             if (r.error) {
               // Build tasks also list what's still missing alongside the error.
-              var extra = cfg.errorsGoToCheck ? cfg.check(r, code).list : null;
+              var extra = cfg.errorsGoToCheck ? (cfg.check(r, code) || {}).list : null;
               feedback(fb, false, friendly(r.error, code), r.error, extra);
               return;
             }
             // Programs that use input() are also tested quietly with prepared answers.
             return runTests(cfg.tests || [], code).then(function (fail) {
               if (fail) { feedback(fb, false, fail.msg, fail.raw); return; }
-              var res = cfg.check ? cfg.check(r, code) : { ok: true, msg: cfg.okMsg || "It works." };
-              feedback(fb, res.ok, res.msg, null, res.list);
-              if (res.ok && !cfg.optional) markDone(id);
+              // check may return a result or a Promise of one (for checks that run the program again).
+              return Promise.resolve(cfg.check ? cfg.check(r, code) : { ok: true, msg: cfg.okMsg || "It works." }).then(function (res) {
+                feedback(fb, res.ok, res.msg, null, res.list);
+                if (res.ok && !cfg.optional) markDone(id);
+              });
             });
           });
         });
       });
     }
 
-    // opts: { task, lines: [...], expect, hints, trapPattern, trapMsg } with elements p-bank, p-prog, p-run, p-hint, p-out, p-fb, p-hints
+    // opts: { task, lines: [...], expect | tests, hints, trapPattern, trapMsg, okMsg } with elements p-bank, p-prog, p-run, p-hint, p-out, p-fb, p-hints
     function parsons(opts) {
       var bank = $("p-bank"), prog = $("p-prog"), pOut = $("p-out"), pFb = $("p-fb");
       function render() {
@@ -554,6 +580,19 @@ window.Course = (function () {
       $("p-run").addEventListener("click", function () {
         var code = state.parsons.map(function (i) { return opts.lines[i]; }).join("\n");
         if (!code) { feedback(pFb, false, "Add some blocks to Your program first."); return; }
+        // With tests, the program is run once per test with prepared input() answers.
+        if (opts.tests) {
+          run(code, { inputs: opts.tests[0].inputs }).then(function (r) {
+            pOut.textContent = r.output;
+            if (r.error) { feedback(pFb, false, friendly(r.error, code), r.error); return; }
+            return runTests(opts.tests, code).then(function (fail) {
+              if (fail) { feedback(pFb, false, fail.msg, fail.raw); return; }
+              feedback(pFb, true, opts.okMsg || "Correct order.");
+              markDone(opts.task);
+            });
+          });
+          return;
+        }
         run(code).then(function (r) {
           pOut.textContent = r.output;
           if (r.error) { feedback(pFb, false, friendly(r.error, code), r.error); return; }

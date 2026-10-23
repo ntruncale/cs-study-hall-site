@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Mini-Project</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 8px; }
+.projects button { text-align: left; display: grid; gap: 4px; font-weight: 500; align-content: start; }
+.projects button b { font-weight: 750; font-size: var(--step-1); }
+.projects button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.spec { display: grid; gap: 10px; }
+.ipo { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 8px; }
+.ipo div { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--surface); font-size: var(--step-0); }
+.ipo b { display: block; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 2px; }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U3 · M5</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 4</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 3: Programming in Python · Module 5 of 5</span>
+    <h1>Mini-Project</h1>
+    <p class="lede">Time to put it all together. You'll plan, write and test a complete program that helps a real kind of person, using everything from this unit: input, decisions, loops and functions.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 40 minutes (most of it on the Build)</span>
+      <span><b>To pass:</b> finish the 3 warm-ups and your project, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (U3 · M4)</strong>
+      <span><code class="inline">def</code> creates a function, and calling it runs it. <b>Parameters</b> pass information in, and <code class="inline">return</code> sends an answer back.</span>
+    </div>
+    <p class="loadnote" id="loadnote">Loading Python…</p>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>Lending your eyes</h2><span class="ipp">Context</span></div>
+    <div class="prose">
+      <p><b>Hans Jørgen Wiberg</b>, a Danish furniture maker, began losing his sight in his twenties. He noticed that blind and low-vision people often needed help with small things for just a minute: reading an expiration date, matching socks, finding the right bus.</p>
+      <p>In 2015 he and a small team launched an app called <b>Be My Eyes</b>. A person who needs help taps one button, and the app connects them by video to a sighted volunteer somewhere in the world who has a minute to spare. Millions of volunteers have signed up.</p>
+      <p>The app's code isn't magic. Underneath, it uses the same building blocks you've learned: it takes input, makes decisions, repeats steps and calls functions. What makes it special is that someone noticed a real person's need and built something to meet it.</p>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>How programmers plan</h2><span class="ipp">Experience</span></div>
+    <div class="prose">
+      <h3>Idea 1: Start with the person</h3>
+      <p>Before writing code, ask: <b>Who is this for?</b> What do they need? Then plan three things:</p>
+    </div>
+    <div class="ipo">
+      <div><b>Input</b>What information does the program need from the user?</div>
+      <div><b>Process</b>What does it do with that information? Decisions? Repeats? Math?</div>
+      <div><b>Output</b>What does it show the user at the end?</div>
+    </div>
+    <div class="prose">
+      <h3>Idea 2: Write pseudocode</h3>
+      <p><b>Pseudocode</b> is your plan written in plain language, step by step, before you write Python. It's your algorithm. "Ask for the price. If they paid enough, show the change. Otherwise, say they need more money."</p>
+      <h3>Idea 3: Build a little, test a little</h3>
+      <p>Don't write the whole program and then press Run. Write a few lines, run them, fix what's wrong, then add more. When it works, test it with <b>edge cases</b>: zero, the exact boundary, and answers the user might get wrong.</p>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Warm up</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Warm-up 1: Pick the right tool</h3><span class="chip" data-chip="t1">To do</span></div>
+      <div id="t1-quiz"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Warm-up 2: Put the pseudocode in order</h3><span class="chip" data-chip="t2">To do</span></div>
+      <p>Here's a plan for a program that works out a bake sale customer's change. Put the steps in order. One step doesn't belong in a good plan.</p>
+      <div class="order-zones">
+        <div><h4>Steps</h4><div class="pzone" id="t2-bank"></div></div>
+        <div><h4>The plan</h4><div class="pzone" id="t2-seq"></div></div>
+      </div>
+      <div class="row"><button class="primary" id="t2-check">Check my plan</button><button class="ghost" id="t2-hint">Show a hint</button></div>
+      <div id="t2-fb"></div>
+      <div class="hints" id="t2-hints"></div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Warm-up 3: Fix the bugs</h3><span class="chip" data-chip="t3">To do</span></div>
+      <p>This program uses a function, a loop and decisions. It has three bugs. It should print <b>Excellent!</b>, <b>Keep practicing!</b> and <b>Great job!</b>, one per line.</p>
+      <div data-editor="t3"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: a program that helps someone</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>Choose one project. Each one is for a real kind of person. Read the plan, then build it a few lines at a time. The page will test your finished program.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>1. Choose your project</h3><span class="chip" data-chip="build">To do</span></div>
+      <div class="projects" id="b-pick"></div>
+      <div id="b-specs">
+        <div class="spec" data-spec="cashier" hidden>
+          <h3>2. Bake Sale Cashier</h3>
+          <p>For the service club volunteer at the register, who has to add up prices and make change quickly while a line forms.</p>
+          <div class="ipo">
+            <div><b>Input</b>How many items; the price of each item (whole dollars); how much the customer paid</div>
+            <div><b>Process</b>Loop to add up the prices; a function <code class="inline">change_due(total, paid)</code> that returns the change; a decision about whether they paid enough</div>
+            <div><b>Output</b>The total, and either the change or "Not enough money"</div>
+          </div>
+          <div data-editor="cashier"></div>
+        </div>
+        <div class="spec" data-spec="quiz" hidden>
+          <h3>2. Study Buddy Quiz</h3>
+          <p>For a younger brother, sister or neighbor practicing for a test. You choose the subject and write at least 3 questions.</p>
+          <div class="ipo">
+            <div><b>Input</b>The student's answer to each question</div>
+            <div><b>Process</b>Lists of questions and answers; a loop that asks each one; a decision that checks the answer and adds to the score; a function <code class="inline">final_message(score)</code> that returns encouragement</div>
+            <div><b>Output</b>"Correct!" or the right answer after each question, then the score and an encouraging message</div>
+          </div>
+          <div data-editor="quiz"></div>
+        </div>
+        <div class="spec" data-spec="steps" hidden>
+          <h3>2. Step Tracker</h3>
+          <p>For a grandparent whose doctor asked them to average 5,000 steps a day this week.</p>
+          <div class="ipo">
+            <div><b>Input</b>The number of steps for each of 7 days</div>
+            <div><b>Process</b>A loop for the 7 days with a running total; a function <code class="inline">average(total, days)</code> that returns the average (use <code class="inline">//</code>); a decision about whether the average is at least 5,000</div>
+            <div><b>Output</b>The total, the average, and a message that's different if they met the goal</div>
+          </div>
+          <div data-editor="steps"></div>
+        </div>
+      </div>
+      <ul class="status-list" id="b-reqs" hidden></ul>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">Be My Eyes started because someone paid attention to what real people needed. Who did you picture using your program? If you watched them use it, what do you think they would struggle with, and what would you change to serve them better?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="I pictured…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish the warm-ups and your project to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U3·M5 Check: Mini-Project.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your project program. Tap the button below, then paste it in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my project</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: make it better</h3><span class="chip opt">Optional</span></div>
+      <div class="prose">
+        <p>Pick one improvement and add it to your project:</p>
+        <ul>
+          <li><b>Cashier:</b> give a 10% discount when the total is $20 or more.</li>
+          <li><b>Quiz:</b> let the student try each question twice before showing the answer.</li>
+          <li><b>Step tracker:</b> also print which day had the most steps.</li>
+        </ul>
+        <p>Or choose a second project and build that one too. The page will still test it.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js" onerror="window.__skFail=true"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js" onerror="window.__skFail=true"></script>
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var py = Course.python, el = Course.el, $ = function (id) { return document.getElementById(id); };
+  var state = Course.state;
+  var PROJECTS = [
+    { id: "cashier", name: "Bake Sale Cashier", who: "For a service club volunteer at the register" },
+    { id: "quiz", name: "Study Buddy Quiz", who: "For a younger student practicing for a test" },
+    { id: "steps", name: "Step Tracker", who: "For a grandparent with a walking goal" }
+  ];
+
+  Course.init({
+    id: "u3m5",
+    usesPython: true,
+    required: ["t1", "t2", "t3", "build"],
+    tryTasks: ["t1", "t2", "t3"],
+    buildTask: "build",
+    taskNames: { t1: "Warm-up 1: Pick the right tool", t2: "Warm-up 2: Put the pseudocode in order", t3: "Warm-up 3: Fix the bugs", build: "Build: a program that helps someone" },
+    code: [69, 89, 69, 83, 45, 50, 48, 49, 53],
+    buildText: function () {
+      var id = state.extra.project || "cashier";
+      var done = state.extra.projectDone || {};
+      var pick = done[id] ? id : (Object.keys(done)[0] || id);
+      var p = PROJECTS.filter(function (x) { return x.id === pick; })[0];
+      var ta = document.getElementById("code-" + pick);
+      return "# " + p.name + "\n" + (ta ? ta.value : "");
+    }
+  });
+
+  function lines(o) { return py.outLines(o).map(function (l) { return l.trim(); }); }
+  function has(o, t) { return o.toLowerCase().indexOf(String(t).toLowerCase()) !== -1; }
+  function common(code) {
+    var missing = [];
+    if (!/input\s*\(/.test(code)) missing.push("Use input() to ask the user for information.");
+    if (!/^\s*if\b/m.test(code)) missing.push("Use an if to make a decision.");
+    if (!/^\s*for\b/m.test(code)) missing.push("Use a for loop.");
+    if (!/^\s*def\s+\w+\s*\(/m.test(code)) missing.push("Define a function with def.");
+    if (!/^\s*return\b/m.test(code)) missing.push("Have your function return a value.");
+    return missing;
+  }
+  function finishProject(id) {
+    var done = state.extra.projectDone || (state.extra.projectDone = {});
+    done[id] = true; Course.save();
+    Course.markDone("build");
+  }
+
+  /* ---------- Warm-up 1 ---------- */
+  Course.quiz({
+    task: "t1", container: "t1-quiz",
+    okMsg: "All right. Those four tools are enough to build a surprising number of useful programs.",
+    questions: [
+      { q: "You need to ask the user how many tickets they want.", choices: [
+        { text: "input()", code: true, right: true, why: "Right. input() asks a question and waits for an answer." },
+        { text: "for", code: true, why: "Not quite. for repeats steps." },
+        { text: "def", code: true, why: "Not quite. def creates a function." }
+      ] },
+      { q: "You need to show a different message when the score is at least 90.", choices: [
+        { text: "for", code: true, why: "Not quite. for repeats steps." },
+        { text: "if", code: true, right: true, why: "Right. if makes a decision based on a comparison." },
+        { text: "return", code: true, why: "Not quite. return sends a value back from a function." }
+      ] },
+      { q: "You need to ask the same question for each of 7 days.", choices: [
+        { text: "for", code: true, right: true, why: "Right. for repeats steps, like once per day." },
+        { text: "if", code: true, why: "Not quite. if decides; it doesn't repeat." },
+        { text: "print()", code: true, why: "Not quite. print() shows output." }
+      ] },
+      { q: "You need to calculate change in several places, and want to write the math only once.", choices: [
+        { text: "A variable", why: "Not quite. A variable holds a value, but it can't take new inputs and calculate." },
+        { text: "A function with def", right: true, why: "Right. Write the steps once, then call the function wherever you need them." },
+        { text: "A comment", why: "Not quite. Comments are notes for people; Python ignores them." }
+      ] }
+    ]
+  });
+
+  /* ---------- Warm-up 2 ---------- */
+  Course.order({
+    task: "t2", bank: "t2-bank", seq: "t2-seq", button: "t2-check", feedback: "t2-fb",
+    items: [
+      "If they paid less than the price, say \"Not enough money.\"",
+      "Ask for the price of the item.",
+      "Show the change.",
+      "Guess how much change they probably need.",
+      "Otherwise, work out the change: amount paid minus price.",
+      "Ask how much money the customer paid."
+    ],
+    correct: [1, 5, 0, 4, 2],
+    okMsg: "That's a solid plan: inputs first, then the decision, then the output. Now you could turn each line into Python.",
+    hints: { button: "t2-hint", box: "t2-hints", list: [
+      "Programs need their inputs before they can do anything with them. What two things do you need to know?",
+      "\"Guess\" isn't precise. A program can calculate the exact change.",
+      "The decision (enough money or not) comes before showing the change."
+    ] }
+  });
+
+  /* ---------- Editors ---------- */
+  py.editors({
+    t3: {
+      starter: 'def grade_message(score)\n    if score >= 90:\n        return "Excellent!"\n    elif score >= 80:\n        return "Great job!"\n    else:\n        return "Keep practicing!"\n\nscores = [95, 72, 88]\nfor s in scores:\nprint(grade_message(S))\n',
+      hints: [
+        "Bug 1: Look at the end of the def line.",
+        "Bug 2: The print should repeat for each score. Should it be indented?",
+        "Bug 3: Python cares about capital letters. Is it s or S?"
+      ],
+      check: function (r) {
+        if (lines(r.output).join("|") === "Excellent!|Keep practicing!|Great job!") return { ok: true, msg: "All three fixed. You just debugged a function, a loop and a decision in one program." };
+        return { ok: false, msg: "It should print Excellent!, Keep practicing! and Great job!, one per line." };
+      }
+    },
+    cashier: {
+      starter: '# Bake Sale Cashier\n\ndef change_due(total, paid):\n    return 0  # change this\n\nitems = int(input("How many items? "))\ntotal = 0\n\n# Loop: ask the price of each item and add it to total\n\n# Ask how much the customer paid\n\n# Decide: not enough money, or show the total and the change\n',
+      hints: [
+        "change_due should return paid - total.",
+        "Loop: for i in range(1, items + 1): then (indented) price = int(input(f\"Price of item {i}? \")) and total = total + price",
+        "After the loop: paid = int(input(\"Amount paid? \")). Then if paid < total: print a not-enough message, else: print the total and change_due(total, paid)."
+      ],
+      errorsGoToCheck: true,
+      tests: [
+        { inputs: ["3", "2", "3", "1", "10"], expect: function (o) { return has(o, "6") && /\b4\b/.test(lines(o).slice(-1)[0] || "") && !has(o, "not enough") ? null : "For 3 items at $2, $3 and $1 with $10 paid, it should show a total of 6 and change of 4 (on the last line)."; } },
+        { inputs: ["2", "5", "5", "8"], expect: function (o) { return has(o, "not enough") ? null : "For 2 items at $5 each with only $8 paid, it should say \"Not enough money\"."; } },
+        { inputs: ["1", "7", "7"], expect: function (o) { return !has(o, "not enough") && /\b0\b/.test(lines(o).slice(-1)[0] || "") ? null : "When someone pays the exact amount ($7 for a $7 item), the change should be 0, not \"Not enough money\"."; } }
+      ],
+      check: function (r, code) {
+        var missing = common(code);
+        if (!/def\s+change_due\s*\(/.test(code)) missing.push("Keep the change_due function and use it.");
+        if (missing.length) return { ok: false, msg: "It works, but the project is missing:", list: missing };
+        finishProject("cashier");
+        return { ok: true, msg: "Your cashier works, including the exact-change edge case. The volunteer at the register thanks you!" };
+      }
+    },
+    quiz: {
+      starter: '# Study Buddy Quiz\n\nquestions = ["What is 7 x 8? ", "What is the capital of France? ", "How many sides does a hexagon have? "]\nanswers = ["56", "Paris", "6"]\nscore = 0\n\ndef final_message(score):\n    return "Nice try!"  # change this to depend on the score\n\n# Loop through the questions with an index:\nfor i in range(len(questions)):\n    reply = input(questions[i])\n    # Decide: if reply matches answers[i], say Correct! and add 1 to score\n    # otherwise, show the right answer\n\n# Print the score and the final message\n',
+      hints: [
+        "Inside the loop (indented): if reply == answers[i]: then print(\"Correct!\") and score = score + 1",
+        "else: print(f\"The answer is {answers[i]}.\")",
+        "After the loop: print(f\"You got {score} out of {len(questions)}.\") and print(final_message(score)). Make final_message use if/else to return different messages."
+      ],
+      errorsGoToCheck: true,
+      tests: [
+        { inputs: ["zzz", "zzz", "zzz", "zzz", "zzz", "zzz", "zzz", "zzz", "zzz", "zzz"], expect: function (o) {
+          var asked = lines(o).filter(function (l) { return /zzz$/.test(l); }).length;
+          if (asked < 3) return "Your quiz should ask at least 3 questions. It asked " + asked + ".";
+          if (/correct!/i.test(o.replace(/not correct|incorrect/gi, ""))) return "When every answer is wrong, the quiz still said \"Correct!\". Check your if.";
+          var tail = lines(o).slice(-3).join(" ");
+          if (!/\b0\b/.test(tail)) return "When every answer is wrong, the score at the end should be 0.";
+          return null;
+        } }
+      ],
+      check: function (r, code) {
+        var missing = common(code);
+        if (!/\[/.test(code)) missing.push("Store your questions and answers in lists.");
+        if ((code.match(/,/g) || []).length < 4) missing.push("Write at least 3 questions and 3 answers.");
+        if (!/def\s+final_message\s*\(/.test(code)) missing.push("Keep the final_message function and use it.");
+        if (!/score\s*=\s*score\s*\+\s*1|score\s*\+=\s*1/.test(code)) missing.push("Add 1 to the score when an answer is correct.");
+        if (missing.length) return { ok: false, msg: "It works, but the project is missing:", list: missing };
+        finishProject("quiz");
+        return { ok: true, msg: "Your quiz works. Make sure you tried it yourself with right answers too, and try it on someone younger!" };
+      }
+    },
+    steps: {
+      starter: '# Step Tracker\n\ndef average(total, days):\n    return 0  # change this\n\ntotal = 0\n\n# Loop 7 times: ask for each day\'s steps and add them to total\n\n# Work out the average with your function, print the total and the average\n\n# Decide: did they average at least 5000 steps?\n',
+      hints: [
+        "average should return total // days.",
+        "for day in range(1, 8): then (indented) steps = int(input(f\"Steps on day {day}? \")) and total = total + steps",
+        "After the loop: avg = average(total, 7), print the total and avg, then if avg >= 5000: print a congratulations message, else: an encouraging one."
+      ],
+      errorsGoToCheck: true,
+      tests: [
+        { inputs: ["4000", "6000", "5000", "7000", "3000", "5000", "6000"], expect: function (o) { return has(o, "36000") && has(o, "5142") ? null : "For 4000, 6000, 5000, 7000, 3000, 5000, 6000, it should show a total of 36000 and an average of 5142."; } },
+        { inputs: ["1000", "1000", "1000", "1000", "1000", "1000", "1000"], expect: function (o) { return has(o, "7000") && has(o, "1000") ? null : "For 1000 steps every day, it should show a total of 7000 and an average of 1000."; } },
+        { inputs: ["5000", "5000", "5000", "5000", "5000", "5000", "5000"], expect: function (o) { return has(o, "35000") ? null : "For 5000 steps every day, the total should be 35000."; } }
+      ],
+      check: function (r, code) {
+        var missing = common(code);
+        if (!/def\s+average\s*\(/.test(code)) missing.push("Keep the average function and use it.");
+        if (missing.length) return { ok: false, msg: "It works, but the project is missing:", list: missing };
+        // The goal message must change at exactly 5000: compare the last line for 6000, 5000 and 2000 a day.
+        function lastLine(v) { return py.run(code, { inputs: [v, v, v, v, v, v, v] }).then(function (res) { return (lines(res.afterInputs).slice(-1)[0] || "").replace(/\d+/g, "#"); }); }
+        return Promise.all([lastLine("6000"), lastLine("5000"), lastLine("2000")]).then(function (m) {
+          if (m[0] !== m[1]) return { ok: false, msg: "Averaging exactly 5000 steps meets the goal, so it should end with the same message as 6000 a day. Is it > or >=?" };
+          if (m[0] === m[2]) return { ok: false, msg: "Meeting the goal (6000 a day) and missing it (2000 a day) ended with the same message. Make the two messages different, and print the message last." };
+          finishProject("steps");
+          return { ok: true, msg: "Your step tracker works, and its message changes at exactly 5000. Grandma's doctor would be proud." };
+        });
+      }
+    }
+  });
+
+  /* ---------- Project picker ---------- */
+  (function () {
+    var pick = $("b-pick");
+    var buttons = PROJECTS.map(function (p) {
+      var b = el("button", { type: "button", "aria-pressed": state.extra.project === p.id ? "true" : "false" });
+      b.appendChild(el("b", null, p.name));
+      b.appendChild(el("span", null, p.who));
+      b.addEventListener("click", function () { state.extra.project = p.id; Course.save(); show(); });
+      pick.appendChild(b);
+      return b;
+    });
+    function show() {
+      buttons.forEach(function (b, i) { b.setAttribute("aria-pressed", state.extra.project === PROJECTS[i].id ? "true" : "false"); });
+      document.querySelectorAll("[data-spec]").forEach(function (s) { s.hidden = s.getAttribute("data-spec") !== state.extra.project; });
+    }
+    show();
+  })();
+})();
+</script>
+
+</body>
+</html>

@@ -299,3 +299,6 @@ input.answer.wide { width: min(16rem, 100%); text-transform: uppercase; letter-s
 .cmds .cmd { font-family: var(--font-code); font-variation-settings: "MONO" 1; font-size: 0.85rem; padding: 4px 10px; min-height: 36px; }
 .cmds .empty { color: var(--muted); font-size: var(--step-0); padding: 4px; }
 .choice .choice-text { font-size: 0.95rem; }
+
+/* Let wide code examples scroll inside their box instead of widening the page. */
+.task > *, section.step > *, header.intro > * { min-width: 0; }
