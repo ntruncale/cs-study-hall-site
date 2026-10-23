@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>How the Internet Moves Data</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.packet-demo { display: flex; flex-wrap: wrap; gap: 8px; }
+.packet { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; font-size: 0.85rem; min-width: 9rem; background: var(--surface); }
+.packet .hdr { background: var(--accent-soft); padding: 4px 8px; font-family: var(--font-code); font-variation-settings: "MONO" 1; font-size: 0.75rem; color: var(--accent); }
+.packet .dat { padding: 6px 8px; font-weight: 650; }
+.net line { stroke: var(--line); stroke-width: 4; stroke-linecap: round; }
+.net line.path { stroke: var(--accent); stroke-width: 6; }
+.net line.bridge { stroke: var(--bad); stroke-dasharray: 8 6; }
+.net line.on { stroke: var(--ink); stroke-width: 5; }
+.net g.node { cursor: pointer; }
+.net g.node circle { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.net g.node.end circle { fill: var(--accent-soft); stroke: var(--accent); }
+.net g.node.visited circle { fill: var(--accent); stroke: var(--accent); }
+.net g.node.visited text { fill: var(--surface); }
+.net g.node.down circle { fill: var(--bad-soft); stroke: var(--bad); stroke-dasharray: 4 3; }
+.net g.node.sel circle { stroke: var(--accent); stroke-width: 5; }
+.net g.node text { font-size: 15px; font-weight: 750; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.net g.node:focus-visible circle { stroke: var(--accent); stroke-width: 5; }
+.net text.lbl { font-size: 14px; font-weight: 650; fill: var(--muted); }
+.route { font-family: var(--font-code); font-variation-settings: "MONO" 1; font-size: 0.95rem; }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U1 · M3</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 1: How computers work · Module 3 of 3</span>
+    <h1>How the Internet Moves Data</h1>
+    <p class="lede">When you send a message, it doesn't travel in one piece. It's chopped into small packets that race across the world by different routes and get put back together at the other end.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 35 minutes</span>
+      <span><b>To pass:</b> finish the 6 tasks, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (U1 · M2)</strong>
+      <span>A computer is a stack of layers: <b>hardware</b> at the bottom, the <b>operating system</b> in the middle, and <b>apps</b> on top. Each layer hides the details of the one below.</span>
+    </div>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>The first message was "LO"</h2><span class="ipp">Context</span></div>
+    <div class="prose">
+      <p>On the night of October 29, 1969, a student programmer named <b>Charley Kline</b> sat at a computer at UCLA. He was trying to log in to another computer about 350 miles away, at the Stanford Research Institute, over a brand-new network called <b>ARPANET</b>.</p>
+      <p>He typed <b>L</b>. The other computer got it. He typed <b>O</b>. It got that too. Then he typed <b>G</b>, and the system crashed. So the first message ever sent over the network that grew into the internet was "LO," as in "lo and behold." About an hour later they fixed the problem and the login worked.</p>
+      <p>Today, the internet connects billions of devices. It still works on the same big idea that ARPANET was built on: split data into small <b>packets</b> and let them find their own way.</p>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Three ideas</h2><span class="ipp">Experience</span></div>
+
+    <div class="prose">
+      <h3>Idea 1: Data travels in packets</h3>
+      <p>Your message, photo or video is cut into small pieces called <b>packets</b>. Each packet has a <b>header</b>, like the label on an envelope, and <b>data</b>, a small piece of what you sent.</p>
+    </div>
+    <div class="packet-demo" aria-label="Example: a message split into three packets">
+      <div class="packet"><div class="hdr">to 142.250.72.14 · #1 of 3</div><div class="dat">See you at</div></div>
+      <div class="packet"><div class="hdr">to 142.250.72.14 · #2 of 3</div><div class="dat"> the food</div></div>
+      <div class="packet"><div class="hdr">to 142.250.72.14 · #3 of 3</div><div class="dat"> drive!</div></div>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 2: Addresses and routers</h3>
+      <p>Every device on the internet has an <b>IP address</b>, a number like <code class="inline">142.250.72.14</code>. Packets travel through <b>routers</b>, computers whose only job is to pass each packet one step closer to its address. Each step is called a <b>hop</b>. Packets from the same message can take different routes.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 3: Put back together, and resent if lost</h3>
+      <p>Packets can arrive out of order. The receiving computer uses the packet numbers to put them back in order. If a packet goes missing, the receiver asks for that one packet again, so the rest of the message doesn't have to be resent.</p>
+      <p>The internet has many paths between places. If a router breaks, packets simply go around it. That's what makes the internet <b>reliable</b>.</p>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Try it</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Task 1: Packet basics</h3><span class="chip" data-chip="t1">To do</span></div>
+      <div id="t1-quiz"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Task 2: Put the packets back together</h3><span class="chip" data-chip="t2">To do</span></div>
+      <p>These packets arrived out of order. Use their packet numbers to put them back together.</p>
+      <div class="order-zones">
+        <div><h4>Packets as they arrived</h4><div class="pzone" id="t2-bank"></div></div>
+        <div><h4>Rebuilt message</h4><div class="pzone" id="t2-seq"></div></div>
+      </div>
+      <div class="row"><button class="primary" id="t2-check">Check</button><button class="ghost" id="t2-hint">Show a hint</button></div>
+      <div id="t2-fb"></div>
+      <div class="hints" id="t2-hints"></div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Task 3: Label or contents?</h3><span class="chip" data-chip="t3">To do</span></div>
+      <p>Is each item part of a packet's <b>header</b> (the label) or its <b>data</b> (the contents)?</p>
+      <div class="sort-list" id="t3-list"></div>
+      <div class="row"><button class="primary" id="t3-check">Check</button><button class="ghost" id="t3-hint">Show a hint</button></div>
+      <div id="t3-fb"></div>
+      <div class="hints" id="t3-hints"></div>
+    </div>
+
+    <div class="task" id="t4">
+      <div class="task-head"><h3>Task 4: Be the router</h3><span class="chip" data-chip="t4">To do</span></div>
+      <p id="t4-goal">Send a packet from your <b>iPad</b> to the <b>Server</b> using the fewest hops. Tap the routers in order, starting next to the iPad.</p>
+      <div class="sim">
+        <svg class="net" id="t4-net" viewBox="0 0 560 300" role="group" aria-label="Network map"></svg>
+        <div class="route" id="t4-route"></div>
+      </div>
+      <div class="row"><button class="ghost" id="t4-undo">Undo</button><button class="ghost" id="t4-clear">Start route over</button><button class="ghost" id="t4-hint">Show a hint</button></div>
+      <div id="t4-fb"></div>
+      <div class="hints" id="t4-hints"></div>
+    </div>
+
+    <div class="task" id="t5">
+      <div class="task-head"><h3>Task 5: Count the packets</h3><span class="chip" data-chip="t5">To do</span></div>
+      <p>A 3 MB photo is about 3,000,000 bytes. Each packet carries about 1,500 bytes of data.</p>
+      <div class="num-q"><label class="goal" for="t5-a">About how many packets does the photo need?</label><input id="t5-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t5-b">If 1 in every 100 packets gets lost, how many need to be resent?</label><input id="t5-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-b-m"></span></div>
+      <div class="row"><button class="primary" id="t5-check">Check my answers</button><button class="ghost" id="t5-hint">Show a hint</button></div>
+      <div id="t5-fb"></div>
+      <div class="hints" id="t5-hints"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: a campus network that doesn't break</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>The school is wiring six buildings together. If one cable gets cut, nobody should lose their connection. Tap one building, then another, to add a cable between them. Tap the same pair again to remove it.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>Your network must:</h3><span class="chip" data-chip="build">To do</span></div>
+      <ul class="status-list" id="b-reqs"></ul>
+      <div class="sim">
+        <svg class="net" id="b-net" viewBox="0 0 560 400" role="group" aria-label="Campus buildings"></svg>
+        <p class="goal" id="b-sel">Tap a building to start a cable.</p>
+      </div>
+      <div class="row"><button class="primary" id="b-check">Test my network</button><button class="ghost" id="b-clear">Remove all cables</button></div>
+      <div id="b-fb"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">St. Ignatius wrote nearly 7,000 letters to keep the early Jesuits connected as they spread across the world. Today the internet connects you to almost anyone, instantly. How does the internet help you stay close to people? When does it pull you away from the people right in front of you?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="The internet helps me stay close to…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all 6 tasks to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All tasks done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U1·M3 Check: How the Internet Moves Data.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your network's cable list. Tap the button below, then paste it in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my cable list</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: how fast is a hop?</h3><span class="chip opt">Optional</span></div>
+      <p>A packet from your school to a server in another country might cross 12 routers. If each hop takes about 20 milliseconds (ms), how long does the trip take?</p>
+      <div class="num-q"><label class="goal" for="x1-a">Milliseconds:</label><input id="x1-a" inputmode="numeric" autocomplete="off"><button id="x1-check">Check</button></div>
+      <div id="x1-fb"></div>
+      <p class="goal">Then try your Build again with only 6 cables. Is it still possible?</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var el = Course.el, $ = function (id) { return document.getElementById(id); };
+  var state = Course.state;
+  var SVGNS = "http://www.w3.org/2000/svg";
+  function svg(tag, attrs, text) {
+    var e = document.createElementNS(SVGNS, tag);
+    Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  /* ---------- Build data ---------- */
+  // lx, ly, la: where each building's name sits, outside the ring so cables never cross it.
+  var BUILDINGS = [
+    { name: "Chapel", x: 280, y: 70, lx: 280, ly: 26, la: "middle" }, { name: "Library", x: 420, y: 140, lx: 460, ly: 144, la: "start" },
+    { name: "Gym", x: 420, y: 270, lx: 460, ly: 274, la: "start" }, { name: "Science", x: 280, y: 330, lx: 280, ly: 382, la: "middle" },
+    { name: "Cafeteria", x: 140, y: 270, lx: 100, ly: 274, la: "end" }, { name: "Office", x: 140, y: 140, lx: 100, ly: 144, la: "end" }
+  ];
+  var MAX_CABLES = 7;
+  var cables; // pairs [a, b] with a < b; set after Course.init loads saved progress
+  function cableText() {
+    return "My campus network (" + cables.length + " cables)\n" + cables.map(function (c) { return BUILDINGS[c[0]].name + " – " + BUILDINGS[c[1]].name; }).join("\n");
+  }
+
+  Course.init({
+    id: "u1m3",
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Packet basics", t2: "Task 2: Put the packets back together", t3: "Task 3: Label or contents?", t4: "Task 4: Be the router", t5: "Task 5: Count the packets", build: "Build: a campus network that doesn't break" },
+    code: [76, 79, 45, 49, 57, 54, 57],
+    buildText: cableText
+  });
+  cables = state.extra.cables || (state.extra.cables = []);
+
+  /* ---------- Task 1 ---------- */
+  Course.quiz({
+    task: "t1", container: "t1-quiz",
+    okMsg: "All right. Packets, addresses and routers are the heart of the internet.",
+    questions: [
+      { q: "Why does the internet cut data into small packets?", choices: [
+        { text: "So pieces can travel separately, and a lost piece can be resent without resending everything", right: true, why: "Right. Small packets share the network fairly and are easy to resend." },
+        { text: "Because computers can only read one letter at a time", why: "Not quite. Computers handle huge amounts of data at once. Packets are about traveling across the network." },
+        { text: "To make the data secret", why: "Not quite. Packets alone don't hide anything. Keeping data secret is encryption, which comes in Unit 4." }
+      ] },
+      { q: "What does a router do?", choices: [
+        { text: "Stores websites", why: "Not quite. Servers store websites. Routers move packets." },
+        { text: "Passes each packet one step closer to its destination", right: true, why: "Right. Each router looks at the address and sends the packet onward." },
+        { text: "Types your messages for you", why: "Not quite. You do the typing. The router moves the packets you send." }
+      ] },
+      { q: "What is an IP address?", choices: [
+        { text: "A password for your Wi-Fi", why: "Not quite. An IP address isn't secret. It's more like a street address." },
+        { text: "The name of a website", why: "Close. Website names like google.com get translated into IP addresses, but the address itself is a number." },
+        { text: "A number that identifies a device on the internet", right: true, why: "Right. Packets are labeled with the IP address they're going to." }
+      ] }
+    ]
+  });
+
+  /* ---------- Task 2 ---------- */
+  Course.order({
+    task: "t2", bank: "t2-bank", seq: "t2-seq", button: "t2-check", feedback: "t2-fb",
+    items: ["#4 of 6: “OR OTH”", "#2 of 6: “AND W”", "#6 of 6: “S”", "#1 of 6: “MEN ”", "#5 of 6: “ER”", "#3 of 6: “OMEN F”"],
+    correct: [3, 1, 5, 0, 4, 2],
+    okMsg: "MEN AND WOMEN FOR OTHERS. The packet numbers in each header made it possible to rebuild the message.",
+    hints: { button: "t2-hint", box: "t2-hints", list: [
+      "Ignore the words for now. Look only at the packet numbers: #1, #2, #3…",
+      "Start with #1 of 6, then find #2 of 6, and keep going."
+    ] }
+  });
+
+  /* ---------- Task 3 ---------- */
+  Course.sort({
+    task: "t3", container: "t3-list", button: "t3-check", feedback: "t3-fb",
+    categories: ["Header (label)", "Data (contents)"],
+    items: [
+      { text: "The IP address it's going to", cat: 0 },
+      { text: "A small piece of your photo", cat: 1 },
+      { text: "The packet's number, like #3 of 6", cat: 0 },
+      { text: "Part of the words in your message", cat: 1 },
+      { text: "The IP address it came from", cat: 0 },
+      { text: "A few seconds of a song", cat: 1 }
+    ],
+    okMsg: "Right. The header tells the network where the packet goes and how to rebuild the message. The data is a slice of what you sent.",
+    hints: { button: "t3-hint", box: "t3-hints", list: [
+      "Think of an envelope. What goes on the outside (addresses), and what goes inside (the letter)?",
+      "Anything the routers need in order to deliver it belongs in the header."
+    ] }
+  });
+
+  /* ---------- graph helpers ---------- */
+  function neighbors(edges, n, blocked) {
+    var out = [];
+    edges.forEach(function (e) {
+      if (e[0] === n && blocked.indexOf(e[1]) === -1) out.push(e[1]);
+      else if (e[1] === n && blocked.indexOf(e[0]) === -1) out.push(e[0]);
+    });
+    return out;
+  }
+  function hopsBetween(edges, a, b, blocked) {
+    var dist = {}; dist[a] = 0; var queue = [a];
+    while (queue.length) {
+      var n = queue.shift();
+      if (n === b) return dist[n];
+      neighbors(edges, n, blocked).forEach(function (m) { if (dist[m] == null) { dist[m] = dist[n] + 1; queue.push(m); } });
+    }
+    return Infinity;
+  }
+
+  /* ---------- Task 4: routing ---------- */
+  (function () {
+    var NODES = [
+      { name: "iPad", x: 50, y: 150, end: true }, { name: "A", x: 160, y: 60 }, { name: "B", x: 160, y: 240 },
+      { name: "C", x: 300, y: 150 }, { name: "D", x: 300, y: 260 }, { name: "E", x: 420, y: 230 }, { name: "Server", x: 510, y: 120, end: true }
+    ];
+    var EDGES = [[0, 1], [0, 2], [1, 3], [2, 3], [2, 4], [3, 6], [3, 5], [4, 5], [5, 6]];
+    var START = 0, END = 6;
+    var PARTS = [
+      { down: [], goal: "Send a packet from your <b>iPad</b> to the <b>Server</b> using the fewest hops. Tap the routers in order, starting next to the iPad." },
+      { down: [3], goal: "Router <b>C</b> just broke! Find the shortest route from the <b>iPad</b> to the <b>Server</b> that goes around it." }
+    ];
+    var saved = state.extra.t4 || (state.extra.t4 = { part: 0 });
+    if (state.done.t4) saved.part = 2;
+    var path = [START];
+    var svgEl = $("t4-net"), fb = $("t4-fb");
+    var lines = EDGES.map(function (e) {
+      var l = svg("line", { x1: NODES[e[0]].x, y1: NODES[e[0]].y, x2: NODES[e[1]].x, y2: NODES[e[1]].y });
+      svgEl.appendChild(l); return l;
+    });
+    var groups = NODES.map(function (n, i) {
+      var g = svg("g", { "class": "node" + (n.end ? " end" : ""), tabindex: "0", role: "button", "aria-label": n.name });
+      g.appendChild(svg("circle", { cx: n.x, cy: n.y, r: n.end ? 34 : 24 }));
+      g.appendChild(svg("text", { x: n.x, y: n.y }, n.name));
+      g.addEventListener("click", function () { tap(i); });
+      g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tap(i); } });
+      svgEl.appendChild(g); return g;
+    });
+    function part() { return PARTS[Math.min(saved.part, PARTS.length - 1)]; }
+    function render() {
+      $("t4-goal").innerHTML = saved.part >= PARTS.length ? "Both routes found. You can keep exploring the map." : part().goal;
+      var down = saved.part >= PARTS.length ? [] : part().down;
+      groups.forEach(function (g, i) {
+        g.classList.toggle("visited", path.indexOf(i) !== -1 && !NODES[i].end);
+        g.classList.toggle("down", down.indexOf(i) !== -1);
+      });
+      lines.forEach(function (l, k) {
+        var e = EDGES[k], on = false;
+        for (var j = 1; j < path.length; j++) if ((path[j - 1] === e[0] && path[j] === e[1]) || (path[j - 1] === e[1] && path[j] === e[0])) on = true;
+        l.classList.toggle("path", on);
+      });
+      $("t4-route").textContent = "Route: " + path.map(function (i) { return NODES[i].name; }).join(" → ") + "   (" + (path.length - 1) + " hops)";
+    }
+    function tap(i) {
+      if (saved.part >= PARTS.length) return;
+      var last = path[path.length - 1];
+      var down = part().down;
+      if (last === END) return;
+      if (down.indexOf(i) !== -1) { Course.feedback(fb, false, "Router " + NODES[i].name + " is broken. Packets can't go through it."); return; }
+      if (neighbors(EDGES, last, []).indexOf(i) === -1) { Course.feedback(fb, false, NODES[i].name + " isn't connected to " + NODES[last].name + ". Follow the lines."); return; }
+      if (path.indexOf(i) !== -1) { Course.feedback(fb, false, "You've already been to " + NODES[i].name + ". Going in circles wastes hops."); return; }
+      path.push(i); fb.innerHTML = "";
+      if (i === END) {
+        var best = hopsBetween(EDGES, START, END, down);
+        var hops = path.length - 1;
+        if (hops === best) {
+          saved.part++; Course.save();
+          if (saved.part >= PARTS.length) {
+            Course.feedback(fb, true, "Delivered in " + hops + " hops, around the broken router. Real routers make choices like this millions of times a second.");
+            Course.markDone("t4");
+          } else {
+            Course.feedback(fb, true, "Delivered in " + hops + " hops, the fewest possible. Now something goes wrong…");
+            path = [START];
+          }
+        } else {
+          Course.feedback(fb, false, "Delivered, but in " + hops + " hops. There's a route with only " + best + ". Start the route over and try again.");
+        }
+      }
+      render();
+    }
+    $("t4-undo").addEventListener("click", function () { if (path.length > 1) path.pop(); fb.innerHTML = ""; render(); });
+    $("t4-clear").addEventListener("click", function () { path = [START]; fb.innerHTML = ""; render(); });
+    render();
+    Course.hints("t4", [
+      "Count the hops (lines) on each possible route before you tap. The shortest one wins.",
+      "With every router working, the shortest route has 3 hops.",
+      "When C is broken, you have to go through B, D and E."
+    ], $("t4-hint"), $("t4-hints"));
+  })();
+
+  /* ---------- Task 5 ---------- */
+  Course.answers({
+    task: "t5", button: "t5-check", feedback: "t5-fb",
+    items: [{ id: "t5-a", answer: 2000 }, { id: "t5-b", answer: 20 }],
+    okMsg: "Both right. One photo is about 2,000 packets, and only about 20 need resending. Imagine resending the whole photo instead!",
+    hints: { button: "t5-hint", box: "t5-hints", list: [
+      "Divide the photo's size by the size of one packet: 3,000,000 ÷ 1,500.",
+      "1 in every 100 means divide the number of packets by 100."
+    ] }
+  });
+
+  /* ---------- Build: campus network ---------- */
+  (function () {
+    var svgEl = $("b-net"), sel = null;
+    var lineLayer = svg("g", {}); svgEl.appendChild(lineLayer);
+    var groups = BUILDINGS.map(function (b, i) {
+      var g = svg("g", { "class": "node", tabindex: "0", role: "button", "aria-label": b.name });
+      g.appendChild(svg("circle", { cx: b.x, cy: b.y, r: 30 }));
+      g.appendChild(svg("text", { x: b.x, y: b.y }, b.name.slice(0, 3)));
+      g.appendChild(svg("text", { "class": "lbl", x: b.lx, y: b.ly, style: "text-anchor:" + b.la }, b.name));
+      g.addEventListener("click", function () { tap(i); });
+      g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tap(i); } });
+      svgEl.appendChild(g); return g;
+    });
+    function key(a, b) { return a < b ? [a, b] : [b, a]; }
+    function find(a, b) { var k = key(a, b); for (var i = 0; i < cables.length; i++) if (cables[i][0] === k[0] && cables[i][1] === k[1]) return i; return -1; }
+    function connected(edges) {
+      var seen = [0], queue = [0];
+      while (queue.length) { var n = queue.shift(); neighbors(edges, n, []).forEach(function (m) { if (seen.indexOf(m) === -1) { seen.push(m); queue.push(m); } }); }
+      return seen.length === BUILDINGS.length;
+    }
+    function bridges() {
+      // A cable is a weak spot if cutting it alone splits the network.
+      return cables.filter(function (c, i) { return !connected(cables.filter(function (_, j) { return j !== i; })); });
+    }
+    var weak = [];
+    function reqs() {
+      var conn = connected(cables);
+      return { conn: conn, survive: conn && bridges().length === 0, count: cables.length <= MAX_CABLES };
+    }
+    function render() {
+      lineLayer.innerHTML = "";
+      cables.forEach(function (c) {
+        var isWeak = weak.some(function (w) { return w[0] === c[0] && w[1] === c[1]; });
+        lineLayer.appendChild(svg("line", { "class": "on" + (isWeak ? " bridge" : ""), x1: BUILDINGS[c[0]].x, y1: BUILDINGS[c[0]].y, x2: BUILDINGS[c[1]].x, y2: BUILDINGS[c[1]].y }));
+      });
+      groups.forEach(function (g, i) { g.classList.toggle("sel", sel === i); });
+      var q = reqs();
+      var list = $("b-reqs"); list.innerHTML = "";
+      [["conn", "Connect all six buildings"], ["survive", "Keep everyone connected if any one cable is cut"], ["count", "Use " + MAX_CABLES + " cables or fewer (you have " + cables.length + ")"]].forEach(function (r) {
+        list.appendChild(el("li", { "class": q[r[0]] ? "done" : "" }, (q[r[0]] ? "✓ " : "○ ") + r[1]));
+      });
+      $("b-sel").textContent = sel == null ? "Tap a building to start a cable." : "Now tap another building to connect it to " + BUILDINGS[sel].name + ", or tap " + BUILDINGS[sel].name + " again to cancel.";
+    }
+    function tap(i) {
+      if (sel == null) { sel = i; }
+      else if (sel === i) { sel = null; }
+      else {
+        var at = find(sel, i);
+        if (at === -1) cables.push(key(sel, i)); else cables.splice(at, 1);
+        sel = null; weak = []; $("b-fb").innerHTML = ""; Course.save();
+      }
+      render();
+    }
+    $("b-clear").addEventListener("click", function () { cables.length = 0; sel = null; weak = []; Course.save(); $("b-fb").innerHTML = ""; render(); });
+    $("b-check").addEventListener("click", function () {
+      var q = reqs();
+      if (!q.conn) { weak = []; Course.feedback($("b-fb"), false, "Some buildings can't reach the others yet. Every building needs a path to every other building."); }
+      else if (!q.survive) {
+        weak = bridges();
+        Course.feedback($("b-fb"), false, weak.length + " cable" + (weak.length === 1 ? " is a weak spot" : "s are weak spots") + " (shown dashed in red). If " + (weak.length === 1 ? "it's" : "one of them is") + " cut, part of the campus goes offline. Add another path around it.");
+      } else if (!q.count) { weak = []; Course.feedback($("b-fb"), false, "It's reliable, but it uses " + cables.length + " cables. Can you do it with " + MAX_CABLES + " or fewer?"); }
+      else {
+        weak = [];
+        Course.feedback($("b-fb"), true, "Tested: cutting any single cable leaves every building connected. That's the same idea that keeps the internet running.");
+        Course.markDone("build");
+      }
+      render();
+    });
+    render();
+    if (state.done.build) Course.feedback($("b-fb"), true, "Done. The copy button in Step 6 uses your current cables.");
+  })();
+
+  /* ---------- Go further ---------- */
+  $("x1-check").addEventListener("click", function () {
+    var ok = Course.matches($("x1-a").value, 240);
+    Course.feedback($("x1-fb"), ok, ok ? "Right. 12 × 20 = 240 ms, about a quarter of a second." : "Not yet. Multiply the number of hops by the time per hop.");
+  });
+})();
+</script>
+
+</body>
+</html>

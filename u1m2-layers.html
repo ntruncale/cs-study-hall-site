@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Layers of a Computer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.stack { max-width: 30rem; }
+.stack rect { stroke: var(--line); stroke-width: 1.5; }
+.stack .l0 { fill: var(--surface); }
+.stack .l1 { fill: var(--accent-soft); }
+.stack .l2 { fill: var(--hint-bg); }
+.stack .l3 { fill: var(--console-bg); }
+.stack text { fill: var(--ink); font: 700 15px var(--font-body); }
+.stack text.sub { font-weight: 450; font-size: 12px; fill: var(--muted); }
+.stack text.dark { fill: var(--console-ink); }
+.stack text.dark.sub { fill: var(--console-dim); }
+.agc { width: 92px; flex: none; }
+.agc rect.body { fill: var(--console-bg); }
+.agc rect.key { fill: var(--console-dim); }
+.agc rect.lamp { fill: var(--hint-bg); }
+.persona-pick { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 8px; }
+.persona-pick button { text-align: left; display: grid; gap: 2px; font-weight: 500; }
+.persona-pick button b { font-weight: 750; }
+.persona-pick button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.parts { display: grid; gap: 10px; }
+.part { display: grid; gap: 4px; }
+.part .name { font-size: var(--step-0); font-weight: 650; }
+.total { font-size: var(--step-2); font-weight: 800; font-variant-numeric: tabular-nums; }
+.total.over { color: var(--bad); }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U1 · M2</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 1: How computers work · Module 2 of 3</span>
+    <h1>Layers of a Computer</h1>
+    <p class="lede">Your iPad is a stack of layers: physical parts at the bottom, apps at the top, and an operating system in between. Today you'll learn what each layer does and why the layers matter.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 35 minutes</span>
+      <span><b>To pass:</b> finish the 6 tasks, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (U1 · M1)</strong>
+      <span>Computers store everything as <b>bits</b>, 0s and 1s. Eight bits make a <b>byte</b>. Bits get their meaning from the code people agree on.</span>
+    </div>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>Alarms on the way to the Moon</h2><span class="ipp">Context</span></div>
+    <div class="busa">
+      <svg class="agc" viewBox="0 0 92 110" aria-hidden="true">
+        <rect class="body" x="1" y="1" width="90" height="108" rx="6"/>
+        <rect class="lamp" x="10" y="10" width="20" height="10" rx="2"/><rect class="lamp" x="36" y="10" width="20" height="10" rx="2"/>
+        <rect class="key" x="10" y="34" width="20" height="16" rx="3"/><rect class="key" x="36" y="34" width="20" height="16" rx="3"/><rect class="key" x="62" y="34" width="20" height="16" rx="3"/>
+        <rect class="key" x="10" y="58" width="20" height="16" rx="3"/><rect class="key" x="36" y="58" width="20" height="16" rx="3"/><rect class="key" x="62" y="58" width="20" height="16" rx="3"/>
+        <rect class="key" x="10" y="82" width="20" height="16" rx="3"/><rect class="key" x="36" y="82" width="20" height="16" rx="3"/><rect class="key" x="62" y="82" width="20" height="16" rx="3"/>
+      </svg>
+      <div class="prose">
+        <p>On July 20, 1969, minutes before Apollo 11 touched down on the Moon, alarms started flashing on the spacecraft's computer: <b>1202</b>, then <b>1201</b>. The computer had more work than it could handle.</p>
+        <p>The software had been designed for exactly this kind of moment. A team at MIT led by <b>Margaret Hamilton</b> had built it to <b>put the most important jobs first</b>. When the computer was overloaded, it dropped less important tasks and kept the landing calculations running. Mission Control said "Go," and the astronauts landed safely.</p>
+        <p>That software was an early example of what we now call an <b>operating system</b>: the layer that decides which jobs get the computer's attention. Hamilton helped make "software engineering" a respected field, and in 2016 she received the Presidential Medal of Freedom.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Three ideas</h2><span class="ipp">Experience</span></div>
+
+    <div class="prose">
+      <h3>Idea 1: Hardware is the physical parts</h3>
+      <p><b>Hardware</b> is anything you could touch if you opened up the device.</p>
+      <ul>
+        <li><b>Processor (CPU):</b> the chip that does the calculations, billions per second.</li>
+        <li><b>Memory (RAM):</b> fast, short-term workspace for whatever is running right now. It's erased when the power goes off.</li>
+        <li><b>Storage:</b> long-term space for apps, photos and files. It keeps everything when the power is off.</li>
+        <li><b>Input and output:</b> the touchscreen, keyboard, camera, microphone and speakers.</li>
+      </ul>
+      <p>Memory and storage are measured in bytes. A <b>kilobyte (KB)</b> is about 1,000 bytes, a <b>megabyte (MB)</b> is about 1,000 KB, a <b>gigabyte (GB)</b> is about 1,000 MB, and a <b>terabyte (TB)</b> is about 1,000 GB.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 2: Software is the instructions</h3>
+      <p><b>Software</b> is the programs that tell the hardware what to do. There are two main kinds:</p>
+      <ul>
+        <li>The <b>operating system (OS)</b>, like iPadOS, Windows or Android, manages the hardware. It decides which app gets the processor, memory, screen and speaker, and when.</li>
+        <li><b>Apps</b>, like Safari, Google Docs or a game, do jobs for <i>you</i>. Apps ask the operating system whenever they need the hardware.</li>
+      </ul>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 3: Each layer hides the details below it</h3>
+      <p>When you tap <b>Send</b>, you don't think about electrical signals. The app doesn't control the Wi-Fi chip directly, either. It asks the operating system, and the OS handles the hardware. Hiding details like this is called <b>abstraction</b>. It's why the same app can run on many different devices.</p>
+    </div>
+    <div class="sim">
+      <svg class="stack" viewBox="0 0 480 236" role="img" aria-label="Layers from top to bottom: You, Apps, Operating system, Hardware">
+        <rect class="l0" x="2" y="2" width="476" height="52" rx="8"/>
+        <text x="20" y="26">You</text><text class="sub" x="20" y="44">tap, type, talk, look</text>
+        <rect class="l1" x="2" y="62" width="476" height="52" rx="8"/>
+        <text x="20" y="86">Apps</text><text class="sub" x="20" y="104">Safari, Google Docs, Camera, games</text>
+        <rect class="l2" x="2" y="122" width="476" height="52" rx="8"/>
+        <text x="20" y="146">Operating system</text><text class="sub" x="20" y="164">iPadOS, Windows, Android: shares the hardware among apps</text>
+        <rect class="l3" x="2" y="182" width="476" height="52" rx="8"/>
+        <text class="dark" x="20" y="206">Hardware</text><text class="dark sub" x="20" y="224">processor, memory, storage, screen, camera, Wi-Fi chip</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Try it</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Task 1: Which layer?</h3><span class="chip" data-chip="t1">To do</span></div>
+      <p>Choose the layer each item belongs to.</p>
+      <div class="sort-list" id="t1-list"></div>
+      <div class="row"><button class="primary" id="t1-check">Check</button><button class="ghost" id="t1-hint">Show a hint</button></div>
+      <div id="t1-fb"></div>
+      <div class="hints" id="t1-hints"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Task 2: Memory or storage?</h3><span class="chip" data-chip="t2">To do</span></div>
+      <div id="t2-quiz"></div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Task 3: Follow a tap through the layers</h3><span class="chip" data-chip="t3">To do</span></div>
+      <p>You take a photo with the Camera app. Put the steps in order. One step is wrong and isn't needed.</p>
+      <div class="order-zones">
+        <div><h4>Steps</h4><div class="pzone" id="t3-bank"></div></div>
+        <div><h4>Your order</h4><div class="pzone" id="t3-seq"></div></div>
+      </div>
+      <div class="row"><button class="primary" id="t3-check">Check my order</button><button class="ghost" id="t3-hint">Show a hint</button></div>
+      <div id="t3-fb"></div>
+      <div class="hints" id="t3-hints"></div>
+    </div>
+
+    <div class="task" id="t4">
+      <div class="task-head"><h3>Task 4: Why layers help</h3><span class="chip" data-chip="t4">To do</span></div>
+      <p>Google Docs runs on iPads with different chips, cameras and screens, and nobody rewrites the app for each one. Why does that work?</p>
+      <div class="choices" id="t4-choices"></div>
+      <div id="t4-fb"></div>
+    </div>
+
+    <div class="task" id="t5">
+      <div class="task-head"><h3>Task 5: How much fits?</h3><span class="chip" data-chip="t5">To do</span></div>
+      <p>Use 1 GB ≈ 1,000 MB.</p>
+      <div class="num-q"><label class="goal" for="t5-a">A photo is about 4 MB. About how many photos fit in 1 GB?</label><input id="t5-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t5-b">A song is about 5 MB. About how many songs fit in 64 GB?</label><input id="t5-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-b-m"></span></div>
+      <div class="row"><button class="primary" id="t5-check">Check my answers</button><button class="ghost" id="t5-hint">Show a hint</button></div>
+      <div id="t5-fb"></div>
+      <div class="hints" id="t5-hints"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: choose a computer for someone</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>Good technology starts with the person who will use it. Pick a person, read what they need, then choose the hardware. Meet every need without going over their budget.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>1. Choose who you're building for</h3><span class="chip" data-chip="build">To do</span></div>
+      <div class="persona-pick" id="b-personas"></div>
+      <div id="b-config" hidden>
+        <h3>2. Choose the parts</h3>
+        <div class="parts" id="b-parts"></div>
+        <p class="total" id="b-total"></p>
+        <h3>Their needs</h3>
+        <ul class="status-list" id="b-needs"></ul>
+        <div class="row"><button class="primary" id="b-check">Check my computer</button></div>
+      </div>
+      <div id="b-fb"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">Margaret Hamilton's team built software that kept astronauts safe when things went wrong. Think of a piece of technology that someone you love depends on, like a phone, a hearing aid or a car. What would you want the people who build it to care about most, and why?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="My grandmother depends on…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all 6 tasks to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All tasks done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U1·M2 Check: Layers of a Computer.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your computer design. Tap the button below, then paste it in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my computer design</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: movies on a drive</h3><span class="chip opt">Optional</span></div>
+      <p>A 2-hour movie in 4K uses about 20 GB. How many 4K movies fit on a 1 TB drive? (1 TB ≈ 1,000 GB)</p>
+      <div class="num-q"><label class="goal" for="x1-a">Movies:</label><input id="x1-a" inputmode="numeric" autocomplete="off"><button id="x1-check">Check</button></div>
+      <div id="x1-fb"></div>
+      <p class="goal">Then try the other two people in the Build. Can you meet everyone's needs?</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var el = Course.el, $ = function (id) { return document.getElementById(id); };
+  var state = Course.state;
+
+  /* ---------- Build data ---------- */
+  var PARTS = [
+    { key: "cpu", name: "Processor", options: [{ label: "Basic", price: 100 }, { label: "Standard", price: 200 }, { label: "Fast", price: 400 }] },
+    { key: "ram", name: "Memory (RAM)", options: [{ label: "4 GB", price: 40 }, { label: "8 GB", price: 80 }, { label: "16 GB", price: 160 }] },
+    { key: "storage", name: "Storage", options: [{ label: "64 GB", price: 50 }, { label: "256 GB", price: 100 }, { label: "1 TB", price: 250 }] },
+    { key: "screen", name: "Screen", options: [{ label: "8 inch", price: 60 }, { label: "11 inch", price: 120 }, { label: "15 inch", price: 200 }] },
+    { key: "camera", name: "Camera", options: [{ label: "None", price: 0 }, { label: "Basic", price: 30 }, { label: "HD", price: 80 }] }
+  ];
+  var PERSONAS = [
+    {
+      name: "Mrs. Alvarez", blurb: "A grandmother who video-calls her grandchildren every Sunday.", budget: 400,
+      needs: [
+        { text: "Her grandkids want to see her clearly on video calls (HD camera).", ok: function (c) { return c.camera === 2; } },
+        { text: "Her eyesight isn't what it used to be (screen at least 11 inch).", ok: function (c) { return c.screen >= 1; } },
+        { text: "She lives on a fixed income (total $400 or less).", ok: function (c, total) { return total <= 400; } }
+      ]
+    },
+    {
+      name: "Marcus", blurb: "A junior editing the 4K film of the school's service trip.", budget: 1200,
+      needs: [
+        { text: "Editing 4K video takes a lot of calculation (Fast processor).", ok: function (c) { return c.cpu === 2; } },
+        { text: "The editing app holds many clips at once (16 GB memory).", ok: function (c) { return c.ram === 2; } },
+        { text: "He has hours of footage to keep (1 TB storage).", ok: function (c) { return c.storage === 2; } },
+        { text: "The service club's budget is $1,200 or less.", ok: function (c, total) { return total <= 1200; } }
+      ]
+    },
+    {
+      name: "The parish food pantry", blurb: "A check-in kiosk where volunteers type in each family's name.", budget: 320,
+      needs: [
+        { text: "Volunteers need room to type comfortably (screen at least 11 inch).", ok: function (c) { return c.screen >= 1; } },
+        { text: "Families' privacy matters, so no camera at the check-in desk.", ok: function (c) { return c.camera === 0; } },
+        { text: "Every dollar saved buys food (total $320 or less).", ok: function (c, total) { return total <= 320; } }
+      ]
+    }
+  ];
+  var build; // set after Course.init loads saved progress
+  function total() { return PARTS.reduce(function (s, p) { return s + p.options[build.choice[p.key]].price; }, 0); }
+  function designText() {
+    if (build.persona == null) return "";
+    var p = PERSONAS[build.persona];
+    var lines = ["Computer for: " + p.name + " (budget $" + p.budget + ")"];
+    PARTS.forEach(function (part) { var o = part.options[build.choice[part.key]]; lines.push(part.name + ": " + o.label + " ($" + o.price + ")"); });
+    lines.push("Total: $" + total());
+    return lines.join("\n");
+  }
+
+  Course.init({
+    id: "u1m2",
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Which layer?", t2: "Task 2: Memory or storage?", t3: "Task 3: Follow a tap", t4: "Task 4: Why layers help", t5: "Task 5: How much fits?", build: "Build: choose a computer for someone" },
+    code: [65, 71, 67, 45, 49, 50, 48, 50],
+    buildText: designText
+  });
+  build = state.extra.build || (state.extra.build = { persona: null, choice: { cpu: 1, ram: 1, storage: 1, screen: 1, camera: 1 } });
+
+  /* ---------- Task 1 ---------- */
+  Course.sort({
+    task: "t1", container: "t1-list", button: "t1-check", feedback: "t1-fb",
+    categories: ["Hardware", "Operating system", "App"],
+    items: [
+      { text: "Touchscreen", cat: 0 },
+      { text: "iPadOS", cat: 1 },
+      { text: "Safari", cat: 2 },
+      { text: "Battery", cat: 0 },
+      { text: "Google Docs", cat: 2 },
+      { text: "Windows 11", cat: 1 },
+      { text: "Processor chip", cat: 0 },
+      { text: "Decides which app gets to use the speaker", cat: 1 },
+      { text: "Blackbaud app", cat: 2 },
+      { text: "Camera lens and sensor", cat: 0 }
+    ],
+    okMsg: "All sorted. Hardware is the physical parts, the operating system manages them, and apps do jobs for you.",
+    hints: { button: "t1-hint", box: "t1-hints", list: [
+      "Could you touch it if you opened the iPad? Then it's hardware.",
+      "iPadOS and Windows are the two operating systems here. Anything that manages or shares the hardware is the operating system's job.",
+      "Apps are the programs you open to get something done: browsing, writing, checking grades."
+    ] }
+  });
+
+  /* ---------- Task 2 ---------- */
+  Course.quiz({
+    task: "t2", container: "t2-quiz",
+    okMsg: "All three right. Memory is short-term workspace; storage keeps things for the long term.",
+    questions: [
+      { q: "Your iPad's battery dies while you're writing an essay you haven't saved. Where was the unsaved essay, which is now lost?", choices: [
+        { text: "Memory (RAM)", right: true, why: "Right. Memory is erased when the power goes off. That's why saving matters: saving copies your work into storage." },
+        { text: "Storage", why: "Not quite. Storage keeps things even with the power off. Unsaved work only lived in memory." },
+        { text: "The processor", why: "Not quite. The processor does calculations but doesn't hold your files." }
+      ] },
+      { q: "You take a photo today and want to see it next year. Where is it kept?", choices: [
+        { text: "Memory (RAM)", why: "Not quite. Memory is cleared when the device turns off." },
+        { text: "Storage", right: true, why: "Right. Storage keeps photos, apps and files for the long term." },
+        { text: "The touchscreen", why: "Not quite. The screen shows the photo but doesn't keep it." }
+      ] },
+      { q: "Which part does the calculations, billions per second?", choices: [
+        { text: "Storage", why: "Not quite. Storage holds things; it doesn't calculate." },
+        { text: "The battery", why: "Not quite. The battery powers everything but doesn't calculate." },
+        { text: "The processor (CPU)", right: true, why: "Right. The processor carries out the instructions." }
+      ] }
+    ]
+  });
+
+  /* ---------- Task 3 ---------- */
+  Course.order({
+    task: "t3", bank: "t3-bank", seq: "t3-seq", button: "t3-check", feedback: "t3-fb",
+    items: [
+      "The operating system tells the camera hardware to capture an image.",
+      "You tap the shutter button on the screen.",
+      "The Camera app controls the camera lens directly, skipping the operating system.",
+      "The photo is saved in storage.",
+      "The operating system passes the tap to the Camera app.",
+      "The touchscreen senses your finger and tells the operating system.",
+      "The Camera app asks the operating system to take a picture."
+    ],
+    correct: [1, 5, 4, 6, 0, 3],
+    okMsg: "Right order. Notice how every request passes through the operating system on its way to the hardware and back.",
+    hints: { button: "t3-hint", box: "t3-hints", list: [
+      "Start with you, at the top layer. Then follow the tap down into the hardware.",
+      "Apps never control the hardware directly. They always ask the operating system. That's the step you leave out.",
+      "The touch goes up (screen → OS → app), then the request goes down (app → OS → camera), then the photo gets saved."
+    ] }
+  });
+
+  /* ---------- Task 4 ---------- */
+  Course.mc({
+    task: "t4", container: "t4-choices", feedback: "t4-fb",
+    choices: [
+      { text: "Google Docs contains special code for every possible iPad.", why: "Not quite. That would be enormous and need updating every time a new iPad came out." },
+      { text: "The operating system hides the hardware's details, so the app just asks the OS for what it needs.", right: true, why: "Right. That's abstraction. The app says \"show this on the screen\" and the OS figures out how to do it on that hardware." },
+      { text: "All iPads have exactly the same hardware inside.", why: "Not quite. Different models have different chips, cameras and screens." },
+      { text: "Google Docs doesn't actually use any hardware.", why: "Not quite. Every app needs the processor, memory and screen. It just reaches them through the OS." }
+    ]
+  });
+
+  /* ---------- Task 5 ---------- */
+  Course.answers({
+    task: "t5", button: "t5-check", feedback: "t5-fb",
+    items: [{ id: "t5-a", answer: 250 }, { id: "t5-b", answer: 12800 }],
+    okMsg: "Both right. 1,000 ÷ 4 = 250 photos, and 64,000 ÷ 5 = 12,800 songs.",
+    hints: { button: "t5-hint", box: "t5-hints", list: [
+      "First change everything to MB. 1 GB is about 1,000 MB.",
+      "Photos: 1,000 MB ÷ 4 MB per photo.",
+      "Songs: 64 GB is about 64,000 MB. Divide by 5 MB per song."
+    ] }
+  });
+
+  /* ---------- Build ---------- */
+  (function () {
+    var pick = $("b-personas"), parts = $("b-parts"), needs = $("b-needs"), totalEl = $("b-total");
+    var pickBtns = PERSONAS.map(function (p, i) {
+      var b = el("button", { type: "button", "aria-pressed": build.persona === i ? "true" : "false" });
+      b.appendChild(el("b", null, p.name));
+      b.appendChild(el("span", null, p.blurb));
+      b.appendChild(el("span", { "class": "goal" }, "Budget: $" + p.budget.toLocaleString()));
+      b.addEventListener("click", function () {
+        build.persona = i; Course.save();
+        pickBtns.forEach(function (x, xi) { x.setAttribute("aria-pressed", xi === i ? "true" : "false"); });
+        $("b-fb").innerHTML = "";
+        render();
+      });
+      pick.appendChild(b);
+      return b;
+    });
+    PARTS.forEach(function (part) {
+      var box = el("div", { "class": "part" });
+      box.appendChild(el("span", { "class": "name" }, part.name));
+      var seg = el("div", { "class": "seg", role: "group", "aria-label": part.name });
+      part.options.forEach(function (o, oi) {
+        var b = el("button", { type: "button", "aria-pressed": build.choice[part.key] === oi ? "true" : "false" }, o.label + " · $" + o.price);
+        b.addEventListener("click", function () {
+          build.choice[part.key] = oi; Course.save();
+          seg.querySelectorAll("button").forEach(function (x, xi) { x.setAttribute("aria-pressed", xi === oi ? "true" : "false"); });
+          render();
+        });
+        seg.appendChild(b);
+      });
+      box.appendChild(seg);
+      parts.appendChild(box);
+    });
+    function results() {
+      var p = PERSONAS[build.persona], t = total();
+      return p.needs.map(function (n) { return n.ok(build.choice, t); });
+    }
+    function render() {
+      $("b-config").hidden = build.persona == null;
+      if (build.persona == null) return;
+      var p = PERSONAS[build.persona], t = total();
+      totalEl.textContent = "Total: $" + t.toLocaleString() + " of $" + p.budget.toLocaleString();
+      totalEl.classList.toggle("over", t > p.budget);
+      needs.innerHTML = "";
+      var res = results();
+      p.needs.forEach(function (n, i) { needs.appendChild(el("li", { "class": res[i] ? "done" : "" }, (res[i] ? "✓ " : "○ ") + n.text)); });
+    }
+    $("b-check").addEventListener("click", function () {
+      var res = results();
+      var missing = res.filter(function (r) { return !r; }).length;
+      if (!missing) {
+        Course.feedback($("b-fb"), true, "Every need met, within budget. You designed for a real person, which is what good engineers do.");
+        Course.markDone("build");
+      } else {
+        Course.feedback($("b-fb"), false, missing + " need" + (missing === 1 ? " isn't" : "s aren't") + " met yet. If you're over budget, look for parts this person doesn't really need.");
+      }
+    });
+    render();
+    if (state.done.build) Course.feedback($("b-fb"), true, "Done. The copy button in Step 6 uses whichever design is showing.");
+  })();
+
+  /* ---------- Go further ---------- */
+  $("x1-check").addEventListener("click", function () {
+    var ok = Course.matches($("x1-a").value, 50);
+    Course.feedback($("x1-fb"), ok, ok ? "Right. 1,000 GB ÷ 20 GB = 50 movies." : "Not yet. Divide 1,000 GB by 20 GB per movie.");
+  });
+})();
+</script>
+
+</body>
+</html>

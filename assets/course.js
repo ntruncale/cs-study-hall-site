@@ -1,6 +1,7 @@
 /* CS in Study Hall: shared behavior for every module.
    A module page calls Course.init({...}) with its id, required tasks and completion code,
-   then uses Course.mc, Course.python.editors, Course.python.parsons, etc. for its tasks. */
+   then uses Course.mc, Course.python.editors, Course.python.parsons, etc. for its tasks.
+   Read Course.state.extra only after Course.init, which loads the student's saved progress into it. */
 window.Course = (function () {
   "use strict";
 
@@ -54,6 +55,10 @@ window.Course = (function () {
   }
 
   /* ---------- multiple choice ---------- */
+  // Code answers (multi-line, or marked code: true) show in the code font; everything else in the body font.
+  function choiceBody(c) {
+    return (c.code || c.text.indexOf("\n") !== -1) ? el("pre", null, c.text) : el("span", { "class": "choice-text" }, c.text);
+  }
   // opts: { task, container, feedback, choices: [{ text, right, why }] }
   function mc(opts) {
     var wrap = $(opts.container);
@@ -61,7 +66,7 @@ window.Course = (function () {
     opts.choices.forEach(function (c, i) {
       var b = el("button", { "class": "choice", type: "button" });
       b.appendChild(el("span", { "class": "letter" }, "ABCDEF"[i]));
-      b.appendChild(el("pre", null, c.text));
+      b.appendChild(choiceBody(c));
       b.addEventListener("click", function () {
         wrap.querySelectorAll(".choice").forEach(function (x) { x.classList.remove("right", "wrong"); });
         b.classList.add(c.right ? "right" : "wrong");
@@ -71,6 +76,171 @@ window.Course = (function () {
       if (state.done[opts.task] && c.right) b.classList.add("right");
       wrap.appendChild(b);
     });
+  }
+
+  /* ---------- several multiple-choice questions in one task ---------- */
+  // opts: { task, container, questions: [{ q, code, choices: [{ text, right, why }] }], okMsg }
+  function quiz(opts) {
+    var wrap = $(opts.container);
+    var got = state.extra[opts.task] || (state.extra[opts.task] = {});
+    var summary = el("div");
+    opts.questions.forEach(function (question, qi) {
+      var block = el("div", { "class": "quiz-q" });
+      block.appendChild(el("p", { "class": "q" }, (qi + 1) + ". " + question.q));
+      if (question.code) {
+        var ex = el("div", { "class": "example" });
+        var sw = el("div", { "class": "src-wrap" });
+        sw.appendChild(el("pre", { "class": "src" }, question.code));
+        ex.appendChild(sw);
+        block.appendChild(ex);
+      }
+      var choices = el("div", { "class": "choices" });
+      var fb = el("div");
+      question.choices.forEach(function (c, i) {
+        var b = el("button", { "class": "choice", type: "button" });
+        b.appendChild(el("span", { "class": "letter" }, "ABCDEF"[i]));
+        b.appendChild(choiceBody(c));
+        b.addEventListener("click", function () {
+          choices.querySelectorAll(".choice").forEach(function (x) { x.classList.remove("right", "wrong"); });
+          b.classList.add(c.right ? "right" : "wrong");
+          feedback(fb, !!c.right, c.why);
+          if (c.right) got[qi] = true;
+          save();
+          if (opts.questions.every(function (_, k) { return got[k]; })) {
+            feedback(summary, true, opts.okMsg || "All questions right.");
+            markDone(opts.task);
+          }
+        });
+        if (got[qi] && c.right) b.classList.add("right");
+        choices.appendChild(b);
+      });
+      block.appendChild(choices);
+      block.appendChild(fb);
+      wrap.appendChild(block);
+    });
+    wrap.appendChild(summary);
+  }
+
+  /* ---------- typed answers ---------- */
+  // opts: { task, items: [{ id, answer }], button, feedback, okMsg, wrongMsg(wrongIds), hints: { list, button, box } }
+  // answer can be a number, a string (case and extra spaces ignored), an array of accepted strings, or a function(value) -> bool.
+  function matches(value, answer) {
+    var v = String(value).trim();
+    if (typeof answer === "function") return !!answer(v);
+    if (typeof answer === "number") return v !== "" && Number(v.replace(/,/g, "")) === answer;
+    var norm = function (s) { return String(s).trim().toUpperCase().replace(/\s+/g, " "); };
+    var list = Array.isArray(answer) ? answer : [answer];
+    return list.some(function (a) { return norm(a) === norm(v); });
+  }
+  function answers(opts) {
+    var saved = state.extra[opts.task] || (state.extra[opts.task] = {});
+    opts.items.forEach(function (it) {
+      var input = $(it.id);
+      input.value = saved[it.id] || "";
+      input.addEventListener("input", function () { saved[it.id] = input.value; save(); });
+      input.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); $(opts.button).click(); } });
+    });
+    $(opts.button).addEventListener("click", function () {
+      var wrong = opts.items.filter(function (it) {
+        var ok = matches($(it.id).value, it.answer);
+        var mark = $(it.id + "-m");
+        if (mark) {
+          var blank = $(it.id).value.trim() === "";
+          mark.textContent = ok ? "✓" : (blank ? "" : "✗");
+          mark.className = "mark " + (ok ? "ok" : "bad");
+        }
+        return !ok;
+      }).map(function (it) { return it.id; });
+      if (!wrong.length) {
+        feedback($(opts.feedback), true, opts.okMsg || "All correct.");
+        markDone(opts.task);
+      } else {
+        var msg = opts.wrongMsg ? opts.wrongMsg(wrong) : (opts.items.length > 1 ? "Not yet. Fix the ones marked ✗." : "Not yet. Try again.");
+        feedback($(opts.feedback), false, msg);
+      }
+    });
+    if (opts.hints) hints(opts.task, opts.hints.list, $(opts.hints.button), $(opts.hints.box));
+  }
+
+  /* ---------- tap to put steps in order ---------- */
+  // opts: { task, bank, seq, button, feedback, items: [text], correct: [indices in order], okMsg, hints: { list, button, box } }
+  function order(opts) {
+    var seq = state.extra[opts.task] || (state.extra[opts.task] = []);
+    var bank = $(opts.bank), list = $(opts.seq);
+    function render() {
+      bank.innerHTML = ""; list.innerHTML = "";
+      opts.items.forEach(function (txt, i) {
+        if (seq.indexOf(i) !== -1) return;
+        var b = el("button", { "class": "pline plain", type: "button", "aria-label": "Add step: " + txt }, txt);
+        b.addEventListener("click", function () { seq.push(i); save(); render(); });
+        bank.appendChild(b);
+      });
+      seq.forEach(function (i, pos) {
+        var b = el("button", { "class": "pline plain", type: "button", "aria-label": "Remove step " + (pos + 1) + ": " + opts.items[i] }, (pos + 1) + ". " + opts.items[i]);
+        b.addEventListener("click", function () { seq.splice(pos, 1); save(); render(); });
+        list.appendChild(b);
+      });
+      if (!seq.length) list.appendChild(el("div", { "class": "empty" }, "Tap items on the left to add them here, in order."));
+      if (!bank.children.length) bank.appendChild(el("div", { "class": "empty" }, "All items used."));
+    }
+    render();
+    $(opts.button).addEventListener("click", function () {
+      var fb = $(opts.feedback);
+      var right = opts.correct;
+      var same = seq.length === right.length && seq.every(function (v, k) { return v === right[k]; });
+      if (same) { feedback(fb, true, opts.okMsg || "Correct order."); markDone(opts.task); return; }
+      var extra = seq.filter(function (i) { return right.indexOf(i) === -1; });
+      if (extra.length) { feedback(fb, false, "One or more of your items doesn't belong. Not every item is needed."); return; }
+      if (seq.length < right.length) { feedback(fb, false, "You need " + right.length + " items. You have " + seq.length + "."); return; }
+      var k = 0;
+      while (k < seq.length && seq[k] === right[k]) k++;
+      feedback(fb, false, k === 0 ? "The first item isn't right yet. What has to happen first?" : "The first " + k + " are in the right order. Look again at item " + (k + 1) + ".");
+    });
+    if (opts.hints) hints(opts.task, opts.hints.list, $(opts.hints.button), $(opts.hints.box));
+  }
+
+  /* ---------- sort items into categories ---------- */
+  // opts: { task, container, categories: [names], items: [{ text, cat }], button, feedback, okMsg, hints: { list, button, box } }
+  function sort(opts) {
+    var picks = state.extra[opts.task] || (state.extra[opts.task] = {});
+    var wrap = $(opts.container);
+    var rows = opts.items.map(function (it, i) {
+      var row = el("div", { "class": "sort-row" });
+      row.appendChild(el("span", { "class": "sort-text" }, it.text));
+      var seg = el("div", { "class": "seg", role: "group", "aria-label": it.text });
+      opts.categories.forEach(function (c, ci) {
+        var b = el("button", { type: "button", "aria-pressed": picks[i] === ci ? "true" : "false" }, c);
+        b.addEventListener("click", function () {
+          picks[i] = ci; save();
+          seg.querySelectorAll("button").forEach(function (x, xi) { x.setAttribute("aria-pressed", xi === ci ? "true" : "false"); });
+          row.classList.remove("right", "wrong");
+        });
+        seg.appendChild(b);
+      });
+      row.appendChild(seg);
+      wrap.appendChild(row);
+      return row;
+    });
+    $(opts.button).addEventListener("click", function () {
+      var wrong = 0, blank = 0;
+      opts.items.forEach(function (it, i) {
+        var ok = picks[i] === it.cat;
+        if (picks[i] == null) blank++;
+        else if (!ok) wrong++;
+        rows[i].classList.toggle("right", ok);
+        rows[i].classList.toggle("wrong", picks[i] != null && !ok);
+      });
+      var fb = $(opts.feedback);
+      if (!wrong && !blank) { feedback(fb, true, opts.okMsg || "All sorted correctly."); markDone(opts.task); }
+      else if (blank) feedback(fb, false, "Choose a category for every item. " + blank + " still need one.");
+      else feedback(fb, false, (opts.items.length - wrong) + " of " + opts.items.length + " are right. Look again at the ones marked in red.");
+    });
+    if (opts.hints) hints(opts.task, opts.hints.list, $(opts.hints.button), $(opts.hints.box));
+  }
+
+  // Read another module's saved progress on this device (used by the capstone).
+  function loadModule(id) {
+    try { return JSON.parse(localStorage.getItem("cs-study-hall:" + id) || "null"); } catch (e) { return null; }
   }
 
   /* ---------- copy to clipboard ---------- */
@@ -175,17 +345,50 @@ window.Course = (function () {
         .replace(/\t/g, "    ");
     }
 
-    function run(code) {
+    // opts.inputs: answers fed to input() in order (for automatic tests).
+    // opts.live: a console element; output appears as it happens and input() shows a text box there.
+    function run(code, opts) {
+      opts = opts || {};
       var out = "";
+      var live = opts.live || null;
+      var scripted = opts.inputs ? opts.inputs.slice() : null;
+      function write(t) { out += t; if (live) live.appendChild(document.createTextNode(t)); }
       if (!ready()) return Promise.resolve({ output: "", error: "Python is not loaded." });
       Sk.configure({
-        output: function (t) { out += t; },
+        output: write,
         read: function (x) {
           if (!Sk.builtinFiles || !Sk.builtinFiles.files[x]) throw "File not found: " + x;
           return Sk.builtinFiles.files[x];
         },
         __future__: Sk.python3,
-        execLimit: 3000
+        execLimit: 3000,
+        inputfunTakesPrompt: true,
+        inputfun: function (prompt) {
+          write(prompt || "");
+          if (scripted || !live) {
+            var v = scripted && scripted.length ? String(scripted.shift()) : "";
+            write(v + "\n");
+            return v;
+          }
+          return new Promise(function (resolve) {
+            var ask = el("span", { "class": "console-ask" });
+            var inp = el("input", { "class": "console-input", "aria-label": prompt || "Type your answer", autocapitalize: "off", autocomplete: "off", autocorrect: "off", spellcheck: "false" });
+            var go = el("button", { type: "button", "class": "console-send" }, "Enter");
+            ask.appendChild(inp); ask.appendChild(go);
+            live.appendChild(ask);
+            inp.focus();
+            function submit() {
+              var v = inp.value;
+              live.removeChild(ask);
+              write(v + "\n");
+              // Time spent typing shouldn't count toward the run-time limit.
+              Sk.execStart = Date.now();
+              resolve(v);
+            }
+            inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); submit(); } });
+            go.addEventListener("click", submit);
+          });
+        }
       });
       return Sk.misceval.asyncToPromise(function () {
         return Sk.importMainWithBody("<stdin>", false, code, true);
@@ -248,7 +451,25 @@ window.Course = (function () {
       return output.replace(/\s+$/, "").split("\n").filter(function (l) { return l.trim() !== ""; });
     }
 
-    // configs: { id: { starter, hints, check(result, code), optional, onRun(code, result|null), errorsGoToCheck } }
+    // tests: [{ inputs: [...], expect(output) -> null when right, or a message saying what went wrong }]
+    function runTests(tests, code) {
+      var i = 0;
+      function next() {
+        if (i >= tests.length) return Promise.resolve(null);
+        var t = tests[i++];
+        return run(code, { inputs: t.inputs || [] }).then(function (r) {
+          if (r.error) {
+            var when = t.inputs && t.inputs.length ? " when someone types " + t.inputs.join(", then ") : "";
+            return { msg: "Your program crashed" + when + ". " + friendly(r.error, code), raw: r.error };
+          }
+          var m = t.expect(r.output);
+          return m ? { msg: m } : next();
+        });
+      }
+      return next();
+    }
+
+    // configs: { id: { starter, hints, check(result, code), tests, okMsg, optional, onRun(code, result|null), errorsGoToCheck } }
     function editors(configs) {
       document.querySelectorAll("[data-editor]").forEach(function (host) {
         var id = host.getAttribute("data-editor");
@@ -287,9 +508,9 @@ window.Course = (function () {
           var code = normalize(ta.value);
           if (code !== ta.value) { ta.value = code; state.code[id] = code; save(); }
           runBtn.disabled = true; runBtn.textContent = "Running…";
-          run(code).then(function (r) {
+          out.textContent = ""; fb.innerHTML = "";
+          run(code, { live: out }).then(function (r) {
             runBtn.disabled = false; runBtn.textContent = "Run";
-            out.textContent = r.output;
             if (cfg.onRun) cfg.onRun(code, r);
             if (r.error) {
               // Build tasks also list what's still missing alongside the error.
@@ -297,9 +518,13 @@ window.Course = (function () {
               feedback(fb, false, friendly(r.error, code), r.error, extra);
               return;
             }
-            var res = cfg.check(r, code);
-            feedback(fb, res.ok, res.msg, null, res.list);
-            if (res.ok && !cfg.optional) markDone(id);
+            // Programs that use input() are also tested quietly with prepared answers.
+            return runTests(cfg.tests || [], code).then(function (fail) {
+              if (fail) { feedback(fb, false, fail.msg, fail.raw); return; }
+              var res = cfg.check ? cfg.check(r, code) : { ok: true, msg: cfg.okMsg || "It works." };
+              feedback(fb, res.ok, res.msg, null, res.list);
+              if (res.ok && !cfg.optional) markDone(id);
+            });
           });
         });
       });
@@ -344,11 +569,12 @@ window.Course = (function () {
       });
     }
 
-    return { ready: ready, run: run, friendly: friendly, normalize: normalize, outLines: outLines, editors: editors, parsons: parsons };
+    return { ready: ready, run: run, runTests: runTests, friendly: friendly, normalize: normalize, outLines: outLines, editors: editors, parsons: parsons };
   })();
 
   return {
     init: init, el: el, feedback: feedback, markDone: markDone, hints: hints, mc: mc,
+    quiz: quiz, answers: answers, matches: matches, order: order, sort: sort, loadModule: loadModule,
     copyText: copyText, save: save, refresh: refresh, python: python,
     get state() { return state; }
   };
