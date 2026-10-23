@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>How Machines Learn</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.line-svg .axis { stroke: var(--muted); stroke-width: 2; }
+.line-svg .tick { fill: var(--muted); font: 500 11px var(--font-body); text-anchor: middle; }
+.line-svg .dot-ripe { fill: var(--hint-ink); stroke: var(--surface); stroke-width: 2; }
+.line-svg .dot-unripe { fill: var(--ok); stroke: var(--surface); stroke-width: 2; }
+.line-svg .dot-test { fill: var(--surface); stroke-width: 3; }
+.line-svg .dot-test.ripe { stroke: var(--hint-ink); }
+.line-svg .dot-test.unripe { stroke: var(--ok); }
+.line-svg .thresh { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 6 4; }
+.line-svg .zone { font: 700 12px var(--font-body); fill: var(--accent); }
+.line-svg .lbl { font: 650 12px var(--font-body); fill: var(--ink); }
+.slider-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.slider-row input[type=range] { flex: 1 1 14rem; accent-color: var(--accent); min-height: 44px; }
+.slider-row output { font-weight: 800; font-size: var(--step-2); min-width: 4rem; }
+.acc { font-weight: 800; font-variant-numeric: tabular-nums; }
+.msgs { display: grid; gap: 6px; }
+.msg-row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); }
+.msg-row .txt { flex: 1 1 15rem; min-width: 0; font-size: var(--step-0); }
+.msg-row.right { border-color: var(--ok); background: var(--ok-soft); }
+.msg-row.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.pred { font-weight: 750; font-size: 0.85rem; }
+.words { display: flex; flex-wrap: wrap; gap: 4px; }
+.words span { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: var(--bad-soft); color: var(--bad); font-weight: 650; }
+.words.ham span { background: var(--ok-soft); color: var(--ok); }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U5 · M1</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 5: Artificial intelligence · Module 1 of 3</span>
+    <h1>How Machines Learn</h1>
+    <p class="lede">Your email's spam filter, your phone's face unlock and the videos recommended to you all come from machine learning. Today you'll see how a computer learns from examples, and teach one yourself.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 35 minutes</span>
+      <span><b>To pass:</b> finish the 6 tasks, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (Unit 4)</strong>
+      <span>Data can be biased when people are left out. Encryption protects information, and small details in your digital footprint can add up to reveal a lot about you.</span>
+    </div>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>The checkers program that beat its maker</h2><span class="ipp">Context</span></div>
+    <div class="prose">
+      <p>In the 1950s, an IBM engineer named <b>Arthur Samuel</b> wanted a computer to play checkers. He wasn't a great checkers player himself, so instead of writing down every rule for good play, he let the program <b>learn</b>. It played thousands of games, many against itself, and kept track of which kinds of positions tended to lead to wins.</p>
+      <p>The program improved until it could beat Samuel. In 1959 he described his work in a paper and used a new phrase for it: <b>machine learning</b>. A few years later his program won a game against a skilled human player, which made headlines.</p>
+      <p>Today's AI systems are enormously bigger, but they rest on Samuel's idea: instead of telling the computer exactly what to do, show it many examples and let it find the patterns.</p>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Three ideas</h2><span class="ipp">Experience</span></div>
+
+    <div class="prose">
+      <h3>Idea 1: Rules versus learning</h3>
+      <p>In Unit 3 you wrote <b>rules</b>: if the age is under 12, print the child price. That works when people know the rules. But what's the rule for recognizing a cat in a photo, or telling spam from a real email? It's hard to write down. In <b>machine learning</b>, people give the computer many <b>examples</b> with the right answers, and the computer builds its own rules. The result is called a <b>model</b>.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 2: Features, labels and training</h3>
+      <p>Each example has <b>features</b>, the clues the model looks at, and a <b>label</b>, the right answer. A spam filter's features might be the words in an email; the label is "spam" or "not spam." Learning from labeled examples is called <b>training</b>, and the examples are the <b>training data</b>. After training, the model <b>predicts</b> labels for new examples it has never seen.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 3: Models make mistakes</h3>
+      <p>A model is never perfect. We measure it by its <b>accuracy</b>: the percent of predictions it gets right, especially on <b>new</b> data. And a model only knows what was in its training data. If the examples were narrow, wrong or biased, the model will be too.</p>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Try it</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Task 1: Rules or learning?</h3><span class="chip" data-chip="t1">To do</span></div>
+      <div id="t1-quiz"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Task 2: Clues and answers</h3><span class="chip" data-chip="t2">To do</span></div>
+      <p>A model will predict <b>whether it will rain tomorrow</b>. Is each item a feature (a clue the model looks at) or the label (the answer it's learning to predict)?</p>
+      <div class="sort-list" id="t2-list"></div>
+      <div class="row"><button class="primary" id="t2-check">Check</button><button class="ghost" id="t2-hint">Show a hint</button></div>
+      <div id="t2-fb"></div>
+      <div class="hints" id="t2-hints"></div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Task 3: Be the model</h3><span class="chip" data-chip="t3">To do</span></div>
+      <p>A grocery store's camera measures how yellow each banana is, from 0 to 100. Here are 10 bananas that people already labeled <b style="color:var(--ok)">unripe</b> or <b style="color:var(--hint-ink)">ripe</b>. Move the line so the model labels every training banana correctly: bananas to the right of the line are predicted ripe.</p>
+      <div class="sim">
+        <svg class="line-svg" id="t3-svg" viewBox="0 0 520 130" role="img" aria-label="Bananas on a yellowness scale"></svg>
+        <div class="slider-row"><label class="goal" for="t3-t">Line at:</label><input type="range" id="t3-t" min="0" max="100" step="1" value="30"><output id="t3-out" for="t3-t">30</output></div>
+        <p>Training accuracy: <span class="acc" id="t3-acc"></span></p>
+      </div>
+      <div id="t3-fb"></div>
+    </div>
+
+    <div class="task" id="t4">
+      <div class="task-head"><h3>Task 4: Good training data</h3><span class="chip" data-chip="t4">To do</span></div>
+      <div id="t4-quiz"></div>
+    </div>
+
+    <div class="task" id="t5">
+      <div class="task-head"><h3>Task 5: Measure accuracy</h3><span class="chip" data-chip="t5">To do</span></div>
+      <p>A spam filter was tested on 200 new emails and got 180 right.</p>
+      <div class="num-q"><label class="goal" for="t5-a">What is its accuracy?</label><input id="t5-a" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t5-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t5-b">How many emails did it get wrong?</label><input id="t5-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-b-m"></span></div>
+      <div class="row"><button class="primary" id="t5-check">Check my answers</button><button class="ghost" id="t5-hint">Show a hint</button></div>
+      <div id="t5-fb"></div>
+      <div class="hints" id="t5-hints"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: teach a spam filter</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>You're going to train a real (tiny) machine learning model. First, label the 10 training messages. Then tap <b>Train and test</b>. The model counts which words show up in the messages you labeled spam and which show up in the others, then uses those word counts to predict 6 new messages it has never seen.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>Your model must get at least 5 of the 6 new messages right</h3><span class="chip" data-chip="build">To do</span></div>
+      <h3>1. Label the training data</h3>
+      <div class="msgs" id="b-train"></div>
+      <div class="row"><button class="primary" id="b-go">Train and test</button></div>
+      <div id="b-results" hidden>
+        <h3>2. What your model learned</h3>
+        <p class="goal">Words it thinks mean spam:</p><div class="words" id="b-spamwords"></div>
+        <p class="goal">Words it thinks mean not spam:</p><div class="words ham" id="b-hamwords"></div>
+        <h3>3. Test on new messages</h3>
+        <div class="msgs" id="b-test"></div>
+        <p>Test accuracy: <span class="acc" id="b-acc"></span></p>
+      </div>
+      <div id="b-fb"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">Every module in this course follows the Ignatian pattern of Context, Experience, Reflection, Action and Evaluation, because Jesuits believe real learning means reflecting on experience and letting it change how you act. Your spam filter "learned" by counting words. How is that different from the way you learn? What can you do that a machine learning model can't?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="When I learn something…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all 6 tasks to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All tasks done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U5·M1 Check: How Machines Learn.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your spam filter's results. Tap the button below, then paste them in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my model's results</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: poison the data</h3><span class="chip opt">Optional</span></div>
+      <div class="prose">
+        <p>After you pass, try this: switch two of the obvious spam messages to "Not spam" and train again. What happens to the test accuracy? Which words does the model learn now?</p>
+        <p>Attackers really do this. It's called <b>data poisoning</b>: sneaking bad examples into training data to make a model fail. It's one reason the people who build AI need to care about where their data comes from. Switch your labels back when you're done.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var el = Course.el, $ = function (id) { return document.getElementById(id); };
+  var state = Course.state;
+  var SVGNS = "http://www.w3.org/2000/svg";
+  function svg(tag, attrs, text) {
+    var e = document.createElementNS(SVGNS, tag);
+    Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  /* ---------- Build data ---------- */
+  var TRAIN = [
+    "WIN a FREE iPad now, click here",
+    "Practice is moved to 4pm today",
+    "You have been selected for a FREE prize, claim now",
+    "Can you send me the notes from chemistry?",
+    "URGENT: click here to claim your cash prize",
+    "Mom says dinner at 6, bring your jersey",
+    "Cheap phones with FREE shipping, click now",
+    "The retreat permission slip is due Friday",
+    "Congratulations, you WIN cash! Click the link",
+    "Are you going to the game tonight?"
+  ];
+  var TEST = [
+    { text: "Claim your FREE gift card now", spam: true },
+    { text: "Is the chemistry test on Friday?", spam: false },
+    { text: "Click here to WIN a prize", spam: true },
+    { text: "Practice tonight is at the gym", spam: false },
+    { text: "You WIN cash, click the link today", spam: true },
+    { text: "Bring the notes to practice", spam: false }
+  ];
+  var b; // set after Course.init
+
+  function words(t) { return t.toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter(Boolean); }
+  // A tiny word-counting model: each word's score is (times seen in spam) minus (times seen in not spam).
+  function train(labels) {
+    var score = {};
+    TRAIN.forEach(function (t, i) {
+      if (labels[i] == null) return;
+      words(t).forEach(function (w) { score[w] = (score[w] || 0) + (labels[i] ? 1 : -1); });
+    });
+    return score;
+  }
+  function predict(model, text) { return words(text).reduce(function (s, w) { return s + (model[w] || 0); }, 0) > 0; }
+  function testResults(labels) {
+    var model = train(labels);
+    return TEST.map(function (m) { return { text: m.text, spam: m.spam, pred: predict(model, m.text) }; });
+  }
+
+  Course.init({
+    id: "u5m1",
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Rules or learning?", t2: "Task 2: Clues and answers", t3: "Task 3: Be the model", t4: "Task 4: Good training data", t5: "Task 5: Measure accuracy", build: "Build: teach a spam filter" },
+    code: [83, 65, 77, 45, 49, 57, 53, 57],
+    buildText: function () {
+      var r = testResults(b.labels);
+      var right = r.filter(function (x) { return x.pred === x.spam; }).length;
+      return "My spam filter\nTraining labels:\n" + TRAIN.map(function (t, i) { return (b.labels[i] == null ? "(unlabeled)" : b.labels[i] ? "SPAM" : "not spam") + ": " + t; }).join("\n") +
+        "\nTest accuracy: " + right + " of " + TEST.length;
+    }
+  });
+  b = state.extra.spam || (state.extra.spam = { labels: {} });
+
+  /* ---------- Task 1 ---------- */
+  Course.quiz({
+    task: "t1", container: "t1-quiz",
+    okMsg: "All right. When people can write the rule, write it. When the pattern is too complicated to describe, learn it from examples.",
+    questions: [
+      { q: "Charging $5 for anyone under 12 and $10 for everyone else is best done with…", choices: [
+        { text: "A rule written by a person", right: true, why: "Right. The rule is simple and exact, so just write it." },
+        { text: "Machine learning", why: "Not quite. Why learn a rule you already know exactly?" }
+      ] },
+      { q: "Recognizing whether a photo shows a cat is best done with…", choices: [
+        { text: "A rule written by a person", why: "Not quite. Try writing a rule for \"cat\" that works for every angle, color and lighting. It's nearly impossible." },
+        { text: "Machine learning", right: true, why: "Right. It's easier to show a model thousands of labeled photos and let it find the patterns." }
+      ] },
+      { q: "In machine learning, what does the computer build from the examples?", choices: [
+        { text: "A model that can make predictions about new examples", right: true, why: "Right. The model is the set of patterns the computer found." },
+        { text: "A list of every example, which it looks up exactly", why: "Not quite. A good model handles examples it has never seen before." },
+        { text: "A new computer", why: "Not quite. It builds a model, which is a kind of program." }
+      ] }
+    ]
+  });
+
+  /* ---------- Task 2 ---------- */
+  Course.sort({
+    task: "t2", container: "t2-list", button: "t2-check", feedback: "t2-fb",
+    categories: ["Feature (clue)", "Label (answer)"],
+    items: [
+      { text: "Humidity today", cat: 0 },
+      { text: "How cloudy it is today", cat: 0 },
+      { text: "Did it rain the next day? (yes or no)", cat: 1 },
+      { text: "Wind speed today", cat: 0 },
+      { text: "Air pressure today", cat: 0 }
+    ],
+    okMsg: "Right. The features are today's measurements; the label is what actually happened the next day. Weather services train models on many years of examples like these.",
+    hints: { button: "t2-hint", box: "t2-hints", list: [
+      "The label is the thing the model is trying to predict.",
+      "What question is the model answering? Only one item answers it."
+    ] }
+  });
+
+  /* ---------- Task 3: threshold model ---------- */
+  (function () {
+    var UNRIPE = [12, 25, 30, 41, 47], RIPE = [58, 63, 70, 82, 91];
+    var TEST_UNRIPE = [35, 52], TEST_RIPE = [55, 75, 88];
+    var s = $("t3-svg"), slider = $("t3-t");
+    var X = function (v) { return 20 + v * 4.8; };
+    function accuracy(t, un, ri) { var right = un.filter(function (v) { return v < t; }).length + ri.filter(function (v) { return v >= t; }).length; return right / (un.length + ri.length); }
+    function render(showTest) {
+      var t = Number(slider.value);
+      $("t3-out").textContent = String(t);
+      s.innerHTML = "";
+      s.appendChild(svg("line", { "class": "axis", x1: X(0), x2: X(100), y1: 80, y2: 80 }));
+      [0, 25, 50, 75, 100].forEach(function (v) { s.appendChild(svg("text", { "class": "tick", x: X(v), y: 100 }, String(v))); });
+      s.appendChild(svg("text", { "class": "lbl", x: X(0), y: 122 }, "green"));
+      s.appendChild(svg("text", { "class": "lbl", x: X(100) - 36, y: 122 }, "yellow"));
+      UNRIPE.forEach(function (v) { s.appendChild(svg("circle", { "class": "dot-unripe", cx: X(v), cy: 66, r: 9 })); });
+      RIPE.forEach(function (v) { s.appendChild(svg("circle", { "class": "dot-ripe", cx: X(v), cy: 66, r: 9 })); });
+      if (showTest) {
+        TEST_UNRIPE.forEach(function (v) { s.appendChild(svg("circle", { "class": "dot-test unripe", cx: X(v), cy: 40, r: 8 })); });
+        TEST_RIPE.forEach(function (v) { s.appendChild(svg("circle", { "class": "dot-test ripe", cx: X(v), cy: 40, r: 8 })); });
+        s.appendChild(svg("text", { "class": "lbl", x: X(0), y: 44 }, "new:"));
+      }
+      s.appendChild(svg("line", { "class": "thresh", x1: X(t), x2: X(t), y1: 20, y2: 88 }));
+      s.appendChild(svg("text", { "class": "zone", x: X(t) + 6, y: 16 }, "ripe →"));
+      s.appendChild(svg("text", { "class": "zone", x: X(t) - 64, y: 16 }, "← unripe"));
+      $("t3-acc").textContent = Math.round(accuracy(t, UNRIPE, RIPE) * 100) + "%";
+      return t;
+    }
+    slider.addEventListener("input", function () {
+      var t = render(!!state.done.t3);
+      if (accuracy(t, UNRIPE, RIPE) === 1) {
+        var testAcc = Math.round(accuracy(t, TEST_UNRIPE, TEST_RIPE) * 100);
+        render(true);
+        Course.feedback($("t3-fb"), true, "100% on the training bananas! Now look at the 5 new bananas (the hollow circles). With your line at " + t + ", the model gets " + testAcc + "% of them right." + (testAcc < 100 ? " Training accuracy doesn't guarantee accuracy on new data." : " Nice. But a different line that was also 100% on training might not be."));
+        Course.markDone("t3");
+      } else if (!state.done.t3) {
+        $("t3-fb").innerHTML = "";
+      }
+    });
+    render(!!state.done.t3);
+    if (state.done.t3) Course.feedback($("t3-fb"), true, "Done. The hollow circles are new bananas the model never trained on.");
+  })();
+
+  /* ---------- Task 4 ---------- */
+  Course.quiz({
+    task: "t4", container: "t4-quiz",
+    okMsg: "All right. A model can only be as good, and as fair, as the examples it learns from.",
+    questions: [
+      { q: "A model learns to recognize dogs from 10,000 photos, but every photo is of a golden retriever. What will probably happen with a photo of a chihuahua?", choices: [
+        { text: "It will recognize it easily, since a dog is a dog", why: "Not quite. The model only knows what golden retrievers look like." },
+        { text: "It may fail, because nothing like a chihuahua was in its training data", right: true, why: "Right. The model can't learn what it never saw." },
+        { text: "It will ask for more photos", why: "Not quite. Models don't ask questions. They just make their best (possibly wrong) guess." }
+      ] },
+      { q: "How could you improve that model?", choices: [
+        { text: "Train it on photos of many kinds of dogs, in many settings", right: true, why: "Right. Varied, representative training data makes a model work for more cases." },
+        { text: "Train it on even more golden retriever photos", why: "Not quite. More of the same won't teach it about other breeds. Remember the Literary Digest!" },
+        { text: "Make the photos smaller", why: "Not quite. The problem is what's in the photos, not their size." }
+      ] }
+    ]
+  });
+
+  /* ---------- Task 5 ---------- */
+  Course.answers({
+    task: "t5", button: "t5-check", feedback: "t5-fb",
+    items: [{ id: "t5-a", answer: 90 }, { id: "t5-b", answer: 20 }],
+    okMsg: "Right. 180 ÷ 200 = 90% accurate, with 20 mistakes. Whether 90% is good enough depends on what the mistakes cost.",
+    hints: { button: "t5-hint", box: "t5-hints", list: ["Accuracy = right ÷ total × 100.", "Wrong = total − right."] }
+  });
+
+  /* ---------- Build: spam filter ---------- */
+  (function () {
+    var trainWrap = $("b-train");
+    TRAIN.forEach(function (t, i) {
+      var row = el("div", { "class": "msg-row" });
+      row.appendChild(el("span", { "class": "txt" }, "“" + t + "”"));
+      var seg = el("div", { "class": "seg", role: "group", "aria-label": t });
+      ["Spam", "Not spam"].forEach(function (lab, li) {
+        var isOn = b.labels[i] != null && (b.labels[i] ? 0 : 1) === li;
+        var btn = el("button", { type: "button", "aria-pressed": isOn ? "true" : "false" }, lab);
+        btn.addEventListener("click", function () {
+          b.labels[i] = li === 0; Course.save();
+          seg.querySelectorAll("button").forEach(function (x, xi) { x.setAttribute("aria-pressed", xi === li ? "true" : "false"); });
+        });
+        seg.appendChild(btn);
+      });
+      row.appendChild(seg);
+      trainWrap.appendChild(row);
+    });
+    function show() {
+      var model = train(b.labels);
+      var ranked = Object.keys(model).filter(function (w) { return w.length > 2; }).sort(function (a, c) { return model[c] - model[a]; });
+      var sw = $("b-spamwords"); sw.innerHTML = "";
+      ranked.filter(function (w) { return model[w] > 0; }).slice(0, 8).forEach(function (w) { sw.appendChild(el("span", null, w)); });
+      var hw = $("b-hamwords"); hw.innerHTML = "";
+      ranked.filter(function (w) { return model[w] < 0; }).reverse().slice(0, 8).forEach(function (w) { hw.appendChild(el("span", null, w)); });
+      var res = testResults(b.labels), test = $("b-test"); test.innerHTML = "";
+      res.forEach(function (r) {
+        var ok = r.pred === r.spam;
+        var row = el("div", { "class": "msg-row " + (ok ? "right" : "wrong") });
+        row.appendChild(el("span", { "class": "txt" }, "“" + r.text + "”"));
+        row.appendChild(el("span", { "class": "pred" }, "Model says: " + (r.pred ? "Spam" : "Not spam") + (ok ? " ✓" : " ✗")));
+        test.appendChild(row);
+      });
+      var right = res.filter(function (r) { return r.pred === r.spam; }).length;
+      $("b-acc").textContent = right + " of " + res.length + " (" + Math.round(right / res.length * 100) + "%)";
+      $("b-results").hidden = false;
+      return right;
+    }
+    $("b-go").addEventListener("click", function () {
+      var unlabeled = TRAIN.filter(function (_, i) { return b.labels[i] == null; }).length;
+      if (unlabeled) { Course.feedback($("b-fb"), false, "Label all 10 training messages first. " + unlabeled + " still need a label."); return; }
+      var right = show();
+      if (right >= 5) { Course.feedback($("b-fb"), true, "Your model got " + right + " of 6 new messages right, using only word counts from 10 examples you labeled. Real spam filters learn from billions."); Course.markDone("build"); }
+      else Course.feedback($("b-fb"), false, "Your model got " + right + " of 6 right. A model is only as good as its training data. Check your labels: is each one really spam or not?");
+    });
+    if (state.done.build) { show(); Course.feedback($("b-fb"), true, "Done. You can relabel and train again to experiment."); }
+  })();
+})();
+</script>
+
+</body>
+</html>

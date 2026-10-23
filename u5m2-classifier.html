@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Train a Classifier</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="assets/course.css">
+<style>
+.plot .frame { fill: var(--surface); stroke: var(--line); }
+.plot .gridl { stroke: var(--line); stroke-width: 1; }
+.plot text { fill: var(--muted); font: 500 11px var(--font-body); }
+.plot text.ax { fill: var(--ink); font-weight: 650; font-size: 12px; }
+.plot .ripe { fill: var(--hint-ink); }
+.plot .unripe { fill: var(--ok); }
+.plot .test { fill: var(--surface); stroke-width: 3; }
+.plot .test.ripe { stroke: var(--hint-ink); }
+.plot .test.unripe { stroke: var(--ok); }
+.plot .wrongmark { stroke: var(--bad); stroke-width: 3; }
+.plot .star { fill: var(--accent); }
+.plot .ring { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 3; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: var(--step-0); color: var(--muted); align-items: center; }
+.legend i { display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: -1px; }
+.legend .lr { background: var(--hint-ink); border-radius: 50%; }
+.legend .lu { background: var(--ok); border-radius: 50%; }
+.legend .sq { border-radius: 2px; background: var(--muted); }
+.legend .ci { border-radius: 50%; background: var(--muted); }
+.legend .ho { border-radius: 50%; border: 2px solid var(--muted); }
+.pool { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 6px; }
+.pool button { text-align: left; font-size: 0.8rem; font-weight: 500; display: grid; gap: 0; padding: 6px 10px; }
+.pool button b { font-size: 0.85rem; }
+.pool button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.acc-table { overflow-x: auto; }
+.acc-table table { border-collapse: collapse; font-size: var(--step-0); font-variant-numeric: tabular-nums; }
+.acc-table th, .acc-table td { border-bottom: 1px solid var(--line); padding: 6px 14px; text-align: left; }
+.acc-table th { color: var(--muted); font-weight: 650; }
+.acc-table td.good { color: var(--ok); font-weight: 750; }
+.acc-table td.bad { color: var(--bad); font-weight: 750; }
+.plot-wrap { display: grid; grid-template-columns: minmax(0, 24rem) 1fr; gap: 14px; align-items: start; }
+@media (max-width: 640px) { .plot-wrap { grid-template-columns: 1fr; } }
+</style>
+
+
+</head>
+<body>
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">U5 · M2</span>
+    <nav class="steps" aria-label="Module steps">
+      <a href="#context" data-step="context">1 Context</a>
+      <a href="#learn" data-step="learn">2 Learn</a>
+      <a href="#try" data-step="try">3 Try</a>
+      <a href="#build" data-step="build">4 Build</a>
+      <a href="#reflect" data-step="reflect">5 Reflect</a>
+      <a href="#check" data-step="check">6 Check</a>
+      <a href="#further" data-step="further">7 Go Further</a>
+    </nav>
+    <span class="meter" id="meter">0 of 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Unit 5: Artificial intelligence · Module 2 of 3</span>
+    <h1>Train a Classifier</h1>
+    <p class="lede">A classifier sorts things into groups. Today you'll see how a simple one decides, discover how it can fail some people while working for others, and fix it.</p>
+    <div class="facts">
+      <span><b>Time:</b> about 35 minutes</span>
+      <span><b>To pass:</b> finish the 6 tasks, then complete the Blackbaud check</span>
+      <span><b>Saves:</b> automatically on this iPad</span>
+    </div>
+    <div class="recap">
+      <strong>Last time (U5 · M1)</strong>
+      <span>A machine learning <b>model</b> learns patterns from labeled <b>training data</b>, then predicts labels for new examples. It's only as good as its data.</span>
+    </div>
+  </header>
+
+  <!-- 1 CONTEXT -->
+  <section class="step" id="context">
+    <div class="step-head"><span class="step-num">1</span><h2>The computer that couldn't see her</h2><span class="ipp">Context</span></div>
+    <div class="prose">
+      <p>As a graduate student at MIT, <b>Joy Buolamwini</b> was building a project that used face-detection software. It worked for her lighter-skinned classmates, but it couldn't find her face, which is darker. It only detected her when she held up a plain white mask.</p>
+      <p>She decided to investigate. In 2018, she and computer scientist <b>Timnit Gebru</b> published a study called <b>Gender Shades</b>. They tested face-analysis systems from major tech companies on photos of people with a range of skin tones. For lighter-skinned men, the error rate was under 1%. For darker-skinned women, it was as high as about 35%.</p>
+      <p>The systems had learned mostly from photos of lighter-skinned faces. After the study, several companies improved their systems. Buolamwini founded the Algorithmic Justice League to push for AI that works fairly for everyone.</p>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="step" id="learn">
+    <div class="step-head"><span class="step-num">2</span><h2>Three ideas</h2><span class="ipp">Experience</span></div>
+
+    <div class="prose">
+      <h3>Idea 1: A classifier sorts things into categories</h3>
+      <p>A <b>classifier</b> is a model that picks a category: spam or not spam, ripe or unripe, cat or dog. Each example is described by its <b>features</b>. With two features, you can draw each example as a dot on a graph.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 2: Nearest neighbors vote</h3>
+      <p>One simple classifier is called <b>k-nearest neighbors</b>. To classify a new example, it finds the <b>k</b> training examples closest to it on the graph, and they vote. If k is 3 and two of the three nearest examples are ripe, the new one is predicted ripe. It's like guessing someone's favorite team by asking their three closest neighbors.</p>
+    </div>
+
+    <div class="prose">
+      <h3>Idea 3: Check accuracy for every group</h3>
+      <p>A model can look great overall and still fail a smaller group, because the big group's results hide the small group's. That's exactly what Gender Shades found. Responsible builders <b>test accuracy separately for each group</b> of people the system will affect, and fix gaps by collecting <b>representative</b> training data.</p>
+    </div>
+  </section>
+
+  <!-- 3 TRY -->
+  <section class="step" id="try">
+    <div class="step-head"><span class="step-num">3</span><h2>Try it</h2><span class="ipp">Experience</span></div>
+
+    <div class="task" id="t1">
+      <div class="task-head"><h3>Task 1: Nearest neighbors by hand</h3><span class="chip" data-chip="t1">To do</span></div>
+      <p>Here are 7 labeled fruits and one new fruit (★). Use the graph to answer.</p>
+      <div class="plot-wrap">
+        <div class="sim"><svg class="plot" id="t1-plot" viewBox="0 0 300 300" role="img" aria-label="Fruit graph with one new fruit"></svg></div>
+        <div class="legend"><span><i class="lr"></i>ripe</span><span><i class="lu"></i>unripe</span><span>★ new fruit</span><span>The dashed circle shows the 3 nearest.</span></div>
+      </div>
+      <div id="t1-quiz"></div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-head"><h3>Task 2: Accuracy can hide a problem</h3><span class="chip" data-chip="t2">To do</span></div>
+      <p>A face detector was tested on 900 photos of Group A and got 882 right. It was tested on 100 photos of Group B and got 68 right.</p>
+      <div class="num-q"><label class="goal" for="t2-a">Overall accuracy (all 1,000 photos):</label><input id="t2-a" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t2-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t2-b">Accuracy for Group B:</label><input id="t2-b" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t2-b-m"></span></div>
+      <div class="row"><button class="primary" id="t2-check">Check my answers</button><button class="ghost" id="t2-hint">Show a hint</button></div>
+      <div id="t2-fb"></div>
+      <div class="hints" id="t2-hints"></div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-head"><h3>Task 3: What went wrong?</h3><span class="chip" data-chip="t3">To do</span></div>
+      <div id="t3-quiz"></div>
+    </div>
+
+    <div class="task" id="t4">
+      <div class="task-head"><h3>Task 4: Helps or hurts fairness?</h3><span class="chip" data-chip="t4">To do</span></div>
+      <div class="sort-list" id="t4-list"></div>
+      <div class="row"><button class="primary" id="t4-check">Check</button><button class="ghost" id="t4-hint">Show a hint</button></div>
+      <div id="t4-fb"></div>
+      <div class="hints" id="t4-hints"></div>
+    </div>
+
+    <div class="task" id="t5">
+      <div class="task-head"><h3>Task 5: Why the mask worked</h3><span class="chip" data-chip="t5">To do</span></div>
+      <p>Why did the face detector find a plain white mask but not Joy Buolamwini's face?</p>
+      <div class="choices" id="t5-choices"></div>
+      <div id="t5-fb"></div>
+    </div>
+  </section>
+
+  <!-- 4 BUILD -->
+  <section class="step" id="build">
+    <div class="step-head"><span class="step-num">4</span><h2>Build: a fair avocado sorter</h2><span class="ipp">Action</span></div>
+    <div class="prose">
+      <p>A regional food bank gets donated avocados and uses a machine to sort ripe ones (give out today) from unripe ones (save for later). The machine measures each avocado's <b>skin darkness</b> and <b>softness</b>, then uses 3-nearest neighbors.</p>
+      <p>Its first training data came from one farm that grows only <b>Hass</b> avocados, which turn dark when ripe. But the food bank also gets <b>Fuerte</b> avocados, which stay green even when ripe. Choose 10 training examples from the pool so the sorter works well for <b>both</b> kinds.</p>
+    </div>
+    <div class="task" id="build-task">
+      <div class="task-head"><h3>Your sorter must:</h3><span class="chip" data-chip="build">To do</span></div>
+      <ul class="status-list" id="b-reqs"></ul>
+      <div class="plot-wrap">
+        <div class="sim"><svg class="plot" id="b-plot" viewBox="0 0 300 300" role="img" aria-label="Avocado training and test data"></svg></div>
+        <div style="display:grid;gap:10px;min-width:0">
+          <div class="legend"><span><i class="lr"></i>ripe</span><span><i class="lu"></i>unripe</span><span><i class="ci"></i>Hass</span><span><i class="sq"></i>Fuerte</span><span><i class="ho"></i>test avocado (red slash = wrong prediction)</span></div>
+          <div class="acc-table"><table>
+            <thead><tr><th>Test group</th><th>Accuracy</th></tr></thead>
+            <tbody id="b-acc"></tbody>
+          </table></div>
+          <div class="seg" role="group" aria-label="Number of neighbors">
+            <span class="goal" style="align-self:center">Neighbors (k):</span>
+            <button type="button" data-k="1">1</button><button type="button" data-k="3">3</button><button type="button" data-k="5">5</button>
+          </div>
+        </div>
+      </div>
+      <h3>Training pool <span class="goal" id="b-count"></span></h3>
+      <p class="goal">Tap an avocado to add it to or remove it from the training data.</p>
+      <div class="pool" id="b-pool"></div>
+      <div class="row"><button class="primary" id="b-check">Check my sorter</button></div>
+      <div id="b-fb"></div>
+    </div>
+  </section>
+
+  <!-- 5 REFLECT -->
+  <section class="step" id="reflect">
+    <div class="step-head"><span class="step-num">5</span><h2>Reflect</h2><span class="ipp">Reflection</span></div>
+    <p class="reflect-q">Joy Buolamwini had to hold up a white mask for a computer to "see" her. Our faith teaches that every person is made in the image of God and deserves to be seen and valued. Who might technology fail to see today? What responsibility do the people who build AI have to them?</p>
+    <p class="goal">Write 2 to 4 sentences. You can draft here, then copy your answer into the Blackbaud check. Your draft saves on this iPad.</p>
+    <label for="reflect-draft" class="goal">Your draft</label>
+    <textarea id="reflect-draft" class="draft" placeholder="Technology might fail to see…"></textarea>
+    <div class="row"><button id="copy-reflect">Copy my reflection</button><span class="goal" id="copy-reflect-msg"></span></div>
+  </section>
+
+  <!-- 6 CHECK -->
+  <section class="step" id="check">
+    <div class="step-head"><span class="step-num">6</span><h2>Check in Blackbaud</h2><span class="ipp">Evaluation</span></div>
+    <div class="check-card" id="check-card">
+      <div id="check-locked">
+        <p><b>Finish all 6 tasks to unlock your completion code.</b></p>
+        <ul class="status-list" id="check-status"></ul>
+      </div>
+      <div id="check-open" hidden>
+        <p><b>All tasks done. Your completion code is:</b></p>
+        <div class="code-badge" id="code-badge"></div>
+        <p>Now open Blackbaud and find the assessment <b>“U5·M2 Check: Train a Classifier.”</b> It asks for:</p>
+        <ol class="todo">
+          <li>Your completion code (above)</li>
+          <li>5 short quiz questions</li>
+          <li>Your sorter's training data and results. Tap the button below, then paste them in.</li>
+          <li>Your reflection from Step 5</li>
+        </ol>
+        <div class="row"><button class="primary" id="copy-build">Copy my sorter results</button><span class="goal" id="copy-build-msg"></span></div>
+        <p class="goal">To pass, enter the correct code and score at least 4 out of 5 on the quiz. You can retake the quiz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 GO FURTHER -->
+  <section class="step" id="further">
+    <div class="step-head"><span class="step-num">7</span><h2>Go further</h2><span class="ipp">Optional</span></div>
+    <div class="task" id="x1">
+      <div class="task-head"><h3>Challenge: how few examples?</h3><span class="chip opt">Optional</span></div>
+      <div class="prose">
+        <p>In the Build, what's the <b>smallest</b> number of Fuerte examples you need for both groups to reach 100%? Which ones matter most, and why? Try changing k to 1 or 5 too. Does that change which examples matter?</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? Tap <b>Show a hint</b> first, then ask a senior helper. Helpers can coach you but won't give you the answer.</span>
+    <button class="ghost" id="reset">Start over</button>
+  </footer>
+</main>
+
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  "use strict";
+  var el = Course.el, $ = function (id) { return document.getElementById(id); };
+  var state = Course.state;
+  var SVGNS = "http://www.w3.org/2000/svg";
+  function svg(tag, attrs, text) {
+    var e = document.createElementNS(SVGNS, tag);
+    Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  // Plot coordinates: features 0-10 on both axes.
+  var PX = function (v) { return 40 + v * 24; }, PY = function (v) { return 260 - v * 24; };
+  function axes(s, xLabel, yLabel) {
+    s.appendChild(svg("rect", { "class": "frame", x: 40, y: 20, width: 240, height: 240 }));
+    for (var v = 0; v <= 10; v += 2) {
+      s.appendChild(svg("line", { "class": "gridl", x1: PX(v), x2: PX(v), y1: 20, y2: 260 }));
+      s.appendChild(svg("line", { "class": "gridl", x1: 40, x2: 280, y1: PY(v), y2: PY(v) }));
+      s.appendChild(svg("text", { x: PX(v), y: 276, "text-anchor": "middle" }, String(v)));
+      s.appendChild(svg("text", { x: 32, y: PY(v) + 4, "text-anchor": "end" }, String(v)));
+    }
+    s.appendChild(svg("text", { "class": "ax", x: 160, y: 296, "text-anchor": "middle" }, xLabel));
+    s.appendChild(svg("text", { "class": "ax", x: 12, y: 140, transform: "rotate(-90 12 140)", "text-anchor": "middle" }, yLabel));
+  }
+  function mark(s, p, cls, square) {
+    if (square) s.appendChild(svg("rect", { "class": cls, x: PX(p.x) - 7, y: PY(p.y) - 7, width: 14, height: 14, rx: 2 }));
+    else s.appendChild(svg("circle", { "class": cls, cx: PX(p.x), cy: PY(p.y), r: 7.5 }));
+  }
+  function knn(train, x, y, k) {
+    var near = train.slice().sort(function (a, b) {
+      var da = Math.hypot(a.x - x, a.y - y), db = Math.hypot(b.x - x, b.y - y);
+      return da - db || a.x - b.x || a.y - b.y;
+    }).slice(0, k);
+    return near.filter(function (t) { return t.ripe; }).length * 2 > near.length;
+  }
+
+  /* ---------- Build data ---------- */
+  var POOL = [
+    ["H", 8, 7, 1], ["H", 9, 8, 1], ["H", 7, 8, 1], ["H", 8, 9, 1], ["H", 9, 6, 1],
+    ["H", 2, 2, 0], ["H", 3, 1, 0], ["H", 2, 3, 0], ["H", 1, 2, 0], ["H", 3, 3, 0],
+    ["F", 2, 8, 1], ["F", 3, 7, 1], ["F", 2, 9, 1], ["F", 1, 7, 1], ["F", 3, 8, 1],
+    ["F", 2, 1, 0], ["F", 1, 3, 0], ["F", 3, 2, 0], ["F", 1, 1, 0], ["F", 4, 2, 0]
+  ].map(function (a) { return { kind: a[0], x: a[1], y: a[2], ripe: !!a[3] }; });
+  var TEST = [
+    ["H", 8, 8, 1], ["H", 7, 7, 1], ["H", 9, 9, 1], ["H", 2, 4, 0], ["H", 4, 1, 0], ["H", 1, 2, 0],
+    ["F", 2, 7, 1], ["F", 3, 9, 1], ["F", 1, 8, 1], ["F", 2, 2, 0], ["F", 3, 1, 0], ["F", 1, 2, 0]
+  ].map(function (a) { return { kind: a[0], x: a[1], y: a[2], ripe: !!a[3] }; });
+  var KIND = { H: "Hass", F: "Fuerte" };
+  var MAX = 10, NEED = 5 / 6;
+  var b; // set after Course.init
+
+  function results() {
+    var train = POOL.filter(function (_, i) { return b.sel[i]; });
+    var out = { H: 0, F: 0, preds: [] };
+    TEST.forEach(function (t) {
+      var p = train.length ? knn(train, t.x, t.y, b.k) : false;
+      out.preds.push(p);
+      if (p === t.ripe) out[t.kind]++;
+    });
+    out.H /= 6; out.F /= 6;
+    out.n = train.length;
+    return out;
+  }
+
+  Course.init({
+    id: "u5m2",
+    required: ["t1", "t2", "t3", "t4", "t5", "build"],
+    tryTasks: ["t1", "t2", "t3", "t4", "t5"],
+    buildTask: "build",
+    taskNames: { t1: "Task 1: Nearest neighbors by hand", t2: "Task 2: Accuracy can hide a problem", t3: "Task 3: What went wrong?", t4: "Task 4: Helps or hurts fairness?", t5: "Task 5: Why the mask worked", build: "Build: a fair avocado sorter" },
+    code: [83, 72, 65, 68, 69, 83, 45, 49, 56],
+    buildText: function () {
+      var r = results();
+      var picked = POOL.filter(function (_, i) { return b.sel[i]; });
+      return "My avocado sorter (k = " + b.k + ")\nTraining data: " + picked.filter(function (p) { return p.kind === "H"; }).length + " Hass, " + picked.filter(function (p) { return p.kind === "F"; }).length + " Fuerte\n" +
+        picked.map(function (p) { return KIND[p.kind] + " (darkness " + p.x + ", softness " + p.y + "): " + (p.ripe ? "ripe" : "unripe"); }).join("\n") +
+        "\nHass test accuracy: " + Math.round(r.H * 100) + "%\nFuerte test accuracy: " + Math.round(r.F * 100) + "%";
+    }
+  });
+  b = state.extra.sorter || (state.extra.sorter = { sel: { 0: true, 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true }, k: 3 });
+
+  /* ---------- Task 1 ---------- */
+  (function () {
+    var s = $("t1-plot");
+    axes(s, "skin darkness", "softness");
+    var pts = [{ x: 5.5, y: 5.6, ripe: true }, { x: 4, y: 5, ripe: false }, { x: 5, y: 3.8, ripe: false }, { x: 7.5, y: 7.5, ripe: true }, { x: 8, y: 6, ripe: true }, { x: 2, y: 2, ripe: false }, { x: 2.5, y: 4, ripe: false }];
+    pts.forEach(function (p) { mark(s, p, p.ripe ? "ripe" : "unripe"); });
+    s.appendChild(svg("circle", { "class": "ring", cx: PX(5), cy: PY(5), r: 1.3 * 24 }));
+    var star = svg("text", { "class": "star", x: PX(5), y: PY(5) + 7, "text-anchor": "middle", style: "font-size:22px;fill:var(--accent)" }, "★");
+    s.appendChild(star);
+  })();
+  Course.quiz({
+    task: "t1", container: "t1-quiz",
+    okMsg: "All right. With k = 1 the single closest fruit decides; with k = 3 the vote can come out differently. Choosing k is part of designing the model.",
+    questions: [
+      { q: "With k = 1 (only the single nearest fruit votes), what does the model predict for ★?", choices: [
+        { text: "Ripe", right: true, why: "Right. The closest fruit to the star is the ripe one just up and to the right." },
+        { text: "Unripe", why: "Not quite. Find the one fruit closest to the star." }
+      ] },
+      { q: "With k = 3 (the three nearest fruits, inside the dashed circle, vote), what does it predict?", choices: [
+        { text: "Ripe", why: "Not quite. Count the colors inside the dashed circle." },
+        { text: "Unripe", right: true, why: "Right. Two of the three nearest are unripe, so unripe wins the vote." }
+      ] }
+    ]
+  });
+
+  /* ---------- Task 2 ---------- */
+  Course.answers({
+    task: "t2", button: "t2-check", feedback: "t2-fb",
+    items: [{ id: "t2-a", answer: 95 }, { id: "t2-b", answer: 68 }],
+    okMsg: "Right. 950 of 1,000 is 95% overall, which sounds great, but Group B gets only 68%. One in three Group B photos fails. Overall accuracy hid the problem.",
+    hints: { button: "t2-hint", box: "t2-hints", list: ["Overall: add up all the right answers (882 + 68) and divide by 1,000.", "Group B: 68 right out of 100."] }
+  });
+
+  /* ---------- Task 3 ---------- */
+  Course.quiz({
+    task: "t3", container: "t3-quiz",
+    okMsg: "All right. The model wasn't trying to be unfair. It learned from unbalanced data, and nobody checked each group.",
+    questions: [
+      { q: "In Task 2, why might the detector do so much worse on Group B?", choices: [
+        { text: "Group B's photos were probably rare in the training data", right: true, why: "Right. 900 test photos of Group A and only 100 of Group B suggests the data may have been unbalanced from the start." },
+        { text: "Computers can't see some colors", why: "Not quite. Cameras capture all skin tones. The problem is what the model learned from." },
+        { text: "Group B made more mistakes", why: "Not quite. The people in the photos didn't make the mistakes. The model did." }
+      ] },
+      { q: "Which result would have warned the builders before releasing it?", choices: [
+        { text: "Testing on more Group A photos", why: "Not quite. That would just confirm it works for Group A." },
+        { text: "Reporting accuracy separately for each group", right: true, why: "Right. Separate results make the gap impossible to miss." },
+        { text: "Making the model run faster", why: "Not quite. Speed doesn't reveal unfairness." }
+      ] }
+    ]
+  });
+
+  /* ---------- Task 4 ---------- */
+  Course.sort({
+    task: "t4", container: "t4-list", button: "t4-check", feedback: "t4-fb",
+    categories: ["Helps fairness", "Hurts fairness"],
+    items: [
+      { text: "Test accuracy separately for different groups of people", cat: 0 },
+      { text: "Report only the overall accuracy", cat: 1 },
+      { text: "Collect training data from many different kinds of people", cat: 0 },
+      { text: "Use only the data that was cheapest and easiest to collect", cat: 1 },
+      { text: "Ask the people affected by the system for feedback", cat: 0 },
+      { text: "Assume the model is fair because a computer made it", cat: 1 }
+    ],
+    okMsg: "All sorted. Fair AI doesn't happen by accident. People have to check for it and build for it.",
+    hints: { button: "t4-hint", box: "t4-hints", list: [
+      "Ask: would this help someone notice that a group is being treated worse?",
+      "Computers learn from data people chose. A computer can't be fairer than its data."
+    ] }
+  });
+
+  /* ---------- Task 5 ---------- */
+  Course.mc({
+    task: "t5", container: "t5-choices", feedback: "t5-fb",
+    choices: [
+      { text: "The mask was a better face than hers", why: "Not quite. The mask wasn't a better face, just one that matched what the software learned." },
+      { text: "The software learned mostly from lighter-skinned faces, so it matched the mask but not her face", right: true, why: "Right. The software learned what a \"face\" looks like from unbalanced training data." },
+      { text: "The camera was broken", why: "Not quite. It worked for her classmates and for the mask." },
+      { text: "She was standing too far away", why: "Not quite. The problem appeared again and again, and the study later showed it was widespread." }
+    ]
+  });
+
+  /* ---------- Build ---------- */
+  (function () {
+    var pool = $("b-pool"), plot = $("b-plot");
+    var btns = POOL.map(function (p, i) {
+      var btn = el("button", { type: "button", "aria-pressed": b.sel[i] ? "true" : "false" });
+      btn.appendChild(el("b", null, KIND[p.kind] + " · " + (p.ripe ? "ripe" : "unripe")));
+      btn.appendChild(el("span", null, "darkness " + p.x + ", softness " + p.y));
+      btn.addEventListener("click", function () {
+        var count = Object.keys(b.sel).filter(function (k) { return b.sel[k]; }).length;
+        if (!b.sel[i] && count >= MAX) { Course.feedback($("b-fb"), false, "You can only use " + MAX + " training examples. Remove one first."); return; }
+        b.sel[i] = !b.sel[i]; Course.save(); $("b-fb").innerHTML = ""; render();
+      });
+      pool.appendChild(btn); return btn;
+    });
+    document.querySelectorAll("#build-task [data-k]").forEach(function (kb) {
+      kb.addEventListener("click", function () { b.k = Number(kb.getAttribute("data-k")); Course.save(); render(); });
+    });
+    function render() {
+      var r = results();
+      plot.innerHTML = "";
+      axes(plot, "skin darkness", "softness");
+      POOL.forEach(function (p, i) { if (b.sel[i]) mark(plot, p, p.ripe ? "ripe" : "unripe", p.kind === "F"); });
+      TEST.forEach(function (t, i) {
+        mark(plot, t, "test " + (t.ripe ? "ripe" : "unripe"), t.kind === "F");
+        if (r.preds[i] !== t.ripe) plot.appendChild(svg("line", { "class": "wrongmark", x1: PX(t.x) - 9, y1: PY(t.y) + 9, x2: PX(t.x) + 9, y2: PY(t.y) - 9 }));
+      });
+      btns.forEach(function (btn, i) { btn.setAttribute("aria-pressed", b.sel[i] ? "true" : "false"); });
+      document.querySelectorAll("#build-task [data-k]").forEach(function (kb) { kb.setAttribute("aria-pressed", Number(kb.getAttribute("data-k")) === b.k ? "true" : "false"); });
+      var acc = $("b-acc"); acc.innerHTML = "";
+      [["H", r.H], ["F", r.F]].forEach(function (row) {
+        var tr = el("tr");
+        tr.appendChild(el("td", null, KIND[row[0]] + " avocados"));
+        tr.appendChild(el("td", { "class": row[1] >= NEED ? "good" : "bad" }, Math.round(row[1] * 100) + "%"));
+        acc.appendChild(tr);
+      });
+      $("b-count").textContent = "(" + r.n + " of " + MAX + " chosen)";
+      var reqs = $("b-reqs"); reqs.innerHTML = "";
+      [[r.n <= MAX && r.n > 0, "Use at most " + MAX + " training examples"], [r.H >= NEED, "Get at least 5 of 6 Hass test avocados right"], [r.F >= NEED, "Get at least 5 of 6 Fuerte test avocados right"]].forEach(function (q) {
+        reqs.appendChild(el("li", { "class": q[0] ? "done" : "" }, (q[0] ? "✓ " : "○ ") + q[1]));
+      });
+      return r;
+    }
+    $("b-check").addEventListener("click", function () {
+      var r = render();
+      if (r.H >= NEED && r.F >= NEED && r.n <= MAX) {
+        Course.feedback($("b-fb"), true, "Your sorter works for both kinds: Hass " + Math.round(r.H * 100) + "%, Fuerte " + Math.round(r.F * 100) + "%. You fixed the bias by choosing representative training data, the same fix Gender Shades pushed companies to make.");
+        Course.markDone("build");
+      } else if (r.F < NEED) {
+        Course.feedback($("b-fb"), false, "Fuerte avocados get only " + Math.round(r.F * 100) + "% right. Look at the red slashes: which test avocados is the sorter getting wrong? Does your training data have anything like them?");
+      } else {
+        Course.feedback($("b-fb"), false, "Hass avocados dropped to " + Math.round(r.H * 100) + "%. Make sure the training data still covers ripe and unripe Hass avocados too.");
+      }
+    });
+    render();
+    if (state.done.build) Course.feedback($("b-fb"), true, "Done. Keep experimenting if you like; your results are saved for the Blackbaud check.");
+  })();
+})();
+</script>
+
+</body>
+</html>
