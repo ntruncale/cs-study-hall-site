@@ -1,4 +1,4 @@
-/* CS in Study Hall: shared styles for every module.
+/* Computer Science – Sophomore Year: shared styles for every module.
    Layout: one reading column under a sticky step bar; every module uses the same seven steps so students always know where they are. */
 :root {
   /* Scranton Prep colors: purple background, gold accent, white text. One palette for light and dark mode. */

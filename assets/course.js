@@ -1,4 +1,4 @@
-/* CS in Study Hall: shared behavior for every module.
+/* Computer Science – Sophomore Year: shared behavior for every module.
    A module page calls Course.init({...}) with its id, required tasks and completion code,
    then uses Course.mc, Course.python.editors, Course.python.parsons, etc. for its tasks.
    Read Course.state.extra only after Course.init, which loads the student's saved progress into it. */
