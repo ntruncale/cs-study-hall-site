@@ -130,7 +130,7 @@ img { max-width: 100%; }
 
     <div class="task" id="t2">
       <div class="task-head"><h3>Task 2: Accuracy can hide a problem</h3><span class="chip" data-chip="t2">To do</span></div>
-      <p>A face detector was tested on 900 photos of Group A and got 882 right. It was tested on 100 photos of Group B and got 68 right.</p>
+      <p id="t2-intro"></p>
       <div class="num-q"><label class="goal" for="t2-a">Overall accuracy (all 1,000 photos):</label><input id="t2-a" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t2-a-m"></span></div>
       <div class="num-q"><label class="goal" for="t2-b">Accuracy for Group B:</label><input id="t2-b" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t2-b-m"></span></div>
       <div class="row"><button class="primary" id="t2-check">Check my answers</button><button class="ghost" id="t2-hint">Show a hint</button></div>
@@ -351,11 +351,15 @@ img { max-width: 100%; }
   });
 
   /* ---------- Task 2 ---------- */
+  // Each student gets their own test results. Overall accuracy may come out to a decimal, so answers within 0.5 count.
+  var fa = Course.vary("t2", function (r) { var a = r.pick([800, 900]); return { a: a, b: 1000 - a, pA: r.pick([98, 99]), pB: r.pick([60, 65, 68, 70, 72, 75]) }; });
+  var rightA = fa.a * fa.pA / 100, rightB = fa.b * fa.pB / 100, overall = (rightA + rightB) / 10;
+  $("t2-intro").textContent = "A face detector was tested on " + fa.a + " photos of Group A and got " + rightA + " right. It was tested on " + fa.b + " photos of Group B and got " + rightB + " right.";
   Course.answers({
     task: "t2", button: "t2-check", feedback: "t2-fb",
-    items: [{ id: "t2-a", answer: 95 }, { id: "t2-b", answer: 68 }],
-    okMsg: "Right. 950 of 1,000 is 95% overall, which sounds great, but Group B gets only 68%. One in three Group B photos fails. Overall accuracy hid the problem.",
-    hints: { button: "t2-hint", box: "t2-hints", list: ["Overall: add up all the right answers (882 + 68) and divide by 1,000.", "Group B: 68 right out of 100."] }
+    items: [{ id: "t2-a", answer: function (v) { return v !== "" && Math.abs(Number(v.replace(/,/g, "")) - overall) <= 0.5; } }, { id: "t2-b", answer: fa.pB }],
+    okMsg: "Right. " + (rightA + rightB) + " of 1,000 is " + overall + "% overall, which sounds great, but Group B gets only " + fa.pB + "%. About " + Math.round((100 - fa.pB) / 10) + " in 10 Group B photos fail. Overall accuracy hid the problem.",
+    hints: { button: "t2-hint", box: "t2-hints", list: ["Overall: add up all the right answers (" + rightA + " + " + rightB + ") and divide by 1,000, then multiply by 100.", "Group B: " + rightB + " right out of " + fa.b + "."] }
   });
 
   /* ---------- Task 3 ---------- */
@@ -364,7 +368,7 @@ img { max-width: 100%; }
     okMsg: "All right. The model wasn't trying to be unfair. It learned from unbalanced data, and nobody checked each group.",
     questions: [
       { q: "In Task 2, why might the detector do so much worse on Group B?", choices: [
-        { text: "Group B's photos were probably rare in the training data", right: true, why: "Right. 900 test photos of Group A and only 100 of Group B suggests the data may have been unbalanced from the start." },
+        { text: "Group B's photos were probably rare in the training data", right: true, why: "Right. Far more test photos of Group A than Group B suggests the data may have been unbalanced from the start." },
         { text: "Computers can't see some colors", why: "Not quite. Cameras capture all skin tones. The problem is what the model learned from." },
         { text: "Group B made more mistakes", why: "Not quite. The people in the photos didn't make the mistakes. The model did." }
       ] },

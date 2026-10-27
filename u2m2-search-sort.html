@@ -128,7 +128,7 @@ img { max-width: 100%; }
 
     <div class="task" id="t3">
       <div class="task-head"><h3>Task 3: Be the binary search</h3><span class="chip" data-chip="t3">To do</span></div>
-      <p>These cards are sorted. Find <b>12</b> the way binary search would: tap the <b>middle</b> card of the cards still in play. The page will tell you whether to go left or right.</p>
+      <p>These cards are sorted. Find <b id="t3-target"></b> the way binary search would: tap the <b>middle</b> card of the cards still in play. The page will tell you whether to go left or right.</p>
       <div class="cards" id="t3-cards"></div>
       <div id="t3-fb"></div>
       <div class="row"><button class="ghost" id="t3-reset">Start over</button><button class="ghost" id="t3-hint">Show a hint</button></div>
@@ -147,7 +147,7 @@ img { max-width: 100%; }
 
     <div class="task" id="t5">
       <div class="task-head"><h3>Task 5: Count the checks</h3><span class="chip" data-chip="t5">To do</span></div>
-      <p>The school directory has 2,000 names, sorted alphabetically.</p>
+      <p id="t5-intro"></p>
       <div class="num-q"><label class="goal" for="t5-a">Worst case, how many checks does linear search need?</label><input id="t5-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-a-m"></span></div>
       <div class="num-q"><label class="goal" for="t5-b">Worst case, how many checks does binary search need?</label><input id="t5-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-b-m"></span></div>
       <div class="row"><button class="primary" id="t5-check">Check my answers</button><button class="ghost" id="t5-hint">Show a hint</button></div>
@@ -235,7 +235,7 @@ img { max-width: 100%; }
     "Mendoza", "Murphy", "Nguyen", "Novak", "Obi", "Okafor", "Olsen", "Ortiz", "Patel", "Perez", "Quinn", "Ramirez",
     "Reyes", "Rossi", "Russo", "Santos", "Schmidt", "Singh", "Sullivan", "Tanaka", "Thomas", "Torres", "Tran", "Vargas",
     "Walsh", "Williams", "Yilmaz", "Zhang"];
-  var TARGETS = ["Nguyen", "Diallo"];
+  var TARGETS; // two families per student, chosen after Course.init
   var MAX_OPEN = 7;
 
   Course.init({
@@ -255,6 +255,7 @@ img { max-width: 100%; }
       return lines.join("\n");
     }
   });
+  TARGETS = Course.vary("roster", function (r) { return r.sample(ROSTER, 2); });
 
   /* ---------- Task 1: guessing game ---------- */
   (function () {
@@ -317,7 +318,14 @@ img { max-width: 100%; }
 
   /* ---------- Task 3: trace binary search ---------- */
   (function () {
-    var NUMS = [3, 8, 12, 17, 21, 26, 30, 34, 39, 45, 51, 58, 63, 70, 77], TARGET = 12;
+    // Each student gets their own 15 sorted numbers and a target that takes 3 or 4 checks to find.
+    var t3 = Course.vary("t3", function (r) {
+      var nums = [r.int(2, 6)];
+      while (nums.length < 15) nums.push(nums[nums.length - 1] + r.int(3, 8));
+      return { nums: nums, target: nums[r.pick([0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14])] };
+    });
+    var NUMS = t3.nums, TARGET = t3.target;
+    $("t3-target").textContent = TARGET;
     var lo, hi, checked, wrap = $("t3-cards"), fb = $("t3-fb");
     var cards = NUMS.map(function (n, i) {
       var b = el("button", { type: "button", "class": "ncard", "aria-label": "Card " + n });
@@ -341,12 +349,12 @@ img { max-width: 100%; }
       checked.push(i);
       if (NUMS[i] === TARGET) {
         render();
-        Course.feedback(fb, true, "Found 12 in " + checked.length + " checks. Linear search would have needed 3 here, but for 15 cards binary search never needs more than 4, and for a million it never needs more than 20.");
+        Course.feedback(fb, true, "Found " + TARGET + " in " + checked.length + " checks. Linear search, starting from the left, would have needed " + (i + 1) + " here. For 15 cards binary search never needs more than 4, and for a million it never needs more than 20.");
         Course.markDone("t3");
         return;
       }
-      if (NUMS[i] > TARGET) { hi = i - 1; Course.feedback(fb, false, NUMS[i] + " is bigger than 12, so 12 must be to the left. Everything from " + NUMS[i] + " up is ruled out. Check the middle of what's left."); }
-      else { lo = i + 1; Course.feedback(fb, false, NUMS[i] + " is smaller than 12, so 12 must be to the right. Check the middle of what's left."); }
+      if (NUMS[i] > TARGET) { hi = i - 1; Course.feedback(fb, false, NUMS[i] + " is bigger than " + TARGET + ", so " + TARGET + " must be to the left. Everything from " + NUMS[i] + " up is ruled out. Check the middle of what's left."); }
+      else { lo = i + 1; Course.feedback(fb, false, NUMS[i] + " is smaller than " + TARGET + ", so " + TARGET + " must be to the right. Everything from " + NUMS[i] + " down is ruled out. Check the middle of what's left."); }
       fb.querySelector(".feedback").className = "feedback ok";
       render();
     }
@@ -355,14 +363,29 @@ img { max-width: 100%; }
     if (state.done.t3) Course.feedback(fb, true, "Done. Tap Start over to practice again.");
     Course.hints("t3", [
       "With 15 cards in play, the middle one is the 8th card.",
-      "34 is bigger than 12, so only the 7 cards to its left are still in play. The middle of those is the 4th card.",
-      "Keep going: middle card, compare with 12, rule out half."
+      TARGET < NUMS[7] ? NUMS[7] + " is bigger than " + TARGET + ", so only the 7 cards to its left are still in play. The middle of those is the 4th card."
+        : NUMS[7] + " is smaller than " + TARGET + ", so only the 7 cards to its right are still in play. The middle of those is the 12th card.",
+      "Keep going: middle card, compare with " + TARGET + ", rule out half."
     ], $("t3-hint"), $("t3-hints"));
   })();
 
   /* ---------- Task 4: sort with swaps ---------- */
   (function () {
-    var START = [42, 88, 19, 7, 56, 3, 25], LIMIT = 6;
+    // Each student gets their own 7 cards, shuffled so selection sort needs at least 4 swaps.
+    function swapsNeeded(cards) {
+      var a = cards.slice(), n = 0;
+      for (var i = 0; i < a.length; i++) {
+        var m = i; for (var j = i + 1; j < a.length; j++) if (a[j] < a[m]) m = j;
+        if (m !== i) { var t = a[i]; a[i] = a[m]; a[m] = t; n++; }
+      }
+      return n;
+    }
+    var START = Course.vary("t4", function (r) {
+      var pool = []; for (var v = 2; v < 100; v++) pool.push(v);
+      var cards = r.sample(pool, 7);
+      while (swapsNeeded(cards) < 4) cards = r.shuffle(cards);
+      return cards;
+    }), LIMIT = 6;
     var s = state.extra.t4 || (state.extra.t4 = { cards: START.slice(), swaps: 0 });
     var sel = null, wrap = $("t4-cards"), fb = $("t4-fb");
     function sorted() { return s.cards.every(function (v, i) { return i === 0 || s.cards[i - 1] <= v; }); }
@@ -398,14 +421,19 @@ img { max-width: 100%; }
   })();
 
   /* ---------- Task 5 ---------- */
+  // Directory sizes avoid exact powers of 2, so the binary search answer is clear.
+  var size = Course.vary("t5", function (r) { return r.pick([600, 1000, 1500, 2000, 3000, 5000]); });
+  var checks = Math.floor(Math.log2(size)) + 1;
+  function n(x) { return x.toLocaleString("en-US"); }
+  $("t5-intro").textContent = "The school directory has " + n(size) + " names, sorted alphabetically.";
   Course.answers({
     task: "t5", button: "t5-check", feedback: "t5-fb",
-    items: [{ id: "t5-a", answer: 2000 }, { id: "t5-b", answer: 11 }],
-    okMsg: "Both right. 2,000 checks versus 11. That's why sorted data is so valuable.",
+    items: [{ id: "t5-a", answer: size }, { id: "t5-b", answer: checks }],
+    okMsg: "Both right. " + n(size) + " checks versus " + checks + ". That's why sorted data is so valuable.",
     hints: { button: "t5-hint", box: "t5-hints", list: [
       "Linear search's worst case: the name is last (or missing), so it checks every name.",
-      "For binary search, keep halving 2,000 until you reach 1, counting the halvings: 2,000 → 1,000 → 500 → …",
-      "Another way: 2 × 2 × … 10 times is 1,024. That's not enough for 2,000. One more check doubles it to 2,048."
+      "For binary search, keep halving " + n(size) + " until you reach 1, counting the halvings: " + n(size) + " → " + n(Math.round(size / 2)) + " → " + n(Math.round(size / 4)) + " → …",
+      "Another way: 2 × 2 × … " + (checks - 1) + " times is " + n(Math.pow(2, checks - 1)) + ". That's not enough for " + n(size) + ". One more check doubles it to " + n(Math.pow(2, checks)) + "."
     ] }
   });
 

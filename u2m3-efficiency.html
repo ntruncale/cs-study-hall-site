@@ -117,9 +117,9 @@ img { max-width: 100%; }
 
     <div class="task" id="t1">
       <div class="task-head"><h3>Task 1: Think like Gauss</h3><span class="chip" data-chip="t1">To do</span></div>
-      <p>Use Gauss's pairing trick, not 999 additions.</p>
-      <div class="num-q"><label class="goal" for="t1-a">1 + 2 + 3 + … + 100 =</label><input id="t1-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t1-a-m"></span></div>
-      <div class="num-q"><label class="goal" for="t1-b">1 + 2 + 3 + … + 1,000 =</label><input id="t1-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t1-b-m"></span></div>
+      <p id="t1-intro">Use Gauss's pairing trick instead of hundreds of additions.</p>
+      <div class="num-q"><label class="goal" for="t1-a" id="t1-a-q"></label><input id="t1-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t1-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t1-b" id="t1-b-q"></label><input id="t1-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t1-b-m"></span></div>
       <div class="row"><button class="primary" id="t1-check">Check my answers</button><button class="ghost" id="t1-hint">Show a hint</button></div>
       <div id="t1-fb"></div>
       <div class="hints" id="t1-hints"></div>
@@ -141,8 +141,8 @@ img { max-width: 100%; }
     <div class="task" id="t3">
       <div class="task-head"><h3>Task 3: Everyone shakes hands</h3><span class="chip" data-chip="t3">To do</span></div>
       <p>At the start of a retreat, everyone in the group shakes hands with everyone else exactly once. That's "every item with every other item."</p>
-      <div class="num-q"><label class="goal" for="t3-a">How many handshakes in a group of 10?</label><input id="t3-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t3-a-m"></span></div>
-      <div class="num-q"><label class="goal" for="t3-b">How many in a class of 30?</label><input id="t3-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t3-b-m"></span></div>
+      <div class="num-q"><label class="goal" for="t3-a" id="t3-a-q"></label><input id="t3-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t3-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t3-b" id="t3-b-q"></label><input id="t3-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t3-b-m"></span></div>
       <div class="row"><button class="primary" id="t3-check">Check my answers</button><button class="ghost" id="t3-hint">Show a hint</button></div>
       <div id="t3-fb"></div>
       <div class="hints" id="t3-hints"></div>
@@ -289,16 +289,25 @@ img { max-width: 100%; }
       return "My delivery route\n" + names(b.best) + "\nTotal: " + routeLength(b.best) + " miles\nRoutes I tried: " + (b.tried || []).length;
     }
   });
+  // Each student's map labels the four homes in a different order, so the shortest route has different letters.
+  Course.vary("map", function (r) { return r.shuffle(["A", "B", "C", "D"]); }).forEach(function (letter, i) { STOPS[i + 1].name = letter; });
+
+  function n(x) { return x.toLocaleString("en-US"); }
+  function gauss(k) { return k * (k + 1) / 2; }
 
   /* ---------- Task 1 ---------- */
+  // Each student adds up to their own two numbers (always even, so the pairs come out exactly).
+  var g = Course.vary("t1", function (r) { return [r.pick([60, 80, 100, 120, 200]), r.pick([400, 500, 1000, 2000])]; });
+  $("t1-a-q").textContent = "1 + 2 + 3 + … + " + n(g[0]) + " =";
+  $("t1-b-q").textContent = "1 + 2 + 3 + … + " + n(g[1]) + " =";
   Course.answers({
     task: "t1", button: "t1-check", feedback: "t1-fb",
-    items: [{ id: "t1-a", answer: 5050 }, { id: "t1-b", answer: 500500 }],
-    okMsg: "Both right. 50 pairs of 101 make 5,050, and 500 pairs of 1,001 make 500,500. One multiplication instead of hundreds of additions.",
+    items: [{ id: "t1-a", answer: gauss(g[0]) }, { id: "t1-b", answer: gauss(g[1]) }],
+    okMsg: "Both right. " + (g[0] / 2) + " pairs of " + (g[0] + 1) + " make " + n(gauss(g[0])) + ", and " + n(g[1] / 2) + " pairs of " + n(g[1] + 1) + " make " + n(gauss(g[1])) + ". One multiplication instead of hundreds of additions.",
     hints: { button: "t1-hint", box: "t1-hints", list: [
-      "Pair the first and last numbers: 1 + 100 = 101. Then 2 + 99 = 101. How many pairs are there?",
-      "For 1 to 100 there are 50 pairs of 101.",
-      "For 1 to 1,000: what does each pair add up to, and how many pairs are there?"
+      "Pair the first and last numbers: 1 + " + g[0] + " = " + (g[0] + 1) + ". Then 2 + " + (g[0] - 1) + " = " + (g[0] + 1) + ". How many pairs are there?",
+      "For 1 to " + g[0] + " there are " + (g[0] / 2) + " pairs of " + (g[0] + 1) + ".",
+      "For 1 to " + n(g[1]) + ": what does each pair add up to, and how many pairs are there?"
     ] }
   });
 
@@ -359,14 +368,18 @@ img { max-width: 100%; }
   });
 
   /* ---------- Task 3 ---------- */
+  var hs = Course.vary("t3", function (r) { return [r.pick([8, 10, 12, 15]), r.pick([20, 25, 30, 40])]; });
+  function shakes(k) { return k * (k - 1) / 2; }
+  $("t3-a-q").textContent = "How many handshakes in a group of " + hs[0] + "?";
+  $("t3-b-q").textContent = "How many in a class of " + hs[1] + "?";
   Course.answers({
     task: "t3", button: "t3-check", feedback: "t3-fb",
-    items: [{ id: "t3-a", answer: 45 }, { id: "t3-b", answer: 435 }],
-    okMsg: "Both right. Triple the people (10 → 30) and the handshakes go up almost ten times (45 → 435). That's fast growth.",
+    items: [{ id: "t3-a", answer: shakes(hs[0]) }, { id: "t3-b", answer: shakes(hs[1]) }],
+    okMsg: "Both right. Going from " + hs[0] + " people to " + hs[1] + " (about " + Math.round(hs[1] / hs[0] * 10) / 10 + " times as many), the handshakes jump from " + shakes(hs[0]) + " to " + n(shakes(hs[1])) + " (about " + Math.round(shakes(hs[1]) / shakes(hs[0])) + " times as many). That's fast growth.",
     hints: { button: "t3-hint", box: "t3-hints", list: [
-      "In a group of 10, each person shakes 9 hands. But 10 × 9 counts every handshake twice (yours with me, and mine with you).",
-      "So the group of 10 has 10 × 9 ÷ 2 handshakes.",
-      "For 30 people: 30 × 29 ÷ 2."
+      "In a group of " + hs[0] + ", each person shakes " + (hs[0] - 1) + " hands. But " + hs[0] + " × " + (hs[0] - 1) + " counts every handshake twice (yours with me, and mine with you).",
+      "So the group of " + hs[0] + " has " + hs[0] + " × " + (hs[0] - 1) + " ÷ 2 handshakes.",
+      "For " + hs[1] + " people: " + hs[1] + " × " + (hs[1] - 1) + " ÷ 2."
     ] }
   });
 
@@ -418,10 +431,11 @@ img { max-width: 100%; }
     // distance table
     var t = el("table"); t.appendChild(el("caption", null, "Miles between places"));
     var hr = el("tr"); hr.appendChild(el("th", null, ""));
-    STOPS.forEach(function (s) { hr.appendChild(el("th", null, s.name)); }); t.appendChild(hr);
-    STOPS.forEach(function (s, i) {
-      var tr = el("tr"); tr.appendChild(el("th", null, s.name));
-      STOPS.forEach(function (_, j) { tr.appendChild(el("td", null, i === j ? "–" : String(DIST[i][j]))); });
+    var byName = [0, 1, 2, 3, 4].sort(function (a, c) { return a === 0 ? -1 : c === 0 ? 1 : STOPS[a].name < STOPS[c].name ? -1 : 1; });
+    byName.forEach(function (i) { hr.appendChild(el("th", null, STOPS[i].name)); }); t.appendChild(hr);
+    byName.forEach(function (i) {
+      var tr = el("tr"); tr.appendChild(el("th", null, STOPS[i].name));
+      byName.forEach(function (j) { tr.appendChild(el("td", null, i === j ? "–" : String(DIST[i][j]))); });
       t.appendChild(tr);
     });
     $("b-dist").appendChild(t);

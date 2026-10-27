@@ -178,8 +178,8 @@ img { max-width: 100%; }
     <div class="task" id="t5">
       <div class="task-head"><h3>Task 5: How much fits?</h3><span class="chip" data-chip="t5">To do</span></div>
       <p>Use 1 GB ≈ 1,000 MB.</p>
-      <div class="num-q"><label class="goal" for="t5-a">A photo is about 4 MB. About how many photos fit in 1 GB?</label><input id="t5-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-a-m"></span></div>
-      <div class="num-q"><label class="goal" for="t5-b">A song is about 5 MB. About how many songs fit in 64 GB?</label><input id="t5-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-b-m"></span></div>
+      <div class="num-q"><label class="goal" for="t5-a" id="t5-a-q"></label><input id="t5-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t5-b" id="t5-b-q"></label><input id="t5-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-b-m"></span></div>
       <div class="row"><button class="primary" id="t5-check">Check my answers</button><button class="ghost" id="t5-hint">Show a hint</button></div>
       <div id="t5-fb"></div>
       <div class="hints" id="t5-hints"></div>
@@ -403,14 +403,20 @@ img { max-width: 100%; }
   });
 
   /* ---------- Task 5 ---------- */
+  // Each student gets their own sizes (chosen so the answers come out even).
+  var st = Course.vary("t5", function (r) { return { photoMB: r.pick([2, 4, 5, 8]), photoGB: r.pick([1, 2]), songMB: r.pick([4, 5, 8]), songGB: r.pick([16, 32, 64, 128]) }; });
+  var photos = st.photoGB * 1000 / st.photoMB, songs = st.songGB * 1000 / st.songMB;
+  function n(x) { return x.toLocaleString("en-US"); }
+  $("t5-a-q").textContent = "A photo is about " + st.photoMB + " MB. About how many photos fit in " + st.photoGB + " GB?";
+  $("t5-b-q").textContent = "A song is about " + st.songMB + " MB. About how many songs fit in " + st.songGB + " GB?";
   Course.answers({
     task: "t5", button: "t5-check", feedback: "t5-fb",
-    items: [{ id: "t5-a", answer: 250 }, { id: "t5-b", answer: 12800 }],
-    okMsg: "Both right. 1,000 ÷ 4 = 250 photos, and 64,000 ÷ 5 = 12,800 songs.",
+    items: [{ id: "t5-a", answer: photos }, { id: "t5-b", answer: songs }],
+    okMsg: "Both right. " + n(st.photoGB * 1000) + " ÷ " + st.photoMB + " = " + n(photos) + " photos, and " + n(st.songGB * 1000) + " ÷ " + st.songMB + " = " + n(songs) + " songs.",
     hints: { button: "t5-hint", box: "t5-hints", list: [
       "First change everything to MB. 1 GB is about 1,000 MB.",
-      "Photos: 1,000 MB ÷ 4 MB per photo.",
-      "Songs: 64 GB is about 64,000 MB. Divide by 5 MB per song."
+      "Photos: " + st.photoGB + " GB is about " + n(st.photoGB * 1000) + " MB. Divide by " + st.photoMB + " MB per photo.",
+      "Songs: " + st.songGB + " GB is about " + n(st.songGB * 1000) + " MB. Divide by " + st.songMB + " MB per song."
     ] }
   });
 

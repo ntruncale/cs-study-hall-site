@@ -152,9 +152,9 @@ img { max-width: 100%; }
 
     <div class="task" id="t5">
       <div class="task-head"><h3>Task 5: Count the packets</h3><span class="chip" data-chip="t5">To do</span></div>
-      <p>A 3 MB photo is about 3,000,000 bytes. Each packet carries about 1,500 bytes of data.</p>
+      <p id="t5-intro"></p>
       <div class="num-q"><label class="goal" for="t5-a">About how many packets does the photo need?</label><input id="t5-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-a-m"></span></div>
-      <div class="num-q"><label class="goal" for="t5-b">If 1 in every 100 packets gets lost, how many need to be resent?</label><input id="t5-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-b-m"></span></div>
+      <div class="num-q"><label class="goal" for="t5-b" id="t5-b-q"></label><input id="t5-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-b-m"></span></div>
       <div class="row"><button class="primary" id="t5-check">Check my answers</button><button class="ghost" id="t5-hint">Show a hint</button></div>
       <div id="t5-fb"></div>
       <div class="hints" id="t5-hints"></div>
@@ -293,11 +293,17 @@ img { max-width: 100%; }
   });
 
   /* ---------- Task 2 ---------- */
+  // Each student gets their own message, split into 6 packets that arrive in their own order.
+  var packets = Course.vary("t2", function (r) {
+    return { phrase: r.pick(["MEN AND WOMEN FOR OTHERS", "FIND GOD IN ALL THINGS", "AD MAJOREM DEI GLORIAM", "CARE FOR THE WHOLE PERSON", "GO SET THE WORLD ON FIRE"]), arrival: r.shuffle([0, 1, 2, 3, 4, 5]) };
+  });
+  var chunks = [], cut = 0;
+  for (var c = 0; c < 6; c++) { var end = Math.round(packets.phrase.length * (c + 1) / 6); chunks.push(packets.phrase.slice(cut, end)); cut = end; }
   Course.order({
     task: "t2", bank: "t2-bank", seq: "t2-seq", button: "t2-check", feedback: "t2-fb",
-    items: ["#4 of 6: “OR OTH”", "#2 of 6: “AND W”", "#6 of 6: “S”", "#1 of 6: “MEN ”", "#5 of 6: “ER”", "#3 of 6: “OMEN F”"],
-    correct: [3, 1, 5, 0, 4, 2],
-    okMsg: "MEN AND WOMEN FOR OTHERS. The packet numbers in each header made it possible to rebuild the message.",
+    items: packets.arrival.map(function (n) { return "#" + (n + 1) + " of 6: “" + chunks[n] + "”"; }),
+    correct: [0, 1, 2, 3, 4, 5].map(function (n) { return packets.arrival.indexOf(n); }),
+    okMsg: packets.phrase + ". The packet numbers in each header made it possible to rebuild the message.",
     hints: { button: "t2-hint", box: "t2-hints", list: [
       "Ignore the words for now. Look only at the packet numbers: #1, #2, #3…",
       "Start with #1 of 6, then find #2 of 6, and keep going."
@@ -423,13 +429,19 @@ img { max-width: 100%; }
   })();
 
   /* ---------- Task 5 ---------- */
+  // Sizes chosen so the answers come out even.
+  var pk = Course.vary("t5", function (r) { return { mb: r.pick([3, 6, 9, 12]), loss: r.pick([50, 100, 200]) }; });
+  var count = pk.mb * 1000000 / 1500, resent = count / pk.loss;
+  function n(x) { return x.toLocaleString("en-US"); }
+  $("t5-intro").textContent = "A " + pk.mb + " MB photo is about " + n(pk.mb * 1000000) + " bytes. Each packet carries about 1,500 bytes of data.";
+  $("t5-b-q").textContent = "If 1 in every " + pk.loss + " packets gets lost, how many need to be resent?";
   Course.answers({
     task: "t5", button: "t5-check", feedback: "t5-fb",
-    items: [{ id: "t5-a", answer: 2000 }, { id: "t5-b", answer: 20 }],
-    okMsg: "Both right. One photo is about 2,000 packets, and only about 20 need resending. Imagine resending the whole photo instead!",
+    items: [{ id: "t5-a", answer: count }, { id: "t5-b", answer: resent }],
+    okMsg: "Both right. One photo is about " + n(count) + " packets, and only about " + n(resent) + " need resending. Imagine resending the whole photo instead!",
     hints: { button: "t5-hint", box: "t5-hints", list: [
-      "Divide the photo's size by the size of one packet: 3,000,000 ÷ 1,500.",
-      "1 in every 100 means divide the number of packets by 100."
+      "Divide the photo's size by the size of one packet: " + n(pk.mb * 1000000) + " ÷ 1,500.",
+      "1 in every " + pk.loss + " means divide the number of packets by " + pk.loss + "."
     ] }
   });
 

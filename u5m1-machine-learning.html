@@ -142,7 +142,7 @@ img { max-width: 100%; }
 
     <div class="task" id="t5">
       <div class="task-head"><h3>Task 5: Measure accuracy</h3><span class="chip" data-chip="t5">To do</span></div>
-      <p>A spam filter was tested on 200 new emails and got 180 right.</p>
+      <p id="t5-intro"></p>
       <div class="num-q"><label class="goal" for="t5-a">What is its accuracy?</label><input id="t5-a" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t5-a-m"></span></div>
       <div class="num-q"><label class="goal" for="t5-b">How many emails did it get wrong?</label><input id="t5-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t5-b-m"></span></div>
       <div class="row"><button class="primary" id="t5-check">Check my answers</button><button class="ghost" id="t5-hint">Show a hint</button></div>
@@ -396,10 +396,13 @@ img { max-width: 100%; }
   });
 
   /* ---------- Task 5 ---------- */
+  var ac = Course.vary("t5", function (r) { return { total: r.pick([200, 400, 500]), pct: r.pick([80, 85, 90, 95]) }; });
+  var acRight = ac.total * ac.pct / 100;
+  $("t5-intro").textContent = "A spam filter was tested on " + ac.total + " new emails and got " + acRight + " right.";
   Course.answers({
     task: "t5", button: "t5-check", feedback: "t5-fb",
-    items: [{ id: "t5-a", answer: 90 }, { id: "t5-b", answer: 20 }],
-    okMsg: "Right. 180 ÷ 200 = 90% accurate, with 20 mistakes. Whether 90% is good enough depends on what the mistakes cost.",
+    items: [{ id: "t5-a", answer: ac.pct }, { id: "t5-b", answer: ac.total - acRight }],
+    okMsg: "Right. " + acRight + " ÷ " + ac.total + " = " + ac.pct + "% accurate, with " + (ac.total - acRight) + " mistakes. Whether " + ac.pct + "% is good enough depends on what the mistakes cost.",
     hints: { button: "t5-hint", box: "t5-hints", list: ["Accuracy = right ÷ total × 100.", "Wrong = total − right."] }
   });
 

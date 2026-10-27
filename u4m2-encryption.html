@@ -113,9 +113,9 @@ img { max-width: 100%; }
 
     <div class="task" id="t1">
       <div class="task-head"><h3>Task 1: Encrypt and decrypt</h3><span class="chip" data-chip="t1">To do</span></div>
-      <p>Set the wheel to key 3.</p>
-      <div class="num-q"><label class="goal" for="t1-a">Encrypt SERVE:</label><input id="t1-a" class="answer wide" autocomplete="off" autocapitalize="characters" spellcheck="false"><span class="mark" id="t1-a-m"></span></div>
-      <div class="num-q"><label class="goal" for="t1-b">Decrypt KRSH:</label><input id="t1-b" class="answer wide" autocomplete="off" autocapitalize="characters" spellcheck="false"><span class="mark" id="t1-b-m"></span></div>
+      <p id="t1-intro"></p>
+      <div class="num-q"><label class="goal" for="t1-a" id="t1-a-q"></label><input id="t1-a" class="answer wide" autocomplete="off" autocapitalize="characters" spellcheck="false"><span class="mark" id="t1-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t1-b" id="t1-b-q"></label><input id="t1-b" class="answer wide" autocomplete="off" autocapitalize="characters" spellcheck="false"><span class="mark" id="t1-b-m"></span></div>
       <div class="row"><button class="primary" id="t1-check">Check my answers</button><button class="ghost" id="t1-hint">Show a hint</button></div>
       <div id="t1-fb"></div>
       <div class="hints" id="t1-hints"></div>
@@ -124,7 +124,7 @@ img { max-width: 100%; }
     <div class="task" id="t2">
       <div class="task-head"><h3>Task 2: Brute-force attack</h3><span class="chip" data-chip="t2">To do</span></div>
       <p>You intercepted this message, but you don't know the key. Move the slider and try keys until the message makes sense.</p>
-      <div class="secret" aria-label="Intercepted message"><span>MHPAO</span></div>
+      <div class="secret" aria-label="Intercepted message"><span id="t2-secret"></span></div>
       <div class="num-q"><label class="goal" for="t2-a">The message says:</label><input id="t2-a" class="answer wide" autocomplete="off" autocapitalize="characters" spellcheck="false"><span class="mark" id="t2-a-m"></span></div>
       <div class="num-q"><label class="goal" for="t2-b">The key was:</label><input id="t2-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t2-b-m"></span></div>
       <div class="row"><button class="primary" id="t2-check">Check my answers</button><button class="ghost" id="t2-hint">Show a hint</button></div>
@@ -142,8 +142,8 @@ img { max-width: 100%; }
 
     <div class="task" id="t4">
       <div class="task-head"><h3>Task 4: Count the guesses</h3><span class="chip" data-chip="t4">To do</span></div>
-      <div class="num-q"><label class="goal" for="t4-a">A PIN has 4 digits, each 0–9. How many possible PINs are there?</label><input id="t4-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t4-a-m"></span></div>
-      <div class="num-q"><label class="goal" for="t4-b">A password uses only lowercase letters. Adding one more letter multiplies the number of possible passwords by how much?</label><input id="t4-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t4-b-m"></span></div>
+      <div class="num-q"><label class="goal" for="t4-a" id="t4-a-q"></label><input id="t4-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t4-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t4-b" id="t4-b-q"></label><input id="t4-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t4-b-m"></span></div>
       <div class="row"><button class="primary" id="t4-check">Check my answers</button><button class="ghost" id="t4-hint">Show a hint</button></div>
       <div id="t4-fb"></div>
       <div class="hints" id="t4-hints"></div>
@@ -266,24 +266,36 @@ img { max-width: 100%; }
   })();
 
   /* ---------- Task 1 ---------- */
+  // Each student gets their own words and keys.
+  function shift(word, k) { return word.split("").map(function (ch) { return String.fromCharCode(65 + ((ch.charCodeAt(0) - 65 + k) % 26 + 26) % 26); }).join(""); }
+  var ciph = Course.vary("cipher", function (r) {
+    var five = r.sample(["SERVE", "PEACE", "GRACE", "LIGHT", "FAITH", "TRUTH", "HEART", "MAGIS"], 2);
+    return { k1: r.int(2, 6), plain: five[0], secret: r.pick(["HOPE", "LOVE", "KIND", "CARE", "GIVE", "PRAY"]), word2: five[1], k2: r.int(5, 20) };
+  });
+  var secretCipher = shift(ciph.secret, ciph.k1);
+  $("t1-intro").textContent = "Set the wheel to key " + ciph.k1 + ".";
+  $("t1-a-q").textContent = "Encrypt " + ciph.plain + ":";
+  $("t1-b-q").textContent = "Decrypt " + secretCipher + ":";
   Course.answers({
     task: "t1", button: "t1-check", feedback: "t1-fb",
-    items: [{ id: "t1-a", answer: "VHUYH" }, { id: "t1-b", answer: "HOPE" }],
-    okMsg: "Both right. SERVE becomes VHUYH, and KRSH decrypts to HOPE.",
+    items: [{ id: "t1-a", answer: shift(ciph.plain, ciph.k1) }, { id: "t1-b", answer: ciph.secret }],
+    okMsg: "Both right. " + ciph.plain + " becomes " + shift(ciph.plain, ciph.k1) + ", and " + secretCipher + " decrypts to " + ciph.secret + ".",
     hints: { button: "t1-hint", box: "t1-hints", list: [
-      "Encrypting: find S in the Plain row. The letter under it is the first letter of your answer.",
-      "Decrypting: find K in the Cipher row. The letter above it is the first letter of your answer."
+      "Encrypting: find " + ciph.plain[0] + " in the Plain row. The letter under it is the first letter of your answer.",
+      "Decrypting: find " + secretCipher[0] + " in the Cipher row. The letter above it is the first letter of your answer."
     ] }
   });
 
   /* ---------- Task 2 ---------- */
+  var intercepted = shift(ciph.word2, ciph.k2);
+  $("t2-secret").textContent = intercepted;
   Course.answers({
     task: "t2", button: "t2-check", feedback: "t2-fb",
-    items: [{ id: "t2-a", answer: "FAITH" }, { id: "t2-b", answer: 7 }],
-    okMsg: "Cracked! The key was 7 and the message is FAITH. With only 25 keys, a Caesar cipher can be broken in minutes. Real encryption has trillions of trillions of keys.",
+    items: [{ id: "t2-a", answer: ciph.word2 }, { id: "t2-b", answer: ciph.k2 }],
+    okMsg: "Cracked! The key was " + ciph.k2 + " and the message is " + ciph.word2 + ". With only 25 keys, a Caesar cipher can be broken in minutes. Real encryption has trillions of trillions of keys.",
     hints: { button: "t2-hint", box: "t2-hints", list: [
-      "For each key, decrypt just the first letter, M. Does any key turn it into a letter that could start a word?",
-      "Try keys around 5 to 10 and decrypt all five letters. The message is a word you'd hear in a Jesuit school."
+      "For each key, decrypt just the first letter, " + intercepted[0] + ". Does any key turn it into a letter that could start a word?",
+      "Try keys around " + Math.max(1, ciph.k2 - 3) + " to " + Math.min(25, ciph.k2 + 3) + " and decrypt all five letters. The message is a word you'd hear in a Jesuit school."
     ] }
   });
 
@@ -309,13 +321,19 @@ img { max-width: 100%; }
   });
 
   /* ---------- Task 4 ---------- */
+  var CHARSETS = { "only lowercase letters": 26, "lowercase letters and the digits 0–9": 36, "uppercase and lowercase letters": 52 };
+  var pw = Course.vary("t4", function (r) { return { digits: r.pick([4, 5, 6]), set: r.pick(Object.keys(CHARSETS)) }; });
+  var pins = Math.pow(10, pw.digits), per = CHARSETS[pw.set];
+  var tens = []; for (var d = 0; d < pw.digits; d++) tens.push("10");
+  $("t4-a-q").textContent = "A PIN has " + pw.digits + " digits, each 0–9. How many possible PINs are there?";
+  $("t4-b-q").textContent = "A password uses " + pw.set + ". Adding one more character multiplies the number of possible passwords by how much?";
   Course.answers({
     task: "t4", button: "t4-check", feedback: "t4-fb",
-    items: [{ id: "t4-a", answer: 10000 }, { id: "t4-b", answer: 26 }],
-    okMsg: "Both right. 10 × 10 × 10 × 10 = 10,000 PINs, and each extra lowercase letter multiplies the possibilities by 26. That's why length matters so much.",
+    items: [{ id: "t4-a", answer: pins }, { id: "t4-b", answer: per }],
+    okMsg: "Both right. " + tens.join(" × ") + " = " + pins.toLocaleString("en-US") + " PINs, and each extra character multiplies the possibilities by " + per + ". That's why length matters so much.",
     hints: { button: "t4-hint", box: "t4-hints", list: [
-      "Each digit has 10 choices, and there are 4 digits: 10 × 10 × 10 × 10.",
-      "How many choices are there for one extra lowercase letter?"
+      "Each digit has 10 choices, and there are " + pw.digits + " digits: " + tens.join(" × ") + ".",
+      "How many different characters could the extra one be? Count every choice in the set."
     ] }
   });
 

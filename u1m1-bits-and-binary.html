@@ -143,9 +143,9 @@ img { max-width: 100%; }
     <div class="task" id="t2">
       <div class="task-head"><h3>Task 2: Binary to number</h3><span class="chip" data-chip="t2">To do</span></div>
       <p>Write each binary number as a regular number.</p>
-      <div class="num-q"><span class="bits">0101</span><label class="goal" for="t2-a">=</label><input id="t2-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t2-a-m"></span></div>
-      <div class="num-q"><span class="bits">1100</span><label class="goal" for="t2-b">=</label><input id="t2-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t2-b-m"></span></div>
-      <div class="num-q"><span class="bits">10110</span><label class="goal" for="t2-c">=</label><input id="t2-c" inputmode="numeric" autocomplete="off"><span class="mark" id="t2-c-m"></span></div>
+      <div class="num-q"><span class="bits" id="t2-a-bits"></span><label class="goal" for="t2-a">=</label><input id="t2-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t2-a-m"></span></div>
+      <div class="num-q"><span class="bits" id="t2-b-bits"></span><label class="goal" for="t2-b">=</label><input id="t2-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t2-b-m"></span></div>
+      <div class="num-q"><span class="bits" id="t2-c-bits"></span><label class="goal" for="t2-c">=</label><input id="t2-c" inputmode="numeric" autocomplete="off"><span class="mark" id="t2-c-m"></span></div>
       <div class="row"><button class="primary" id="t2-check">Check my answers</button><button class="ghost" id="t2-hint">Show a hint</button></div>
       <div id="t2-fb"></div>
       <div class="hints" id="t2-hints"></div>
@@ -163,9 +163,7 @@ img { max-width: 100%; }
     <div class="task" id="t4">
       <div class="task-head"><h3>Task 4: Decode the secret word</h3><span class="chip" data-chip="t4">To do</span></div>
       <p>In this code, each letter is a number: A = 1, B = 2, and so on up to Z = 26. Each number is written in 5-bit binary. Decode the word.</p>
-      <div class="secret" aria-label="Secret word in binary">
-        <span>10011</span><span>00101</span><span>10010</span><span>10110</span><span>00101</span>
-      </div>
+      <div class="secret" id="t4-secret" aria-label="Secret word in binary"></div>
       <div class="letters" id="t4-letters" aria-label="Letter chart"></div>
       <div class="num-q"><label class="goal" for="t4-a">The word is</label><input id="t4-a" class="answer wide" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
       <div class="row"><button class="primary" id="t4-check">Check</button><button class="ghost" id="t4-hint">Show a hint</button></div>
@@ -300,10 +298,18 @@ img { max-width: 100%; }
     return ok;
   }
 
+  // Each student gets their own numbers, word and picture (saved on this iPad).
+  // places(21) -> [16, 4, 1]; sum(21) -> "16 + 4 + 1"
+  function places(n) { var out = []; for (var p = 128; p >= 1; p = p / 2) if (n & p) out.push(p); return out; }
+  function sum(n) { return places(n).join(" + "); }
+  function and(list) { return list.length < 2 ? String(list[0]) : list.slice(0, -1).join(", ") + " and " + list[list.length - 1]; }
+  function bitsOf(n, width) { return ("00000000" + n.toString(2)).slice(-width); }
+
   /* ---------- Task 1: binary cards ---------- */
   (function () {
     var values = [16, 8, 4, 2, 1];
-    var targets = [9, 21, 31];
+    // Two practice targets, then 31 (every card).
+    var targets = Course.vary("t1", function (r) { return [r.pick([9, 10, 11, 12, 13, 14]), r.pick([19, 21, 22, 23, 25, 26, 27, 28, 29]), 31]; });
     var on = [false, false, false, false, false];
     var step = state.extra.t1Step || 0;
     if (state.done.t1) step = targets.length;
@@ -352,15 +358,22 @@ img { max-width: 100%; }
     update();
     if (state.done.t1) Course.feedback(fb, true, "Done. You can keep flipping cards to explore.");
     Course.hints("t1", [
-      "Start with the biggest card that fits. For 9: does 16 fit into 9? No. Does 8? Yes. Then you need 1 more.",
-      "21 = 16 + 4 + 1. Turn those three cards on and the rest off.",
+      "Start with the biggest card that fits. For " + targets[0] + ": does 16 fit into " + targets[0] + "? No. Does 8? Yes. Then you need " + (targets[0] - 8) + " more.",
+      targets[1] + " = " + sum(targets[1]) + ". Turn those cards on and the rest off.",
       "31 is all the cards added together."
     ], $("t1-hint"), $("t1-hints"));
   })();
 
   /* ---------- Task 2: binary to number ---------- */
   (function () {
-    var answers = { "t2-a": 5, "t2-b": 12, "t2-c": 22 };
+    var nums = Course.vary("t2", function (r) {
+      var four = r.sample([3, 5, 6, 7, 9, 10, 11, 12, 13, 14], 2);
+      return [four[0], four[1], r.pick([17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30])];
+    });
+    var answers = { "t2-a": nums[0], "t2-b": nums[1], "t2-c": nums[2] };
+    $("t2-a-bits").textContent = bitsOf(nums[0], 4);
+    $("t2-b-bits").textContent = bitsOf(nums[1], 4);
+    $("t2-c-bits").textContent = bitsOf(nums[2], 5);
     var saved = state.extra.t2 || {};
     Object.keys(answers).forEach(function (id) {
       $(id).value = saved[id] || "";
@@ -377,8 +390,8 @@ img { max-width: 100%; }
     });
     Course.hints("t2", [
       "For a 4-bit number, the places are 8, 4, 2, 1 from left to right. For 5 bits: 16, 8, 4, 2, 1.",
-      "0101: the 1s are in the 4 place and the 1 place. So 4 + 1 = ?",
-      "10110: the 1s are in the 16, 4, and 2 places."
+      bitsOf(nums[0], 4) + ": the 1s are in the " + and(places(nums[0])) + " places. So " + sum(nums[0]) + " = ?",
+      bitsOf(nums[2], 5) + ": the 1s are in the " + and(places(nums[2])) + " places."
     ], $("t2-hint"), $("t2-hints"));
   })();
 
@@ -402,25 +415,30 @@ img { max-width: 100%; }
       s.appendChild(document.createTextNode(" " + (i + 1)));
       chart.appendChild(s);
     }
+    var WORDS = { SERVE: "Fitting for a school that forms people for others.", FAITH: "Faith, the theological virtue.", PEACE: "\"Peace be with you.\"", GRACE: "Fitting: everything is grace.",
+      MAGIS: "Magis, the Jesuit call to \"the more.\"", TRUTH: "Fitting for a school that seeks the truth.", LIGHT: "\"You are the light of the world.\"", HEART: "Fitting: Jesuit education forms the whole heart." };
+    var word = Course.vary("t4", function (r) { return r.pick(Object.keys(WORDS)); });
+    var codes = word.split("").map(function (ch) { return ch.charCodeAt(0) - 64; });
+    codes.forEach(function (n) { $("t4-secret").appendChild(el("span", null, bitsOf(n, 5))); });
     var input = $("t4-a");
     input.value = (state.extra.t4 || "");
     input.addEventListener("input", function () { state.extra.t4 = input.value; Course.save(); });
     $("t4-check").addEventListener("click", function () {
       var v = input.value.trim().toUpperCase().replace(/\s+/g, "");
-      if (v === "SERVE") {
-        Course.feedback($("t4-fb"), true, "SERVE. Fitting for a school that forms people for others.");
+      if (v === word) {
+        Course.feedback($("t4-fb"), true, word + ". " + WORDS[word]);
         Course.markDone("t4");
       } else if (v.length !== 5) {
         Course.feedback($("t4-fb"), false, "There are 5 binary codes, so the word has 5 letters.");
       } else {
-        var right = "SERVE".split("").filter(function (c, i) { return v[i] === c; }).length;
+        var right = word.split("").filter(function (c, i) { return v[i] === c; }).length;
         Course.feedback($("t4-fb"), false, right + " of 5 letters are right. Re-check the others with the place values 16, 8, 4, 2, 1.");
       }
     });
     Course.hints("t4", [
-      "Decode one code at a time. 10011 = 16 + 2 + 1 = 19. Which letter is 19?",
-      "00101 = 4 + 1 = 5, which is E. That letter appears twice.",
-      "10010 = 16 + 2. 10110 = 16 + 4 + 2."
+      "Decode one code at a time. " + bitsOf(codes[0], 5) + " = " + sum(codes[0]) + " = " + codes[0] + ". Which letter is " + codes[0] + "?",
+      bitsOf(codes[1], 5) + " = " + sum(codes[1]) + " = " + codes[1] + ", which is " + word[1] + ".",
+      bitsOf(codes[2], 5) + " = " + sum(codes[2]) + ". " + bitsOf(codes[3], 5) + " = " + sum(codes[3]) + "."
     ], $("t4-hint"), $("t4-hints"));
   })();
 
@@ -451,7 +469,24 @@ img { max-width: 100%; }
 
   /* ---------- Task 5: match the picture ---------- */
   (function () {
-    var target = [24, 24, 126, 126, 24, 24, 24, 24]; // a cross
+    var PICTURES = {
+      cross: [24, 24, 126, 126, 24, 24, 24, 24],
+      "up arrow": [24, 60, 126, 255, 24, 24, 24, 24],
+      house: [24, 60, 126, 255, 129, 165, 129, 255],
+      "smiley face": [60, 66, 165, 129, 165, 153, 66, 60],
+      tree: [24, 60, 126, 60, 126, 255, 24, 24]
+    };
+    var pictureName = Course.vary("t5", function (r) { return r.pick(Object.keys(PICTURES)); });
+    var target = PICTURES[pictureName];
+    function describeRow(n) {
+      var dark = [], light = [];
+      for (var c = 0; c < 8; c++) ((n & (128 >> c)) ? dark : light).push(c + 1);
+      if (!light.length) return "every pixel is dark.";
+      if (!dark.length) return "no pixels are dark.";
+      return dark.length <= 4 ? "only column" + (dark.length > 1 ? "s " : " ") + and(dark) + (dark.length > 1 ? " are" : " is") + " dark."
+        : "every column is dark except " + and(light) + ".";
+    }
+    var other = target.indexOf(target.filter(function (n) { return n !== target[0]; })[0]);
     var rows = state.extra.t5 || [0, 0, 0, 0, 0, 0, 0, 0];
     state.extra.t5 = rows;
     var list = $("t5-rows");
@@ -470,7 +505,7 @@ img { max-width: 100%; }
       renderRows();
       var all = target.every(function (t, i) { return rows[i] === t; });
       if (all) {
-        Course.feedback($("t5-fb"), true, "You drew a cross from nothing but 0s and 1s. Your screen does the same thing with millions of pixels.");
+        Course.feedback($("t5-fb"), true, "You drew a " + pictureName + " from nothing but 0s and 1s. Your screen does the same thing with millions of pixels.");
         Course.markDone("t5");
       } else {
         $("t5-fb").innerHTML = "";
@@ -482,8 +517,8 @@ img { max-width: 100%; }
     if (state.done.t5) Course.feedback($("t5-fb"), true, "Done.");
     Course.hints("t5", [
       "Work one row at a time, left to right. Each 1 is a dark pixel in that column.",
-      "Rows 1 and 2 are 00011000: only the 4th and 5th pixels are dark.",
-      "Rows 3 and 4 are 01111110: everything dark except the first and last pixel."
+      "Row 1 is " + rowBits(target[0]) + ": " + describeRow(target[0]),
+      "Row " + (other + 1) + " is " + rowBits(target[other]) + ": " + describeRow(target[other])
     ], $("t5-hint"), $("t5-hints"));
   })();
 

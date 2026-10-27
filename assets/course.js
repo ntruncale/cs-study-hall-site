@@ -54,16 +54,44 @@ window.Course = (function () {
     });
   }
 
+  /* ---------- per-student variation ---------- */
+  // vary(key, make) returns a value made once per student and saved, so it stays the same on reload
+  // but differs from the student at the next desk. make(R) receives a few random helpers.
+  var R = {
+    int: function (a, b) { return a + Math.floor(Math.random() * (b - a + 1)); },
+    pick: function (list) { return list[Math.floor(Math.random() * list.length)]; },
+    shuffle: function (list) {
+      var a = list.slice();
+      for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; }
+      return a;
+    },
+    sample: function (list, n) { return R.shuffle(list).slice(0, n); }
+  };
+  function vary(key, make) {
+    var v = state.extra.vary || (state.extra.vary = {});
+    if (v[key] === undefined) { v[key] = make(R); save(); }
+    return v[key];
+  }
+  // Answer choices appear in a different order for each student, except when the choices are numbers
+  // (which read better in order) or the question asks to keep its order.
+  function choiceOrder(key, choices, keep) {
+    var numeric = choices.every(function (c) { return /^\s*[\d$]/.test(c.text); });
+    if (keep || numeric) return choices.map(function (_, i) { return i; });
+    var order = vary("order:" + key, function (r) { return r.shuffle(choices.map(function (_, i) { return i; })); });
+    return order.length === choices.length ? order : choices.map(function (_, i) { return i; });
+  }
+
   /* ---------- multiple choice ---------- */
   // Code answers (multi-line, or marked code: true) show in the code font; everything else in the body font.
   function choiceBody(c) {
     return (c.code || c.text.indexOf("\n") !== -1) ? el("pre", null, c.text) : el("span", { "class": "choice-text" }, c.text);
   }
-  // opts: { task, container, feedback, choices: [{ text, right, why }] }
+  // opts: { task, container, feedback, choices: [{ text, right, why }], keepOrder }
   function mc(opts) {
     var wrap = $(opts.container);
     var fb = $(opts.feedback);
-    opts.choices.forEach(function (c, i) {
+    choiceOrder(opts.task, opts.choices, opts.keepOrder).forEach(function (ci, i) {
+      var c = opts.choices[ci];
       var b = el("button", { "class": "choice", type: "button" });
       b.appendChild(el("span", { "class": "letter" }, "ABCDEF"[i]));
       b.appendChild(choiceBody(c));
@@ -79,7 +107,7 @@ window.Course = (function () {
   }
 
   /* ---------- several multiple-choice questions in one task ---------- */
-  // opts: { task, container, questions: [{ q, code, choices: [{ text, right, why }] }], okMsg }
+  // opts: { task, container, questions: [{ q, code, keepOrder, choices: [{ text, right, why }] }], okMsg }
   function quiz(opts) {
     var wrap = $(opts.container);
     var got = state.extra[opts.task] || (state.extra[opts.task] = {});
@@ -96,7 +124,8 @@ window.Course = (function () {
       }
       var choices = el("div", { "class": "choices" });
       var fb = el("div");
-      question.choices.forEach(function (c, i) {
+      choiceOrder(opts.task + ":" + qi, question.choices, question.keepOrder).forEach(function (ci, i) {
+        var c = question.choices[ci];
         var b = el("button", { "class": "choice", type: "button" });
         b.appendChild(el("span", { "class": "letter" }, "ABCDEF"[i]));
         b.appendChild(choiceBody(c));
@@ -612,7 +641,7 @@ window.Course = (function () {
   })();
 
   return {
-    init: init, el: el, feedback: feedback, markDone: markDone, hints: hints, mc: mc,
+    init: init, el: el, feedback: feedback, markDone: markDone, hints: hints, mc: mc, vary: vary,
     quiz: quiz, answers: answers, matches: matches, order: order, sort: sort, loadModule: loadModule,
     copyText: copyText, save: save, refresh: refresh, python: python,
     get state() { return state; }

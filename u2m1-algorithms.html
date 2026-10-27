@@ -304,18 +304,26 @@ img { max-width: 100%; }
   });
 
   /* ---------- Task 2 ---------- */
+  // Each student gets their own 7 years: 2 century years that aren't leap years, 1 that is,
+  // 2 ordinary leap years and 2 ordinary non-leap years.
+  function isLeap(y) { return y % 400 === 0 || (y % 100 !== 0 && y % 4 === 0); }
+  var years = Course.vary("t2", function (r) {
+    var centuries = r.sample([1700, 1800, 1900, 2100, 2200, 2300], 2);
+    var quad = r.pick([1600, 2000, 2400]);
+    var leaps = [], plain = [];
+    while (leaps.length < 2) { var y = 4 * r.int(476, 524); if (y % 100 && leaps.indexOf(y) === -1) leaps.push(y); }
+    while (plain.length < 2) { var z = r.int(1901, 2099); if (z % 4 && plain.indexOf(z) === -1) plain.push(z); }
+    return { list: r.shuffle(centuries.concat([quad], leaps, plain)), centuries: centuries, quad: quad };
+  });
   Course.sort({
     task: "t2", container: "t2-list", button: "t2-check", feedback: "t2-fb",
     categories: ["Leap year", "Not a leap year"],
-    items: [
-      { text: "2028", cat: 0 }, { text: "2027", cat: 1 }, { text: "1900", cat: 1 }, { text: "2000", cat: 0 },
-      { text: "2100", cat: 1 }, { text: "1996", cat: 0 }, { text: "2400", cat: 0 }
-    ],
+    items: years.list.map(function (y) { return { text: String(y), cat: isLeap(y) ? 0 : 1 }; }),
     okMsg: "All correct. You just ran the same algorithm your iPad's calendar runs.",
     hints: { button: "t2-hint", box: "t2-hints", list: [
       "Always start at step 1 and stop at the first step that gives an answer.",
-      "1900 and 2100 divide by 100 but not by 400. Which step catches them?",
-      "2000 and 2400 divide by 400, so step 1 decides right away."
+      years.centuries.join(" and ") + " divide by 100 but not by 400. Which step catches them?",
+      years.quad + " divides by 400, so step 1 decides right away."
     ] }
   });
 

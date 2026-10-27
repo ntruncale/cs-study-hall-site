@@ -126,20 +126,11 @@ input.title-in { font: inherit; width: 100%; min-height: 44px; padding: 8px 10px
       <div class="task-head"><h3>Task 1: Read the table</h3><span class="chip" data-chip="t1">To do</span></div>
       <p>The student council surveyed 10 students about the cafeteria.</p>
       <div class="datatable"><table>
-        <tr><th>Student</th><th>Grade</th><th>Favorite lunch</th><th>Ate breakfast today?</th></tr>
-        <tr><td>1</td><td>9</td><td>Tacos</td><td>Yes</td></tr>
-        <tr><td>2</td><td>10</td><td>Pizza</td><td>No</td></tr>
-        <tr><td>3</td><td>10</td><td>Tacos</td><td>Yes</td></tr>
-        <tr><td>4</td><td>11</td><td>Salad bar</td><td>Yes</td></tr>
-        <tr><td>5</td><td>9</td><td>Pizza</td><td>No</td></tr>
-        <tr><td>6</td><td>12</td><td>Tacos</td><td>No</td></tr>
-        <tr><td>7</td><td>10</td><td>Pasta</td><td>Yes</td></tr>
-        <tr><td>8</td><td>11</td><td>Tacos</td><td>Yes</td></tr>
-        <tr><td>9</td><td>12</td><td>Pizza</td><td>Yes</td></tr>
-        <tr><td>10</td><td>10</td><td>Salad bar</td><td>No</td></tr>
+        <thead><tr><th>Student</th><th>Grade</th><th>Favorite lunch</th><th>Ate breakfast today?</th></tr></thead>
+        <tbody id="t1-rows"></tbody>
       </table></div>
-      <div class="num-q"><label class="goal" for="t1-a">How many students chose Tacos?</label><input id="t1-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t1-a-m"></span></div>
-      <div class="num-q"><label class="goal" for="t1-b">How many 10th graders were surveyed?</label><input id="t1-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t1-b-m"></span></div>
+      <div class="num-q"><label class="goal" for="t1-a" id="t1-a-q"></label><input id="t1-a" inputmode="numeric" autocomplete="off"><span class="mark" id="t1-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t1-b" id="t1-b-q"></label><input id="t1-b" inputmode="numeric" autocomplete="off"><span class="mark" id="t1-b-m"></span></div>
       <div class="num-q"><label class="goal" for="t1-c">What percent of students ate breakfast?</label><input id="t1-c" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t1-c-m"></span></div>
       <div class="row"><button class="primary" id="t1-check">Check my answers</button><button class="ghost" id="t1-hint">Show a hint</button></div>
       <div id="t1-fb"></div>
@@ -174,7 +165,7 @@ input.title-in { font: inherit; width: 100%; min-height: 44px; padding: 8px 10px
 
     <div class="task" id="t5">
       <div class="task-head"><h3>Task 5: Percents and missing voices</h3><span class="chip" data-chip="t5">To do</span></div>
-      <div class="num-q"><label class="goal" for="t5-a">A survey went to 300 students and 60 answered. What percent answered?</label><input id="t5-a" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t5-a-m"></span></div>
+      <div class="num-q"><label class="goal" for="t5-a" id="t5-a-q"></label><input id="t5-a" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t5-a-m"></span></div>
       <div class="num-q"><label class="goal" for="t5-b">So what percent of students' opinions are missing?</label><input id="t5-b" inputmode="numeric" autocomplete="off"><span class="goal">%</span><span class="mark" id="t5-b-m"></span></div>
       <div class="row"><button class="primary" id="t5-check">Check my answers</button><button class="ghost" id="t5-hint">Show a hint</button></div>
       <div id="t5-fb"></div>
@@ -292,8 +283,7 @@ input.title-in { font: inherit; width: 100%; min-height: 44px; padding: 8px 10px
 
   /* ---------- Build data ---------- */
   var OPTIONS = ["Food pantry", "Tutoring", "Park cleanup", "Coat drive"];
-  var ANSWER = [9, 6, 5, 4];
-  var RESPONSES = [0, 1, 0, 2, 3, 0, 1, 2, 0, 3, 1, 0, 2, 0, 1, 3, 0, 2, 1, 0, 3, 2, 1, 0];
+  var ANSWER, RESPONSES; // each student's tallies, set after Course.init
   var b; // set after Course.init
 
   Course.init({
@@ -307,13 +297,46 @@ input.title-in { font: inherit; width: 100%; min-height: 44px; padding: 8px 10px
       return "My chart: " + (b.title || "(no title)") + "\n" + OPTIONS.map(function (o, i) { return o + ": " + (b.counts[i] || 0); }).join("\n") + "\nAxis starts at 0: " + (b.zero ? "yes" : "no");
     }
   });
+  // Each student's 24 survey answers: the counts 9, 6, 5 and 4 go to the projects in a different order.
+  var tally = Course.vary("tally", function (r) {
+    var counts = r.shuffle([9, 6, 5, 4]), list = [];
+    counts.forEach(function (c, i) { for (var k = 0; k < c; k++) list.push(i); });
+    return { counts: counts, responses: r.shuffle(list) };
+  });
+  ANSWER = tally.counts; RESPONSES = tally.responses;
+  var top = ANSWER.indexOf(9), low = ANSWER.indexOf(4);
+  var PHRASE = ["the food pantry", "tutoring", "the park cleanup", "the coat drive"];
+  function cap(t) { return t.charAt(0).toUpperCase() + t.slice(1); }
   b = state.extra.chart || (state.extra.chart = { counts: ["", "", "", ""], title: "", zero: false });
 
   /* ---------- Task 1 ---------- */
+  // Each student gets their own 10 survey answers and their own questions about them.
+  var LUNCHES = ["Tacos", "Pizza", "Salad bar", "Pasta"];
+  var survey = Course.vary("t1", function (r) {
+    var rows = [], yes;
+    do {
+      rows = [];
+      for (var k = 0; k < 10; k++) rows.push([r.int(9, 12), r.pick(LUNCHES), r.int(0, 1) === 1]);
+      yes = rows.filter(function (x) { return x[2]; }).length;
+    } while (yes < 3 || yes > 8);
+    var lunch = r.pick(LUNCHES.filter(function (l) { return rows.some(function (x) { return x[1] === l; }); }));
+    var grade = r.pick([9, 10, 11, 12].filter(function (g) { return rows.some(function (x) { return x[0] === g; }); }));
+    return { rows: rows, lunch: lunch, grade: grade };
+  });
+  var lunchCount = survey.rows.filter(function (x) { return x[1] === survey.lunch; }).length;
+  var gradeCount = survey.rows.filter(function (x) { return x[0] === survey.grade; }).length;
+  var yesCount = survey.rows.filter(function (x) { return x[2]; }).length;
+  survey.rows.forEach(function (x, k) {
+    var tr = el("tr");
+    [k + 1, x[0], x[1], x[2] ? "Yes" : "No"].forEach(function (v) { tr.appendChild(el("td", null, String(v))); });
+    $("t1-rows").appendChild(tr);
+  });
+  $("t1-a-q").textContent = "How many students chose " + survey.lunch + "?";
+  $("t1-b-q").textContent = "How many " + survey.grade + "th graders were surveyed?";
   Course.answers({
     task: "t1", button: "t1-check", feedback: "t1-fb",
-    items: [{ id: "t1-a", answer: 4 }, { id: "t1-b", answer: 4 }, { id: "t1-c", answer: 60 }],
-    okMsg: "All correct. 4 chose tacos, 4 were 10th graders, and 6 of 10 ate breakfast, which is 60%.",
+    items: [{ id: "t1-a", answer: lunchCount }, { id: "t1-b", answer: gradeCount }, { id: "t1-c", answer: yesCount * 10 }],
+    okMsg: "All correct. " + lunchCount + " chose " + survey.lunch.toLowerCase() + ", " + gradeCount + " were " + survey.grade + "th graders, and " + yesCount + " of 10 ate breakfast, which is " + (yesCount * 10) + "%.",
     hints: { button: "t1-hint", box: "t1-hints", list: [
       "Each row is one student. Look down one column at a time.",
       "For the percent: count the Yes answers, then divide by the 10 students and multiply by 100."
@@ -372,13 +395,16 @@ input.title-in { font: inherit; width: 100%; min-height: 44px; padding: 8px 10px
   });
 
   /* ---------- Task 5 ---------- */
+  var sv = Course.vary("t5", function (r) { return { sent: r.pick([200, 300, 400, 500]), pct: r.pick([10, 15, 20, 25, 30, 35, 40]) }; });
+  var answered = sv.sent * sv.pct / 100;
+  $("t5-a-q").textContent = "A survey went to " + sv.sent + " students and " + answered + " answered. What percent answered?";
   Course.answers({
     task: "t5", button: "t5-check", feedback: "t5-fb",
-    items: [{ id: "t5-a", answer: 20 }, { id: "t5-b", answer: 80 }],
-    okMsg: "Right. Only 20% answered, so 80% of students' voices are missing. Before trusting results, ask who answered and who didn't.",
+    items: [{ id: "t5-a", answer: sv.pct }, { id: "t5-b", answer: 100 - sv.pct }],
+    okMsg: "Right. Only " + sv.pct + "% answered, so " + (100 - sv.pct) + "% of students' voices are missing. Before trusting results, ask who answered and who didn't.",
     hints: { button: "t5-hint", box: "t5-hints", list: [
       "Percent = part ÷ whole × 100.",
-      "60 ÷ 300 = 0.2. Multiply by 100."
+      answered + " ÷ " + sv.sent + " = " + (sv.pct / 100) + ". Multiply by 100."
     ] }
   });
 
@@ -427,8 +453,8 @@ input.title-in { font: inherit; width: 100%; min-height: 44px; padding: 8px 10px
         var total = n.reduce(function (a, c) { return a + c; }, 0);
         Course.feedback($("b-fb"), false, total !== 24 ? "Your counts add up to " + total + ", but there are 24 answers. Count again." : "Your counts add up to 24, but at least one is off. Recount each project carefully.");
       } else if (!q.title) Course.feedback($("b-fb"), false, "Give your chart a clear title so readers know what it shows.");
-      else if (!q.zero) Course.feedback($("b-fb"), false, "Look at the chart with the axis starting at 3. The food pantry looks about 6 times more popular than the coat drive, but 9 isn't 6 times 4. Start the axis at 0.");
-      else { Course.feedback($("b-fb"), true, "An honest chart: correct counts, a clear title and an axis that starts at 0. The food pantry is the most popular, but 15 of 24 students picked something else."); Course.markDone("build"); }
+      else if (!q.zero) Course.feedback($("b-fb"), false, "Look at the chart with the axis starting at 3. " + cap(PHRASE[top]) + " looks about 6 times more popular than " + PHRASE[low] + ", but 9 isn't 6 times 4. Start the axis at 0.");
+      else { Course.feedback($("b-fb"), true, "An honest chart: correct counts, a clear title and an axis that starts at 0. " + cap(PHRASE[top]) + " is the most popular, but 15 of 24 students picked something else."); Course.markDone("build"); }
     });
     render();
     if (state.done.build) Course.feedback($("b-fb"), true, "Done.");
