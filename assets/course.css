@@ -1,44 +1,32 @@
 /* CS in Study Hall: shared styles for every module.
    Layout: one reading column under a sticky step bar; every module uses the same seven steps so students always know where they are. */
 :root {
-  --paper: #F4F6FA;
-  --surface: #FFFFFF;
-  --ink: #172033;
-  --muted: #586379;
-  --line: #DCE1EA;
-  --accent: #2346B8;
-  --accent-soft: #E7ECFB;
-  --hint-bg: #FFF4C2;
-  --hint-ink: #5C4700;
-  --ok: #13744A;
-  --ok-soft: #E2F4EA;
-  --bad: #B42318;
-  --bad-soft: #FDECEA;
-  --console-bg: #121826;
-  --console-ink: #E3E8F2;
-  --console-dim: #8C97AD;
-  --font-body: "Recursive", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Scranton Prep colors: purple background, gold accent, white text. One palette for light and dark mode. */
+  --paper: #37246B;
+  --surface: #44317F;
+  --ink: #FFFFFF;
+  --muted: #D6CCF0;
+  --line: #6650A6;
+  --accent: #F5A81C;
+  --on-accent: #2A1A57;
+  --accent-soft: #523C92;
+  --hint-bg: #FFF3D6;
+  --hint-ink: #4A3300;
+  --ok: #8EEDB5;
+  --ok-soft: #2A5458;
+  --bad: #FFAAA3;
+  --bad-soft: #5E2A55;
+  --console-bg: #1D1240;
+  --console-ink: #F2EEFB;
+  --console-dim: #A597CF;
+  /* Aptos where it's installed; Inter (a close match from Google Fonts) on iPads. */
+  --font-body: "Aptos", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-code: "Recursive", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --step-0: 0.875rem;
   --step-1: 1rem;
   --step-2: 1.1875rem;
   --step-3: 1.5rem;
   --step-4: 2.25rem;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #0E131C; --surface: #161D29; --ink: #E5EAF3; --muted: #9AA5BA; --line: #2A3445;
-    --accent: #8EA8FF; --accent-soft: #1F2A4A; --hint-bg: #3B3210; --hint-ink: #FBE38E;
-    --ok: #5FD394; --ok-soft: #12301F; --bad: #FF8A80; --bad-soft: #3A1715;
-    --console-bg: #090D14; --console-ink: #E3E8F2; --console-dim: #7D889E;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --paper: #0E131C; --surface: #161D29; --ink: #E5EAF3; --muted: #9AA5BA; --line: #2A3445;
-  --accent: #8EA8FF; --accent-soft: #1F2A4A; --hint-bg: #3B3210; --hint-ink: #FBE38E;
-  --ok: #5FD394; --ok-soft: #12301F; --bad: #FF8A80; --bad-soft: #3A1715;
-  --console-bg: #090D14; --console-ink: #E3E8F2; --console-dim: #7D889E;
   color-scheme: dark;
 }
 
@@ -68,8 +56,9 @@ a { color: var(--accent); }
 /* Sticky step bar */
 .bar {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
-  background: var(--surface); border-bottom: 1px solid var(--line);
+  background: var(--surface); border-bottom: 3px solid var(--accent);
 }
+.bar-seal { width: 32px; height: 32px; flex: none; display: block; }
 .bar-inner, .wrap {
   max-width: 780px; margin: 0 auto;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
@@ -104,7 +93,7 @@ section.step { display: grid; gap: 16px; scroll-margin-top: 72px; }
 .step-head { display: flex; align-items: baseline; gap: 12px; }
 .step-num {
   flex: none; width: 2rem; height: 2rem; border-radius: 50%; display: grid; place-items: center;
-  background: var(--accent); color: var(--surface); font-weight: 800; font-size: var(--step-0);
+  background: var(--accent); color: var(--on-accent); font-weight: 800; font-size: var(--step-0);
 }
 .step-head .ipp { font-size: var(--step-0); color: var(--muted); margin-left: auto; white-space: nowrap; }
 .prose { display: grid; gap: 12px; max-width: 66ch; }
@@ -152,7 +141,7 @@ button {
   padding: 9px 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
   min-height: 44px;
 }
-button.primary { background: var(--accent); color: var(--surface); border-color: var(--accent); }
+button.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 button.ghost { background: transparent; }
 button:disabled { opacity: 0.55; cursor: not-allowed; }
 .console {
@@ -274,7 +263,7 @@ input.answer.wide { width: min(16rem, 100%); text-transform: uppercase; letter-s
 .sort-text { flex: 1 1 14rem; min-width: 0; font-size: var(--step-0); }
 .seg { display: flex; flex-wrap: wrap; gap: 4px; }
 .seg button { padding: 6px 12px; font-size: 0.85rem; min-height: 40px; }
-.seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); border-color: var(--accent); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 
 /* Multi-question quiz */
 .quiz-q { display: grid; gap: 8px; padding-bottom: 12px; border-bottom: 1px dashed var(--line); }

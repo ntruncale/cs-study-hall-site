@@ -13,15 +13,15 @@ img { max-width: 100%; }
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
 <link rel="stylesheet" href="assets/course.css">
 <style>
 .line-svg .axis { stroke: var(--muted); stroke-width: 2; }
 .line-svg .tick { fill: var(--muted); font: 500 11px var(--font-body); text-anchor: middle; }
-.line-svg .dot-ripe { fill: var(--hint-ink); stroke: var(--surface); stroke-width: 2; }
+.line-svg .dot-ripe { fill: var(--ink); stroke: var(--surface); stroke-width: 2; }
 .line-svg .dot-unripe { fill: var(--ok); stroke: var(--surface); stroke-width: 2; }
 .line-svg .dot-test { fill: var(--surface); stroke-width: 3; }
-.line-svg .dot-test.ripe { stroke: var(--hint-ink); }
+.line-svg .dot-test.ripe { stroke: var(--ink); }
 .line-svg .dot-test.unripe { stroke: var(--ok); }
 .line-svg .thresh { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 6 4; }
 .line-svg .zone { font: 700 12px var(--font-body); fill: var(--accent); }
@@ -46,6 +46,7 @@ img { max-width: 100%; }
 <body>
 <div class="bar">
   <div class="bar-inner">
+    <img class="bar-seal" src="assets/seal.png" alt="Scranton Prep seal">
     <span class="bar-title">U5 · M1</span>
     <nav class="steps" aria-label="Module steps">
       <a href="#context" data-step="context">1 Context</a>
@@ -126,7 +127,7 @@ img { max-width: 100%; }
 
     <div class="task" id="t3">
       <div class="task-head"><h3>Task 3: Be the model</h3><span class="chip" data-chip="t3">To do</span></div>
-      <p>A grocery store's camera measures how yellow each banana is, from 0 to 100. Here are 10 bananas that people already labeled <b style="color:var(--ok)">unripe</b> or <b style="color:var(--hint-ink)">ripe</b>. Move the line so the model labels every training banana correctly: bananas to the right of the line are predicted ripe.</p>
+      <p>A grocery store's camera measures how yellow each banana is, from 0 to 100. Here are 10 bananas that people already labeled <b style="color:var(--ok)">unripe</b> or <b style="color:var(--ink)">ripe</b>. Move the line so the model labels every training banana correctly: bananas to the right of the line are predicted ripe.</p>
       <div class="sim">
         <svg class="line-svg" id="t3-svg" viewBox="0 0 520 130" role="img" aria-label="Bananas on a yellowness scale"></svg>
         <div class="slider-row"><label class="goal" for="t3-t">Line at:</label><input type="range" id="t3-t" min="0" max="100" step="1" value="30"><output id="t3-out" for="t3-t">30</output></div>
